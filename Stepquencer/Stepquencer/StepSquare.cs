@@ -10,6 +10,7 @@ namespace Stepquencer
 	{
 		public StepSquare()
 		{
+			
 		}
 	}
 }
