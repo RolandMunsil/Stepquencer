@@ -1,4 +1,6 @@
 ﻿using System;
+using Xamarin.Forms;
+
 namespace Stepquencer
 {
 	/// <summary>
@@ -8,9 +10,37 @@ namespace Stepquencer
 	/// </summary>
 	public class StepSquare
 	{
-		public StepSquare()
+		private double SQUARE_WIDTH = 20.0;
+		private double SQUARE_LENGTH = 20.0;
+		private double x;
+		private double y;
+		private Color c;
+
+		public double SquareWidth
 		{
+			get
+			{
+				return SQUARE_WIDTH;
+			}
+		}
+
+		public double SquareLength
+		{
+			get
+			{
+				return SQUARE_LENGTH;
+			}
+		}
+
+		public StepSquare(double x, double y, Color c)
+		{
+			this.x = x;
+			this.y = y;
+			this.c = c;
+		}
 			
 		}
-	}
 }
+
+//setter?
+//myVar.SquareWidth += 1
