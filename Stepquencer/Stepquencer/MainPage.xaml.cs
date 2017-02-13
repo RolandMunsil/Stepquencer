@@ -10,29 +10,29 @@ namespace Stepquencer
 	public partial class MainPage : ContentPage
 	{
 		const int NumRows = 7;
-		const int NumColumns = 16;
+		const int NumColumns = 8;
 
 		public MainPage()
 		{
 			InitializeComponent();
 
 
-			BackgroundColor = Color.FromHex("#404040");
+			BackgroundColor = Color.FromHex("#000000");
 
-			Style plainButton = new Style(typeof(Button))
+			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
 			{
 				Setters = 
 				{
-	  				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex ("#eee") },
+	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex ("#606060") },
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
-	  				new Setter { Property = Button.FontSizeProperty, Value = 40 }
-				}
+	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
+	}
 			};
 
 			//Set up grid of StepSquares
 
-			Grid stepgrid = new Grid();
+			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2};
 
 
 			//Initialize the number of rows and columns
@@ -51,7 +51,7 @@ namespace Stepquencer
 			{
 				for (int j = 0; j < NumColumns; j++)
 				{
-					stepgrid.Children.Add(new Button { Style = plainButton}, i, j);
+					stepgrid.Children.Add(new Button { Style = greyButton}, j, i);
 				}
 			}
 
