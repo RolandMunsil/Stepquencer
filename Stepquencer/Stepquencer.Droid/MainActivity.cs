@@ -7,12 +7,27 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Android.Media;
+using System.Collections.Generic;
+using System.Timers;
+using System.Threading;
 
 namespace Stepquencer.Droid
 {
 	[Activity (Label = "Stepquencer", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
+        struct Note
+        {
+            public AudioTrack track;
+            public AutoResetEvent stopPlayingEvent;
+
+            public Note(AudioTrack track, AutoResetEvent stopPlayingEvent)
+            {
+                this.track = track;
+                this.stopPlayingEvent = stopPlayingEvent;
+            }
+        }
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -20,38 +35,76 @@ namespace Stepquencer.Droid
 			global::Xamarin.Forms.Forms.Init (this, bundle);
 			LoadApplication (new Stepquencer.App ());
 
-			/*
-            AudioTrack timTrack = AudioTrackFromRawResource(Resource.Raw.tim);
-            AudioTrack echTrack = AudioTrackFromRawResource(Resource.Raw.ech);
+            Note hihat = new Note(AudioTrackFromRawResource(Resource.Raw.hihat), new AutoResetEvent(false));
+            Note snare = new Note(AudioTrackFromRawResource(Resource.Raw.snare), new AutoResetEvent(false));
+            Note bassdrum = new Note(AudioTrackFromRawResource(Resource.Raw.bassdrum), new AutoResetEvent(false));
 
-            int i = 0;
-            while (true)
+            //Make song
+            Note[][] song = new Note[16][];
+            for(int t = 0; t < 16; t++)
             {
-                System.Threading.Thread.Sleep(500);
+                List<Note> notesThisTimestep = new List<Note>();
+                notesThisTimestep.Add(hihat);
+                if (t % 2 == 0)
+                    notesThisTimestep.Add(bassdrum);
+                if (t % 4 == 2)
+                    notesThisTimestep.Add(snare);
 
-                //TODO: Does it matter whether you use Stop() vs. Pause()?
-                timTrack.Pause();
+                song[t] = notesThisTimestep.ToArray();
+            }
 
-                //Size of WAV header is 44 bytes
-                timTrack.SetPlaybackHeadPosition(44);
-                timTrack.SetPlaybackRate((int)(44100 * Math.Pow(2, (i%12) / 12.0)));
+            //Start up threads
+            Barrier playBarrier = new Barrier(0);
 
-                if(i%2 == 1)
+            MakeNoteThread(hihat.track, hihat.stopPlayingEvent, playBarrier);
+            MakeNoteThread(snare.track, snare.stopPlayingEvent, playBarrier);
+            MakeNoteThread(bassdrum.track, bassdrum.stopPlayingEvent, playBarrier);
+
+            int curBeat = 0;
+            System.Timers.Timer timer = new System.Timers.Timer(250);
+            timer.Elapsed += delegate (Object source, System.Timers.ElapsedEventArgs e)
+            {
+                //Dont let multiple notes try to play at once.
+                if (!Monitor.TryEnter(timer)) return;
+
+                if (song[curBeat].Length > 0)
                 {
-                    //Resetting takes about 0.3-2.0ms (in debug mode)
-                    //Playing takes about 0.5-1ms (in debug mode)
+                    if (playBarrier.ParticipantCount > 0)
+                    {
+                        playBarrier.RemoveParticipants(playBarrier.ParticipantCount);
+                    }
 
-                    echTrack.Pause();
-                    echTrack.SetPlaybackHeadPosition(44);
-                    echTrack.Play();
+                    playBarrier.AddParticipants(song[curBeat].Length);
+
+                    for(int i = 0; i < song[curBeat].Length; i++)
+                    {
+                        song[curBeat][i].stopPlayingEvent.Set();
+                    }
                 }
 
-                timTrack.Play();
+                curBeat = (curBeat + 1) % 16;
 
-                i++;
-            }
-            */
-            //audioTrack.Dispose();
+                Monitor.Exit(timer);
+            };
+            timer.Start();
+        }
+
+        private void MakeNoteThread(AudioTrack note, AutoResetEvent stopPlayingEvent, Barrier playBarrier)
+        {
+            new System.Threading.Thread(delegate ()
+            {
+                while (true)
+                {
+                    stopPlayingEvent.WaitOne();
+
+                    note.Pause();
+                    //TODO: WAV header size seems to be somewhat variable. Come up with a better solution than this.
+                    note.SetPlaybackHeadPosition(28);
+
+                    playBarrier.SignalAndWait();
+                    note.Play();
+                }
+            }).Start();
         }
 
         private AudioTrack AudioTrackFromRawResource(int resourceID)
@@ -77,7 +130,7 @@ namespace Stepquencer.Droid
                 // Frequency
                 44100,
                 // Mono or stereo
-                ChannelOut.Stereo,
+                ChannelOut.Mono,
                 // Audio encoding
                 Encoding.Pcm16bit,
                 // Length of the audio clip.
