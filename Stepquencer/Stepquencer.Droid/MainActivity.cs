@@ -10,7 +10,7 @@ using Android.Media;
 
 namespace Stepquencer.Droid
 {
-	[Activity (Label = "Stepquencer", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity (Label = "Stepquencer", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
 		protected override void OnCreate (Bundle bundle)
@@ -20,6 +20,7 @@ namespace Stepquencer.Droid
 			global::Xamarin.Forms.Forms.Init (this, bundle);
 			LoadApplication (new Stepquencer.App ());
 
+			/*
             AudioTrack timTrack = AudioTrackFromRawResource(Resource.Raw.tim);
             AudioTrack echTrack = AudioTrackFromRawResource(Resource.Raw.ech);
 
@@ -49,6 +50,7 @@ namespace Stepquencer.Droid
 
                 i++;
             }
+            */
             //audioTrack.Dispose();
         }
 
