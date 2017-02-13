@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+//Grid is made up of buttons
+//Find a way so that when the user presses a grid, the grid square changes color
+
 namespace Stepquencer
 {
 	public partial class MainPage : ContentPage
@@ -19,7 +22,12 @@ namespace Stepquencer
 
 			BackgroundColor = Color.FromHex("#000000");
 
+
 			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
+
+
+			//Style plainButton = new Style(typeof(Button))
+
 			{
 				Setters = 
 				{
@@ -30,9 +38,11 @@ namespace Stepquencer
 	}
 			};
 
+
 			//Set up grid of StepSquares
 
 			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2};
+
 
 
 			//Initialize the number of rows and columns
@@ -51,13 +61,31 @@ namespace Stepquencer
 			{
 				for (int j = 0; j < NumColumns; j++)
 				{
-					stepgrid.Children.Add(new Button { Style = greyButton}, j, i);
+					var button = new Button { Style = greyButton };
+					//stepgrid.Children.Add(new Button { Style = greyButton}, j, i);
+					stepgrid.Children.Add(button, j, i);
+					button.Clicked += OnButtonClicked;
+
 				}
-			}
+			};
+
+			//
+
+			//
+
+			//do something with plainButtons
+
 
 			//var label = new Label { Text = "This should show up with music", TextColor = Color.FromHex("#77fd65"), FontSize = 20 };
 
 			Content = stepgrid;
+		}
+
+		//fix this
+
+		void OnButtonClicked(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
