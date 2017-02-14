@@ -27,7 +27,7 @@ namespace Stepquencer
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
 	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
-	}
+	            }
 			};
 
 			//Set up grid of StepSquares
@@ -58,6 +58,15 @@ namespace Stepquencer
 			//var label = new Label { Text = "This should show up with music", TextColor = Color.FromHex("#77fd65"), FontSize = 20 };
 
 			Content = stepgrid;
-		}
+
+            SongPlayer player = new SongPlayer();
+            player.LoadInstrument("Snare");
+            player.LoadInstrument("Hi-Hat");
+            player.LoadInstrument("Bass Drum");
+
+            SongPlayer.Note[][] simpleSong = player.MakeSimpleSong();
+            short[] song = player.Mix(simpleSong, 240);
+            player.PlayAudio(song);
+        }
 	}
 }

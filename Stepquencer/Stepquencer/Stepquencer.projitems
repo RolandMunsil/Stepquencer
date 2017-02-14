@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SongPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StepSquare.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PickSquare.cs" />
   </ItemGroup>
@@ -30,5 +31,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Bass Drum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Hi-Hat.wav" />
   </ItemGroup>
 </Project>
