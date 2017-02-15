@@ -15,6 +15,7 @@ namespace Stepquencer
 		const int NumRows = 7;
 		const int NumColumns = 8;
 
+
 		public MainPage()
 		{
 			InitializeComponent();
@@ -23,25 +24,22 @@ namespace Stepquencer
 			BackgroundColor = Color.FromHex("#000000");
 
 
-			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
-
-
-			//Style plainButton = new Style(typeof(Button))
+			Style greyButton = new Style(typeof(Button))    // Button style for testing grid
 
 			{
-				Setters = 
+				Setters =
 				{
 	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex ("#606060") },
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
 	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
-	}
+				}
 			};
 
 
 			//Set up grid of StepSquares
 
-			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2};
+			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
 
 
 
@@ -62,18 +60,11 @@ namespace Stepquencer
 				for (int j = 0; j < NumColumns; j++)
 				{
 					var button = new Button { Style = greyButton };
-					//stepgrid.Children.Add(new Button { Style = greyButton}, j, i);
 					stepgrid.Children.Add(button, j, i);
 					button.Clicked += OnButtonClicked;
 
 				}
 			};
-
-			//
-
-			//
-
-			//do something with plainButtons
 
 
 			//var label = new Label { Text = "This should show up with music", TextColor = Color.FromHex("#77fd65"), FontSize = 20 };
@@ -81,11 +72,17 @@ namespace Stepquencer
 			Content = stepgrid;
 		}
 
-		//fix this
 
 		void OnButtonClicked(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			
+			Button button = (Button) sender;
+			if (button.BackgroundColor.Equals(Color.FromHex("#606060")))
+				button.BackgroundColor = Color.FromHex("#ff0000");
+			else
+				button.BackgroundColor = Color.FromHex("#606060");
+
+
 		}
 	}
 }
