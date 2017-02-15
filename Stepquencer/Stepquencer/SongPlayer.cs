@@ -19,7 +19,10 @@ namespace Stepquencer
 
         public struct Note
         {
-            public short[] data;
+            //Use to specify that there is no note corresponding to a given beat & pitch
+            public static Note None = new Note(null);
+
+            public readonly short[] data;
 
             public Note(short[] data)
             {
@@ -27,16 +30,19 @@ namespace Stepquencer
             }
         }
 
-        Dictionary<String, Note> namesToNotes;
-
         public SongPlayer()
         {
             assembly = typeof(MainPage).GetTypeInfo().Assembly;
-
-            namesToNotes = new Dictionary<string, Note>();
         }
 
-        public void LoadInstrument(String instrName)
+        /// <summary>
+        /// Loads the instrument with the given name and returns an array containing the
+        /// note at various pitches
+        /// </summary>
+        /// <param name="instrName"></param>
+        /// <returns>An array of notes. The index corresponds to the number of semitones the pitch of the
+        /// original has been increased by. So if the original instrument was a C note, array[1] would be a C# version</returns>
+        public Note[] LoadInstrument(String instrName)
         {
             String resourceString = $"{resourcePrefix}{instrName}.wav";
 
@@ -50,40 +56,53 @@ namespace Stepquencer
             }
 
             //Convert to short
-            short[] dataAsShorts = new short[rawInstrumentData.Length / 2];
-            //Start at 44 since 44 is the size of the WAV header.
-            for(int i = 44; i < dataAsShorts.Length; i++)
+            short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
+            //Start at 22 since 22 is 2 * the size of the WAV header.
+            for(int i = 22; i < dataAsShorts.Length; i++)
             {
-                dataAsShorts[i] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
+                dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
             }
-            namesToNotes[instrName] = new Note(dataAsShorts);
+            //namesToNotes[instrName] = new Note(dataAsShorts);
+
+            //Create pitched versions
+            Note[] notes = new Note[13];
+            notes[0] = new Note(dataAsShorts);
+            for(int i = 1; i < 13; i++)
+            {
+                notes[i] = new Note(Resample(dataAsShorts, i));
+            }
+            return notes;
         }
 
-        public Note[][] MakeSimpleSong()
+        private short[] Resample(short[] instrData, int semitoneShift)
         {
-            Note[][] song = new Note[16][];
-            for (int t = 0; t < 16; t++)
+            double mult = Math.Pow(2, -semitoneShift / 12.0);
+            int outputSize = (int)(instrData.Length * mult);
+            short[] output = new short[outputSize];
+            for(int s = 0; s < outputSize; s++)
             {
-                List<Note> notesThisTimestep = new List<Note>();
-                notesThisTimestep.Add(namesToNotes["Hi-Hat"]);
-                if (t % 2 == 0)
-                    notesThisTimestep.Add(namesToNotes["Bass Drum"]);
-                if (t % 4 == 2)
-                    notesThisTimestep.Add(namesToNotes["Snare"]);
-
-                song[t] = notesThisTimestep.ToArray();
+                double sourcePos = s / mult;
+                int left = (int)Math.Floor(sourcePos);
+                output[s] = (short)(instrData[left] + ((sourcePos % 1) * (instrData[left + 1] - instrData[left])));
             }
-            return song;
+            return output;
         }
 
-        public short[] Mix(Note[][] song, int bpm)
+        public void PlaySong(Note[][] song, int bpm)
+        {
+            PlayAudioData(Mix(song, bpm));
+        }
+
+        private short[] Mix(Note[][] song, int bpm)
         {
             int samplesPerBeat = ((60 * playbackRate) / bpm);
 
             short[] songData = new short[samplesPerBeat * song.Length];
             for (int b = 0; b < song.Length; b++)
             {
-                Note[] notes = song[b];
+                List<Note> notesList = new List<Note>(song[b]);
+                notesList.RemoveAll((no) => no.Equals(Note.None));
+                Note[] notes = notesList.ToArray();
                 for(int i = 0; i < samplesPerBeat; i++)
                 {
                     int sampleSum = 0;
@@ -106,7 +125,7 @@ namespace Stepquencer
             return songData;
         }
 
-        public void PlayAudio(short[] songData)
+        private void PlayAudioData(short[] songData)
         {
 #if __IOS__
             throw new NotImplementedException();

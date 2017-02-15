@@ -66,7 +66,7 @@ namespace Stepquencer
 					stepgrid.Children.Add(button, j, i);				// Add it to the grid
 					button.Clicked += OnButtonClicked;					// C# event handling
 
-					songArray[j, i] = new SongPlayer.Note(null);		// Add a placeholder to songArray
+					songArray[j, i] = SongPlayer.Note.None;		// Add a placeholder to songArray
 
 				}
 			};
@@ -82,14 +82,57 @@ namespace Stepquencer
 
 			Content = stepgrid;
 
-            SongPlayer player = new SongPlayer();
-            player.LoadInstrument("Snare");
-            player.LoadInstrument("Hi-Hat");
-            player.LoadInstrument("Bass Drum");
 
-            SongPlayer.Note[][] simpleSong = player.MakeSimpleSong();
-            short[] song = player.Mix(simpleSong, 240);
-            player.PlayAudio(song);
+            SongPlayer player = new SongPlayer();
+            SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
+            SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
+            SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
+            SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
+
+            //Below is an example of how to use the data returned by LoadInstrument to construct a simple song.
+            List<SongPlayer.Note>[] noteLists = new List<SongPlayer.Note>[16];
+
+            //Add drum beat
+            for (int b = 0; b < 16; b++)
+            {
+                List<SongPlayer.Note> notesThisTimestep = new List<SongPlayer.Note>();
+                notesThisTimestep.Add(hihatNotes[0]);
+                if (b % 2 == 0)
+                    notesThisTimestep.Add(bdrumNotes[0]);
+                if (b % 4 == 2)
+                    notesThisTimestep.Add(snareNotes[0]);
+
+                noteLists[b] = notesThisTimestep;
+            }
+
+            //Add 2 C scale climbs
+            noteLists[0].Add(atmosNotes[0]);
+            noteLists[1].Add(atmosNotes[2]);
+            noteLists[2].Add(atmosNotes[4]);
+            noteLists[3].Add(atmosNotes[5]);
+            noteLists[4].Add(atmosNotes[7]);
+            noteLists[5].Add(atmosNotes[9]);
+            noteLists[6].Add(atmosNotes[11]);
+            noteLists[7].Add(atmosNotes[12]);
+
+            noteLists[8].Add(atmosNotes[0]);
+            noteLists[9].Add(atmosNotes[2]);
+            noteLists[10].Add(atmosNotes[4]);
+            noteLists[11].Add(atmosNotes[5]);
+            noteLists[12].Add(atmosNotes[7]);
+            noteLists[13].Add(atmosNotes[9]);
+            noteLists[14].Add(atmosNotes[11]);
+            noteLists[15].Add(atmosNotes[12]);
+
+            //Convert to array of arrays
+            SongPlayer.Note[][] song = new SongPlayer.Note[16][];
+            for (int i = 0; i < 16; i++)
+            {
+                song[i] = noteLists[i].ToArray();
+            }
+
+            //Play
+            player.PlaySong(song, 240);
 		}
 
 		//fix this

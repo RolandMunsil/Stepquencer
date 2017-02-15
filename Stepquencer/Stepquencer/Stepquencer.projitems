@@ -35,4 +35,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Bass Drum.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Hi-Hat.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1x Atmosphere.wav" />
+  </ItemGroup>
 </Project>
