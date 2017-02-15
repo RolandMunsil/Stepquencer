@@ -13,14 +13,15 @@ namespace Stepquencer
 	public partial class MainPage : ContentPage
 	{
 		const int NumRows = 7;
-		const int NumColumns = 8;
+		const int NumColumns = 8;  
 
 		public MainPage()
 		{
 			InitializeComponent();
 
+			SongPlayer.Note[,] songArray = new SongPlayer.Note[NumColumns, NumRows];	// Array of StepSquare data for SongPlayer, stored this way because C# is row-major
 
-			BackgroundColor = Color.FromHex("#000000");
+			BackgroundColor = Color.FromHex("#000000");		// Make background color black
 
 
 			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
@@ -61,10 +62,11 @@ namespace Stepquencer
 			{
 				for (int j = 0; j < NumColumns; j++)
 				{
-					var button = new Button { Style = greyButton };
-					//stepgrid.Children.Add(new Button { Style = greyButton}, j, i);
-					stepgrid.Children.Add(button, j, i);
-					button.Clicked += OnButtonClicked;
+					var button = new Button { Style = greyButton };		// Make a new button
+					stepgrid.Children.Add(button, j, i);				// Add it to the grid
+					button.Clicked += OnButtonClicked;					// C# event handling
+
+					songArray[j, i] = new SongPlayer.Note(null);		// Add a placeholder to songArray
 
 				}
 			};
