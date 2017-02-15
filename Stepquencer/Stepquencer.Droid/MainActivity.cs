@@ -35,6 +35,7 @@ namespace Stepquencer.Droid
 			global::Xamarin.Forms.Forms.Init (this, bundle);
 			LoadApplication (new Stepquencer.App ());
 
+            /*
             Note hihat = new Note(AudioTrackFromRawResource(Resource.Raw.hihat), new AutoResetEvent(false));
             Note snare = new Note(AudioTrackFromRawResource(Resource.Raw.snare), new AutoResetEvent(false));
             Note bassdrum = new Note(AudioTrackFromRawResource(Resource.Raw.bassdrum), new AutoResetEvent(false));
@@ -73,7 +74,6 @@ namespace Stepquencer.Droid
                     {
                         playBarrier.RemoveParticipants(playBarrier.ParticipantCount);
                     }
-
                     playBarrier.AddParticipants(song[curBeat].Length);
 
                     for(int i = 0; i < song[curBeat].Length; i++)
@@ -87,8 +87,9 @@ namespace Stepquencer.Droid
                 Monitor.Exit(timer);
             };
             timer.Start();
+            */
         }
-
+        /*
         private void MakeNoteThread(AudioTrack note, AutoResetEvent stopPlayingEvent, Barrier playBarrier)
         {
             new System.Threading.Thread(delegate ()
@@ -99,7 +100,7 @@ namespace Stepquencer.Droid
 
                     note.Pause();
                     //TODO: WAV header size seems to be somewhat variable. Come up with a better solution than this.
-                    note.SetPlaybackHeadPosition(28);
+                    note.SetPlaybackHeadPosition(44);
 
                     playBarrier.SignalAndWait();
                     note.Play();
@@ -141,6 +142,7 @@ namespace Stepquencer.Droid
             audioTrack.Write(audioBuffer, 0, audioBuffer.Length, WriteMode.Blocking);
             return audioTrack;
         }
+        */
     }
 }
 
