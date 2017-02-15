@@ -13,7 +13,8 @@ namespace Stepquencer
 	public partial class MainPage : ContentPage
 	{
 		const int NumRows = 7;
-		const int NumColumns = 8;  
+		const int NumColumns = 9;
+		const int NumInstruments = 4;
 
 		public MainPage()
 		{
@@ -21,14 +22,10 @@ namespace Stepquencer
 
 			SongPlayer.Note[,] songArray = new SongPlayer.Note[NumColumns, NumRows];	// Array of StepSquare data for SongPlayer, stored this way because C# is row-major
 
+
 			BackgroundColor = Color.FromHex("#000000");		// Make background color black
 
-
 			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
-
-
-			//Style plainButton = new Style(typeof(Button))
-
 			{
 				Setters = 
 				{
@@ -57,12 +54,12 @@ namespace Stepquencer
 				stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			}
 
-			//Add the buttons to it
+			//Add the stepsquare buttons to it
 			for (int i = 0; i < NumRows; i++)
 			{
-				for (int j = 0; j < NumColumns; j++)
+				for (int j = 0; j < NumColumns - 1; j++)
 				{
-					var button = new Button { Style = greyButton };		// Make a new button
+					Button button = new Button { Style = greyButton };		// Make a new button
 					stepgrid.Children.Add(button, j, i);				// Add it to the grid
 					button.Clicked += OnButtonClicked;					// C# event handling
 
@@ -71,9 +68,31 @@ namespace Stepquencer
 				}
 			};
 
-			//
+			// Make the sidebar
 
-			//
+			Grid sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
+
+			for (int i = 0; i < NumInstruments; i++)
+			{
+				sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+			}
+
+			sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+
+			// Fill it with buttons
+
+			for (int i = 0; i < NumInstruments; i++)
+			{
+				Button button = new Button { Style = greyButton };		// Make a new button
+				sidebar.Children.Add(button, 0, i);						// Add it to the sidebar
+				button.Clicked += OnButtonClicked;						// C# event handling 
+			}
+
+			// Add the sidebar to stepgrid
+
+			stepgrid.Children.Add(sidebar, NumColumns - 1, 0);	// Add it it to the final row of stepgrid
+			Grid.SetRowSpan(sidebar, NumRows);					// Make sure that it spans the whole column
 
 			//do something with plainButtons
 
