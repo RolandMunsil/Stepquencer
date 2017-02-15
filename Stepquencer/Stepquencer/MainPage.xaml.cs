@@ -16,6 +16,7 @@ namespace Stepquencer
 		const int NumColumns = 9;
 		const int NumInstruments = 4;
 
+
 		public MainPage()
 		{
 			InitializeComponent();
@@ -26,20 +27,25 @@ namespace Stepquencer
 			BackgroundColor = Color.FromHex("#000000");		// Make background color black
 
 			Style greyButton = new Style(typeof(Button))	// Button style for testing grid
+
 			{
-				Setters = 
+				Setters =
 				{
 	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex ("#606060") },
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
 	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
-	            }
+
+				}
+
+	            
+
 			};
 
 
 			//Set up grid of StepSquares
 
-			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2};
+			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
 
 
 
@@ -59,7 +65,9 @@ namespace Stepquencer
 			{
 				for (int j = 0; j < NumColumns - 1; j++)
 				{
+
 					Button button = new Button { Style = greyButton };		// Make a new button
+
 					stepgrid.Children.Add(button, j, i);				// Add it to the grid
 					button.Clicked += OnButtonClicked;					// C# event handling
 
@@ -67,6 +75,7 @@ namespace Stepquencer
 
 				}
 			};
+
 
 			// Make the sidebar
 
@@ -154,11 +163,17 @@ namespace Stepquencer
             player.PlaySong(song, 240);
 		}
 
-		//fix this
 
 		void OnButtonClicked(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			
+			Button button = (Button) sender;
+			if (button.BackgroundColor.Equals(Color.FromHex("#606060")))
+				button.BackgroundColor = Color.FromHex("#ff0000");
+			else
+				button.BackgroundColor = Color.FromHex("#606060");
+
+
 		}
 	}
 }
