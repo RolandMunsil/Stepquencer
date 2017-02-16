@@ -16,6 +16,11 @@ namespace Stepquencer
 		const int NumColumns = 9;
 		const int NumInstruments = 4;
 
+		const String grey = "#606060";
+		const String red = "#ff0000";
+		const String blue = "#3333ff";
+		const String green = "#33ff33";
+		const String yellow = "#ffff00";
 
 		public MainPage()
 		{
@@ -31,7 +36,7 @@ namespace Stepquencer
 			{
 				Setters =
 				{
-	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex ("#606060") },
+	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex (grey) },
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
 	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
@@ -96,6 +101,8 @@ namespace Stepquencer
 				Button button = new Button { Style = greyButton };		// Make a new button
 				sidebar.Children.Add(button, 0, i);						// Add it to the sidebar
 				button.Clicked += OnButtonClicked;						// C# event handling 
+
+				//Should we have a different event handler for the sidebar buttons?
 			}
 
 			// Add the sidebar to stepgrid
@@ -168,10 +175,10 @@ namespace Stepquencer
 		{
 			
 			Button button = (Button) sender;
-			if (button.BackgroundColor.Equals(Color.FromHex("#606060")))
-				button.BackgroundColor = Color.FromHex("#ff0000");
+			if (button.BackgroundColor.Equals(Color.FromHex(grey)))
+				button.BackgroundColor = Color.FromHex(red);
 			else
-				button.BackgroundColor = Color.FromHex("#606060");
+				button.BackgroundColor = Color.FromHex(grey);
 
 
 		}
