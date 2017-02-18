@@ -5,9 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-//Grid is made up of buttons
-//Find a way so that when the user presses a grid, the grid square changes color
-
 namespace Stepquencer
 {
 	public partial class MainPage : ContentPage
