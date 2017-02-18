@@ -16,6 +16,7 @@ namespace Stepquencer
 #endif
         readonly Assembly assembly;
         const int playbackRate = 44100;
+        const int numNotes = 21;        // the number of playable pitches
 
         public struct Note
         {
@@ -65,9 +66,9 @@ namespace Stepquencer
             //namesToNotes[instrName] = new Note(dataAsShorts);
 
             //Create pitched versions
-            Note[] notes = new Note[13];
+            Note[] notes = new Note[numNotes];
             notes[0] = new Note(dataAsShorts);
-            for(int i = 1; i < 21; i++)
+            for(int i = 1; i < numNotes; i++)
             {
                 notes[i] = new Note(Resample(dataAsShorts, i));
             }

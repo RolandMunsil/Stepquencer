@@ -7,17 +7,19 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+
     public partial class MainPage : ContentPage
     {
         const int NumRows = 21;
         const int NumColumns = 16;
         const int NumInstruments = 4;
 
-        readonly static Color Grey = Color.FromHex("#606060");
-        readonly static Color Red = Color.FromHex("#ff0000");
-        readonly static Color Blue = Color.FromHex("#3333ff");
-        readonly static Color Green = Color.FromHex("#33ff33");
-        readonly static Color Yellow = Color.FromHex("#ffff00");
+
+		readonly static Color Grey = Color.FromHex("#606060");
+		readonly static Color Red = Color.FromHex("#ff0000");
+		readonly static Color Blue = Color.FromHex("#3333ff");
+		readonly static Color Green = Color.FromHex("#33ff33");
+		readonly static Color Yellow = Color.FromHex("#ffff00");
 
         static Grid mastergrid;
         static Grid stepgrid;                                       // Grid for whole screen
@@ -26,6 +28,7 @@ namespace Stepquencer
         static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer, stored this way because C# is row-major
         static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
         static Color SideBarColor = Red;
+        static Color SideBorderColor = Color.Black;
 
         public MainPage()
         {
@@ -103,25 +106,28 @@ namespace Stepquencer
 
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
+            // Fill sidebar it with buttons
+
             for (int i = 0; i < NumInstruments; i++)
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
 
-            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 
             // Fill it with buttons
 
             Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
 
-            for (int i = 0; i < colors.Length; i++)
+            for (int i = 0; i < colors.Length; i++)							//Make sure sidebar buttons have borders
             {
-                Button button = new Button { BackgroundColor = colors[i] };         // Make a new button
+                Button button = new Button { BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };         // Make a new button
                 sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
                 button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
             }
+
 
 
 
@@ -197,7 +203,7 @@ namespace Stepquencer
 			if (button.BackgroundColor.Equals(Grey))
 			{
 				button.BackgroundColor = SideBarColor;
-				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][Grid.GetColumn(button)]; // Puts the instrument/pitch combo for this button into noteArray
+				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][(NumRows - 1) - Grid.GetRow(button)]; // Puts the instrument/pitch combo for this button into noteArray
 
 			}
 			else
@@ -209,11 +215,27 @@ namespace Stepquencer
 
 		}
 
+		//TODO: Add to method
+		//If a button on sidebar is already highlighted and another sidebar button is clicked....
+		//Unhighlight the 'old' button
+
 		void OnSidebarClicked(object sender, EventArgs e)
 		{
 			Button button = (Button)sender;
-
 			SideBarColor = button.BackgroundColor;
+			SideBorderColor = button.BorderColor;
+
+			if (button.BorderColor.Equals(Color.Black))
+			{
+				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
+			}
+
+			else
+			{
+				button.BorderColor = Color.Black;
+			}
+
 		}
+
 	}
 }
