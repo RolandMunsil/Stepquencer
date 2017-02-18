@@ -58,10 +58,8 @@ namespace Stepquencer
 			{
 				Setters =
 				{
-	 				new Setter { Property = Button.BackgroundColorProperty, Value = Color.FromHex (Grey) },
-	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
+	 				new Setter { Property = Button.BackgroundColorProperty, Value = Grey },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
-	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
 				}
 			};
 
@@ -88,11 +86,10 @@ namespace Stepquencer
 				for (int j = 0; j < NumColumns - 1; j++)
 				{
 
-					StepSquare button = new StepSquare(j, i);      // Make a new button
+					Button button = new Button { Style = greyButton };  // Make a new button
 					stepgrid.Children.Add(button, j, i);                // Add it to the grid
-					button.Clicked += OnButtonClicked;                  // C# event handling
-
-					noteArray[j, i] = SongPlayer.Note.None;     // Add a placeholder to songArray
+					button.Clicked += OnButtonClicked;                  // Add it to stepsquare event handler
+					noteArray[j, i] = SongPlayer.Note.None;     		// Add a placeholder to songArray
 
 				}
 			};
@@ -110,24 +107,17 @@ namespace Stepquencer
 			sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 
+
 			// Fill it with buttons
-			//TODO: Make a fancier for loop that does this
 
-			Button RedButton = new Button { BackgroundColor = Color.FromHex(Red) }; // Make a new button
-			sidebar.Children.Add(RedButton, 0, 0);                     				// Add it to the sidebar
-			RedButton.Clicked += OnSidebarClicked;                     				// C# event handling 
+			Color[] colors = new Color[] { Red, Blue, Green, Yellow };		// Array of colors
 
-			Button BlueButton = new Button { BackgroundColor = Color.FromHex(Blue) }; // Make a new button
-			sidebar.Children.Add(BlueButton, 0, 1);                                  // Add it to the sidebar
-			BlueButton.Clicked += OnSidebarClicked;                                  // C# event handling
-
-			Button GreenButton = new Button { BackgroundColor = Color.FromHex(Green) }; // Make a new button
-			sidebar.Children.Add(GreenButton, 0, 2);                                  // Add it to the sidebar
-			GreenButton.Clicked += OnSidebarClicked;                                  // C# event handling
-
-			Button YellowButton = new Button { BackgroundColor = Color.FromHex(Yellow) }; // Make a new button
-			sidebar.Children.Add(YellowButton, 0, 3);                                  // Add it to the sidebar
-			YellowButton.Clicked += OnSidebarClicked;                                  // C# event handling
+			for (int i = 0; i < colors.Length; i++)
+			{
+				Button button = new Button { BackgroundColor = colors[i] }; 		// Make a new button
+				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
+				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
+			}
 
 
 
@@ -192,17 +182,17 @@ namespace Stepquencer
 		void OnButtonClicked(object sender, EventArgs e)
 		{
 
-			StepSquare button = (StepSquare)sender;
+			Button button = (Button)sender;
 			if (button.BackgroundColor.Equals(Grey))
 			{
 				button.BackgroundColor = SideBarColor;
-				noteArray[button.column, button.row] = colorMap[SideBarColor][button.column];		// Puts the instrument/pitch combo for this button into noteArray
+				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][Grid.GetColumn(button)]; // Puts the instrument/pitch combo for this button into noteArray
 
 			}
 			else
 			{
 				button.BackgroundColor = Grey;
-				noteArray[button.column, button.row] = SongPlayer.Note.None;
+				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = SongPlayer.Note.None;
 			}
 
 
