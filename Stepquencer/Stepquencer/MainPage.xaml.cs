@@ -29,7 +29,7 @@ namespace Stepquencer
 		{
 			InitializeComponent();
 
-			noteArray = new SongPlayer.Note[NumColumns, NumRows];    // Initializing noteArray
+			noteArray = new SongPlayer.Note[NumColumns - 1, NumRows];    // Initializing noteArray
 
 			// Initializing the song player and notes
 
@@ -183,7 +183,7 @@ namespace Stepquencer
 			if (button.BackgroundColor.Equals(Grey))
 			{
 				button.BackgroundColor = SideBarColor;
-				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][Grid.GetColumn(button)]; // Puts the instrument/pitch combo for this button into noteArray
+				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][(NumRows - 1) - Grid.GetRow(button)]; // Puts the instrument/pitch combo for this button into noteArray
 
 			}
 			else
