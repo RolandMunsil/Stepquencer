@@ -16,25 +16,45 @@ namespace Stepquencer
 		const int NumColumns = 9;
 		const int NumInstruments = 4;
 
-		const String Grey = "#606060";
-		const String Red = "#ff0000";
-		const String Blue = "#3333ff";
-		const String Green = "#33ff33";
-		const String Yellow = "#ffff00";
+		readonly static Color Grey = Color.FromHex("#606060");
+		readonly static Color Red = Color.FromHex("#ff0000");
+		readonly static Color Blue = Color.FromHex("#3333ff");
+		readonly static Color Green = Color.FromHex("#33ff33");
+		readonly static Color Yellow = Color.FromHex("#ffff00");
 
-		public String SideBarColor = Red;
+		static Grid stepgrid;										// Grid for whole screen
+		static Grid sidebar;										// Grid for sidebar
+		static SongPlayer.Note[,] noteArray;        				// Array of StepSquare data for SongPlayer, stored this way because C# is row-major
+		static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
+		static Color SideBarColor = Red;
 
 		public MainPage()
 		{
 			InitializeComponent();
 
-			SongPlayer.Note[,] songArray = new SongPlayer.Note[NumColumns, NumRows];    // Array of StepSquare data for SongPlayer, stored this way because C# is row-major
+			noteArray = new SongPlayer.Note[NumColumns, NumRows];    // Initializing noteArray
+
+			// Initializing the song player and notes
+
+			SongPlayer player = new SongPlayer();
+			SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
+			SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
+			SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
+			SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
+
+			// Initializing the colorMap
+
+			colorMap = new Dictionary<Color, SongPlayer.Note[]>();
+
+			colorMap[Red] = snareNotes;
+			colorMap[Blue] = atmosNotes;
+			colorMap[Green] = bdrumNotes;
+			colorMap[Yellow] = hihatNotes;
 
 
 			BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
 			Style greyButton = new Style(typeof(Button))    // Button style for testing grid
-
 			{
 				Setters =
 				{
@@ -42,18 +62,13 @@ namespace Stepquencer
 	  				new Setter { Property = Button.TextColorProperty, Value = Color.Black },
 	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
 	 				new Setter { Property = Button.FontSizeProperty, Value = 40 }
-
 				}
-
-
-
 			};
 
 
 			//Set up grid of StepSquares
 
-			Grid stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
-
+			stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
 
 
 			//Initialize the number of rows and columns
@@ -73,12 +88,11 @@ namespace Stepquencer
 				for (int j = 0; j < NumColumns - 1; j++)
 				{
 
-					Button button = new Button { Style = greyButton };      // Make a new button
-
+					StepSquare button = new StepSquare(j, i);      // Make a new button
 					stepgrid.Children.Add(button, j, i);                // Add it to the grid
 					button.Clicked += OnButtonClicked;                  // C# event handling
 
-					songArray[j, i] = SongPlayer.Note.None;     // Add a placeholder to songArray
+					noteArray[j, i] = SongPlayer.Note.None;     // Add a placeholder to songArray
 
 				}
 			};
@@ -86,7 +100,7 @@ namespace Stepquencer
 
 			// Make the sidebar
 
-			Grid sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
+			sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
 			for (int i = 0; i < NumInstruments; i++)
 			{
@@ -122,19 +136,11 @@ namespace Stepquencer
 			stepgrid.Children.Add(sidebar, NumColumns - 1, 0);  // Add it it to the final row of stepgrid
 			Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
 
-			//do something with plainButtons
 
-
-			//var label = new Label { Text = "This should show up with music", TextColor = Color.FromHex("#77fd65"), FontSize = 20 };
 
 			Content = stepgrid;
 
 
-			SongPlayer player = new SongPlayer();
-			SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
-			SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
-			SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
-			SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
 
 			//Below is an example of how to use the data returned by LoadInstrument to construct a simple song.
 			List<SongPlayer.Note>[] noteLists = new List<SongPlayer.Note>[16];
@@ -186,14 +192,17 @@ namespace Stepquencer
 		void OnButtonClicked(object sender, EventArgs e)
 		{
 
-			Button button = (Button)sender;
-			if (button.BackgroundColor.Equals(Color.FromHex(Grey)))
+			StepSquare button = (StepSquare)sender;
+			if (button.BackgroundColor.Equals(Grey))
 			{
-				button.BackgroundColor = Color.FromHex(SideBarColor);
+				button.BackgroundColor = SideBarColor;
+				noteArray[button.column, button.row] = colorMap[SideBarColor][button.column];		// Puts the instrument/pitch combo for this button into noteArray
+
 			}
 			else
 			{
-				button.BackgroundColor = Color.FromHex(Grey);
+				button.BackgroundColor = Grey;
+				noteArray[button.column, button.row] = SongPlayer.Note.None;
 			}
 
 
@@ -203,29 +212,7 @@ namespace Stepquencer
 		{
 			Button button = (Button)sender;
 
-			if (button.BackgroundColor.Equals(Color.FromHex(Red)))
-			{
-				SideBarColor = Red;
-
-			}
-			else if (button.BackgroundColor.Equals(Color.FromHex(Blue)))
-			{
-				SideBarColor = Blue;
-
-			}
-			else if (button.BackgroundColor.Equals(Color.FromHex(Green)))
-			{
-				SideBarColor = Green;
-
-			}
-			else if (button.BackgroundColor.Equals(Color.FromHex(Yellow)))
-			{
-				SideBarColor = Yellow;
-			}
-			else
-			{
-				throw new NotImplementedException();
-			}
+			SideBarColor = button.BackgroundColor;
 		}
 	}
 }
