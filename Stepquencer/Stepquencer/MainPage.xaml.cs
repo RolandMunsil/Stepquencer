@@ -7,125 +7,139 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
-	public partial class MainPage : ContentPage
-	{
-		const int NumRows = 7;
-		const int NumColumns = 9;
-		const int NumInstruments = 4;
+    public partial class MainPage : ContentPage
+    {
+        const int NumRows = 21;
+        const int NumColumns = 16;
+        const int NumInstruments = 4;
 
-		readonly static Color Grey = Color.FromHex("#606060");
-		readonly static Color Red = Color.FromHex("#ff0000");
-		readonly static Color Blue = Color.FromHex("#3333ff");
-		readonly static Color Green = Color.FromHex("#33ff33");
-		readonly static Color Yellow = Color.FromHex("#ffff00");
+        readonly static Color Grey = Color.FromHex("#606060");
+        readonly static Color Red = Color.FromHex("#ff0000");
+        readonly static Color Blue = Color.FromHex("#3333ff");
+        readonly static Color Green = Color.FromHex("#33ff33");
+        readonly static Color Yellow = Color.FromHex("#ffff00");
 
-		static Grid stepgrid;										// Grid for whole screen
-		static Grid sidebar;										// Grid for sidebar
-		static SongPlayer.Note[,] noteArray;        				// Array of StepSquare data for SongPlayer, stored this way because C# is row-major
-		static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
-		static Color SideBarColor = Red;
+        static Grid mastergrid;
+        static Grid stepgrid;                                       // Grid for whole screen
+        static Grid sidebar;										// Grid for sidebar
+        static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+        static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer, stored this way because C# is row-major
+        static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
+        static Color SideBarColor = Red;
 
-		public MainPage()
-		{
-			InitializeComponent();
+        public MainPage()
+        {
+            InitializeComponent();
 
-			noteArray = new SongPlayer.Note[NumColumns, NumRows];    // Initializing noteArray
+            noteArray = new SongPlayer.Note[NumColumns, NumRows];    // Initializing noteArray
 
-			// Initializing the song player and notes
+            // Initializing the song player and notes
 
-			SongPlayer player = new SongPlayer();
-			SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
-			SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
-			SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
-			SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
+            SongPlayer player = new SongPlayer();
+            SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
+            SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
+            SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
+            SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
 
-			// Initializing the colorMap
+            // Initializing the colorMap
 
-			colorMap = new Dictionary<Color, SongPlayer.Note[]>();
+            colorMap = new Dictionary<Color, SongPlayer.Note[]>();
 
-			colorMap[Red] = snareNotes;
-			colorMap[Blue] = atmosNotes;
-			colorMap[Green] = bdrumNotes;
-			colorMap[Yellow] = hihatNotes;
-
-
-			BackgroundColor = Color.FromHex("#000000");     // Make background color black
-
-			Style greyButton = new Style(typeof(Button))    // Button style for testing grid
-			{
-				Setters =
-				{
-	 				new Setter { Property = Button.BackgroundColorProperty, Value = Grey },
-	  				new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
-				}
-			};
+            colorMap[Red] = snareNotes;
+            colorMap[Blue] = atmosNotes;
+            colorMap[Green] = bdrumNotes;
+            colorMap[Yellow] = hihatNotes;
 
 
-			//Set up grid of StepSquares
+            BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
-			stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
+            Style greyButton = new Style(typeof(Button))    // Button style for testing grid
+            {
+                Setters =
+                {
+                     new Setter { Property = Button.BackgroundColorProperty, Value = Grey },
+                      new Setter { Property = Button.BorderRadiusProperty, Value = 0 },
+                }
+            };
 
+            //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
 
-			//Initialize the number of rows and columns
-			for (int i = 0; i < NumRows; i++)
-			{
-				stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-			}
+            mastergrid = new Grid { ColumnSpacing = 2};
+            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
+            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-			for (int i = 0; i < NumColumns; i++)
-			{
-				stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-			}
+            //Set up grid of StepSquares
 
-			//Add the stepsquare buttons to it
-			for (int i = 0; i < NumRows; i++)
-			{
-				for (int j = 0; j < NumColumns - 1; j++)
-				{
-
-					Button button = new Button { Style = greyButton };  // Make a new button
-					stepgrid.Children.Add(button, j, i);                // Add it to the grid
-					button.Clicked += OnButtonClicked;                  // Add it to stepsquare event handler
-					noteArray[j, i] = SongPlayer.Note.None;     		// Add a placeholder to songArray
-
-				}
-			};
+            stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
 
 
-			// Make the sidebar
+            //Initialize the number of rows and columns
+            for (int i = 0; i < NumRows; i++)
+            {
+                stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            }
 
-			sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
+            for (int i = 0; i < NumColumns; i++)
+            {
+                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
 
-			for (int i = 0; i < NumInstruments; i++)
-			{
-				sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-			}
+            //Add the stepsquare buttons to it
+            {
+                for (int i = 0; i < NumRows; i++)
+                    for (int j = 0; j < NumColumns; j++)
+                    {
 
-			sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                        Button button = new Button { Style = greyButton };  // Make a new button
+                        stepgrid.Children.Add(button, j, i);                // Add it to the grid
+                        button.Clicked += OnButtonClicked;                  // Add it to stepsquare event handler
+                        noteArray[j, i] = SongPlayer.Note.None;             // Add a placeholder to songArray
+
+                    }
+            };
 
 
+            // Make the sidebar
 
-			// Fill it with buttons
+            sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
-			Color[] colors = new Color[] { Red, Blue, Green, Yellow };		// Array of colors
+            for (int i = 0; i < NumInstruments; i++)
+            {
+                sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            }
 
-			for (int i = 0; i < colors.Length; i++)
-			{
-				Button button = new Button { BackgroundColor = colors[i] }; 		// Make a new button
-				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
-				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
-			}
+            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 
 
-			// Add the sidebar to stepgrid
+            // Fill it with buttons
 
-			stepgrid.Children.Add(sidebar, NumColumns - 1, 0);  // Add it it to the final row of stepgrid
-			Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
+            Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Button button = new Button { BackgroundColor = colors[i] };         // Make a new button
+                sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
+                button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
+            }
 
 
 
-			Content = stepgrid;
+            // Set up scroll view and put grid inside it
+
+            scroller = new ScrollView {
+                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
+            };
+           
+            scroller.Content = stepgrid;
+
+            // Add the scroller (which contains stepgrid) and sidebar to mastergrid
+
+            mastergrid.Children.Add(scroller, 0, 0); // Add scroller to first column of mastergrid
+            mastergrid.Children.Add(sidebar, 1, 0);  // Add sidebar to final column of mastergrid
+                                                     //Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
+
+            Content = mastergrid;
 
 
 

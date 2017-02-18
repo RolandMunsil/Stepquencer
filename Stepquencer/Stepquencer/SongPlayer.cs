@@ -67,7 +67,7 @@ namespace Stepquencer
             //Create pitched versions
             Note[] notes = new Note[13];
             notes[0] = new Note(dataAsShorts);
-            for(int i = 1; i < 13; i++)
+            for(int i = 1; i < 21; i++)
             {
                 notes[i] = new Note(Resample(dataAsShorts, i));
             }
