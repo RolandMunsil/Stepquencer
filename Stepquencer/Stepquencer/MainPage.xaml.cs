@@ -104,29 +104,35 @@ namespace Stepquencer
             };
 
 
+
             // Make the sidebar
 
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
-
-            // Fill sidebar it with buttons
 
             for (int i = 0; i < NumInstruments; i++)
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
 
-
-
-			// Fill it with buttons
-
             sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+			// Fill sidebar it with buttons
+
+			Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
+
+			for (int i = 0; i < colors.Length; i++)
+			{
+				Button button = new Button { BackgroundColor = colors[i] };         // Make a new button
+				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
+				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
+			}
 
 
 
-            // Set up scroll view and put grid inside it
 
-            scroller = new ScrollView {
+			// Set up scroll view and put grid inside it
+
+			scroller = new ScrollView {
                 Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
            
@@ -222,6 +228,17 @@ namespace Stepquencer
 			Button button = (Button)sender;
 
 			SideBarColor = button.BackgroundColor;
+			SideBorderColor = button.BorderColor;
+
+			if (button.BorderColor.Equals(Color.Black))
+			{
+				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
+			}
+
+			else
+			{
+				button.BorderColor = Color.Black;
+			}
 		}
 
 
