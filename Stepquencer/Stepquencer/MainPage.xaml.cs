@@ -122,7 +122,7 @@ namespace Stepquencer
 
 			for (int i = 0; i < colors.Length; i++)
 			{
-				Button button = new Button { BackgroundColor = colors[i] };         // Make a new button
+				Button button = new Button { BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
 				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
 				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
 			}
@@ -218,6 +218,13 @@ namespace Stepquencer
 
 		}
 
+
+
+		//TODO: Add to method
+		//If a button on sidebar is already highlighted and another sidebar button is clicked....
+		//Unhighlight the 'old' button
+
+
 		/// <summary>
 		/// Event handler for buttons in the sidebar
 		/// </summary>
@@ -239,6 +246,7 @@ namespace Stepquencer
 			{
 				button.BorderColor = Color.Black;
 			}
+
 		}
 
 
