@@ -24,7 +24,6 @@ namespace Stepquencer
 		static SongPlayer.Note[,] noteArray;        				// Array of StepSquare data for SongPlayer, stored this way because C# is row-major
 		static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
 		static Color SideBarColor = Red;
-		static Color SideBorderColor = Color.Black;
 
 		public MainPage()
 		{
@@ -106,13 +105,13 @@ namespace Stepquencer
 
 
 
-			// Fill sidebar it with buttons
+			// Fill it with buttons
 
 			Color[] colors = new Color[] { Red, Blue, Green, Yellow };		// Array of colors
 
-			for (int i = 0; i < colors.Length; i++)							//Make sure sidebar buttons have borders
+			for (int i = 0; i < colors.Length; i++)
 			{
-				Button button = new Button { BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 }; 	// Make a new button
+				Button button = new Button { BackgroundColor = colors[i] }; 		// Make a new button
 				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
 				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
 			}
@@ -176,7 +175,11 @@ namespace Stepquencer
 			player.PlaySong(song, 240);
 		}
 
-
+		/// <summary>
+		/// Event handler for normal buttons in the grid
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void OnButtonClicked(object sender, EventArgs e)
 		{
 
@@ -196,27 +199,27 @@ namespace Stepquencer
 
 		}
 
-		//TODO: Add to method
-		//If a button on sidebar is already highlighted and another sidebar button is clicked....
-		//Unhighlight the 'old' button
-
+		/// <summary>
+		/// Event handler for buttons in the sidebar
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		void OnSidebarClicked(object sender, EventArgs e)
 		{
 			Button button = (Button)sender;
+
 			SideBarColor = button.BackgroundColor;
-			SideBorderColor = button.BorderColor;
-
-			if (button.BorderColor.Equals(Color.Black))
-			{
-				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
-			}
-
-			else
-			{
-				button.BorderColor = Color.Black;
-			}
-
 		}
 
+
+		void HighlightColumns(int beat)
+		{
+			// Each time the songplayer starts playing a beat, trigger this for loop:
+
+			for (int i = 0; i < NumRows; i++)
+			{
+				//stepgrid.Children.
+			}
+		}
 	}
 }
