@@ -27,7 +27,7 @@ namespace Stepquencer
         static Grid sidebar;						// Grid for sidebar
         static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
         static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer, stored this way because C# is row-major
-        static Dictionary<Color, SongPlayer.Note[]> colorMap;       // Dictionary mapping colors to instruments
+        static Dictionary<Color, SongPlayer.Instrument> colorMap;       // Dictionary mapping colors to instruments
         static Color SideBarColor = Red;
         static Color SideBorderColor = Color.Black;
 
@@ -40,20 +40,16 @@ namespace Stepquencer
 
             // Initializing the song player and notes
 
-            SongPlayer player = new SongPlayer();
-            SongPlayer.Note[] snareNotes = player.LoadInstrument("Snare");
-            SongPlayer.Note[] hihatNotes = player.LoadInstrument("Hi-Hat");
-            SongPlayer.Note[] bdrumNotes = player.LoadInstrument("Bass Drum");
-            SongPlayer.Note[] atmosNotes = player.LoadInstrument("YRM1x Atmosphere");
+            SongPlayer player = new SongPlayer(noteArray);
 
             // Initializing the colorMap
 
-            colorMap = new Dictionary<Color, SongPlayer.Note[]>();
+            colorMap = new Dictionary<Color, SongPlayer.Instrument>();
 
-            colorMap[Red] = snareNotes;
-            colorMap[Blue] = atmosNotes;
-            colorMap[Green] = bdrumNotes;
-            colorMap[Yellow] = hihatNotes;
+            colorMap[Red] = player.LoadInstrument("Snare");
+            colorMap[Blue] = player.LoadInstrument("YRM1x Atmosphere");
+            colorMap[Green] = player.LoadInstrument("Bass Drum");
+            colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
 
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
@@ -145,53 +141,7 @@ namespace Stepquencer
                                                      //Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
 
             Content = mastergrid;
-
-
-
-			//Below is an example of how to use the data returned by LoadInstrument to construct a simple song.
-			List<SongPlayer.Note>[] noteLists = new List<SongPlayer.Note>[16];
-
-			//Add drum beat
-			for (int b = 0; b < 16; b++)
-			{
-				List<SongPlayer.Note> notesThisTimestep = new List<SongPlayer.Note>();
-				notesThisTimestep.Add(hihatNotes[0]);
-				if (b % 2 == 0)
-					notesThisTimestep.Add(bdrumNotes[0]);
-				if (b % 4 == 2)
-					notesThisTimestep.Add(snareNotes[0]);
-
-				noteLists[b] = notesThisTimestep;
-			}
-
-			//Add 2 C scale climbs
-			noteLists[0].Add(atmosNotes[0]);
-			noteLists[1].Add(atmosNotes[2]);
-			noteLists[2].Add(atmosNotes[4]);
-			noteLists[3].Add(atmosNotes[5]);
-			noteLists[4].Add(atmosNotes[7]);
-			noteLists[5].Add(atmosNotes[9]);
-			noteLists[6].Add(atmosNotes[11]);
-			noteLists[7].Add(atmosNotes[12]);
-
-			noteLists[8].Add(atmosNotes[0]);
-			noteLists[9].Add(atmosNotes[2]);
-			noteLists[10].Add(atmosNotes[4]);
-			noteLists[11].Add(atmosNotes[5]);
-			noteLists[12].Add(atmosNotes[7]);
-			noteLists[13].Add(atmosNotes[9]);
-			noteLists[14].Add(atmosNotes[11]);
-			noteLists[15].Add(atmosNotes[12]);
-
-			//Convert to array of arrays
-			SongPlayer.Note[][] song = new SongPlayer.Note[16][];
-			for (int i = 0; i < 16; i++)
-			{
-				song[i] = noteLists[i].ToArray();
-			}
-
-			//Play
-			player.PlaySong(song, 240);
+            player.BeginPlaying(240);
 		}
 
 		/// <summary>
@@ -201,21 +151,22 @@ namespace Stepquencer
 		/// <param name="e">E.</param>
 		void OnButtonClicked(object sender, EventArgs e)
 		{
-
+            //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
 			if (button.BackgroundColor.Equals(Grey))
 			{
 				button.BackgroundColor = SideBarColor;
-				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = colorMap[SideBarColor][(NumRows - 1) - Grid.GetRow(button)]; // Puts the instrument/pitch combo for this button into noteArray
+                SongPlayer.Note toAdd = colorMap[SideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
+                lock (noteArray)
+				    noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = toAdd; // Puts the instrument/pitch combo for this button into noteArray
 
 			}
 			else
 			{
 				button.BackgroundColor = Grey;
-				noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = SongPlayer.Note.None;
+                lock (noteArray)
+                    noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = SongPlayer.Note.None;
 			}
-
-
 		}
 
 

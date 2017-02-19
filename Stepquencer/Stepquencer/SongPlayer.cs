@@ -4,6 +4,10 @@ using System.Reflection;
 using System.Text;
 using System.IO;
 
+#if __ANDROID__
+using Android.Media;
+#endif
+
 namespace Stepquencer
 {
     class SongPlayer
@@ -13,10 +17,15 @@ namespace Stepquencer
 #endif
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
+        AudioTrack playingTrack;
 #endif
         readonly Assembly assembly;
         const int playbackRate = 44100;
-        const int numNotes = 21;        // the number of playable pitches
+        
+
+        Note[,] songDataReference;
+        int samplesPerBeat;
+        int nextBeat;
 
         public struct Note
         {
@@ -31,25 +40,63 @@ namespace Stepquencer
             }
         }
 
-        public SongPlayer()
+        public class Instrument
         {
+            private short[] unpitchedData;
+            private Dictionary<int, Note> pitchedNotes;
+
+            public Instrument(short[] unpitchedData)
+            {
+                this.unpitchedData = unpitchedData;
+                pitchedNotes = new Dictionary<int, Note>(72);
+            }
+
+            public Note AtPitch(int semitoneShift)
+            {
+                if (semitoneShift == 0)
+                    return new Note(unpitchedData);
+
+                Note pitchedNote;
+                if(pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
+                {
+                    return pitchedNote;
+                }
+                else
+                {
+                    Note note = new Note(Resample(semitoneShift));
+                    pitchedNotes[semitoneShift] = note;
+                    return note;
+                }
+            }
+
+            private short[] Resample(int semitoneShift)
+            {
+                double mult = Math.Pow(2, -semitoneShift / 12.0);
+                int outputSize = (int)(unpitchedData.Length * mult);
+                short[] output = new short[outputSize];
+                for (int s = 0; s < outputSize; s++)
+                {
+                    double sourcePos = s / mult;
+                    int left = (int)Math.Floor(sourcePos);
+                    output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (unpitchedData[left + 1] - unpitchedData[left])));
+                }
+                return output;
+            }
+        }
+
+        public SongPlayer(Note[,] songDataReference)
+        {
+            this.songDataReference = songDataReference;
             assembly = typeof(MainPage).GetTypeInfo().Assembly;
         }
 
-        /// <summary>
-        /// Loads the instrument with the given name and returns an array containing the
-        /// note at various pitches
-        /// </summary>
-        /// <param name="instrName"></param>
-        /// <returns>An array of notes. The index corresponds to the number of semitones the pitch of the
-        /// original has been increased by. So if the original instrument was a C note, array[1] would be a C# version</returns>
-        public Note[] LoadInstrument(String instrName)
+        public Instrument LoadInstrument(String instrName)
         {
             String resourceString = $"{resourcePrefix}{instrName}.wav";
 
             //Read in data
             byte[] rawInstrumentData;
-            using (Stream stream = assembly.GetManifestResourceStream(resourceString))
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceString))
             {
                 int streamLength = (int)stream.Length;
                 rawInstrumentData = new byte[streamLength];
@@ -63,53 +110,54 @@ namespace Stepquencer
             {
                 dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
             }
-            //namesToNotes[instrName] = new Note(dataAsShorts);
 
-            //Create pitched versions
-            Note[] notes = new Note[numNotes];
-            notes[0] = new Note(dataAsShorts);
-            for(int i = 1; i < numNotes; i++)
+            return new Instrument(dataAsShorts);
+        }
+
+
+
+        public void BeginPlaying(int bpm)
+        {
+            samplesPerBeat = ((60 * playbackRate) / bpm);
+            short[] beat0 = MixBeat(GetNotes(0));
+            short[] beat1 = MixBeat(GetNotes(1));
+            
+            StartStreamingAudio(beat0);
+            AppendStreamingAudio(beat1);
+            nextBeat = 2;
+        }
+
+        public void StopPlaying()
+        {
+            StopStreamingAudio();
+        }
+
+        private Note[] GetNotes(int beat)
+        {
+            List<Note> notes = new List<Note>(songDataReference.GetLength(1));
+            lock(songDataReference)
             {
-                notes[i] = new Note(Resample(dataAsShorts, i));
+                for(int n = 0; n < songDataReference.GetLength(1); n++)
+                {
+                    Note note = songDataReference[beat, n];
+                    if (!note.Equals(Note.None))
+                        notes.Add(note);
+                }
             }
-            return notes;
+            return notes.ToArray();
         }
 
-        private short[] Resample(short[] instrData, int semitoneShift)
+        private short[] MixBeat(Note[] notes)
         {
-            double mult = Math.Pow(2, -semitoneShift / 12.0);
-            int outputSize = (int)(instrData.Length * mult);
-            short[] output = new short[outputSize];
-            for(int s = 0; s < outputSize; s++)
+            short[] beatData = new short[samplesPerBeat * 2];
+            if (notes.Length > 0)
             {
-                double sourcePos = s / mult;
-                int left = (int)Math.Floor(sourcePos);
-                output[s] = (short)(instrData[left] + ((sourcePos % 1) * (instrData[left + 1] - instrData[left])));
-            }
-            return output;
-        }
-
-        public void PlaySong(Note[][] song, int bpm)
-        {
-            PlayAudioData(Mix(song, bpm));
-        }
-
-        private short[] Mix(Note[][] song, int bpm)
-        {
-            int samplesPerBeat = ((60 * playbackRate) / bpm);
-
-            short[] songData = new short[samplesPerBeat * song.Length];
-            for (int b = 0; b < song.Length; b++)
-            {
-                List<Note> notesList = new List<Note>(song[b]);
-                notesList.RemoveAll((no) => no.Equals(Note.None));
-                Note[] notes = notesList.ToArray();
-                for(int i = 0; i < samplesPerBeat; i++)
+                for (int i = 0; i < samplesPerBeat; i++)
                 {
                     int sampleSum = 0;
-                    for(int n = 0; n < notes.Length; n++)
+                    for (int n = 0; n < notes.Length; n++)
                     {
-                        if(i < notes[n].data.Length)
+                        if (i < notes[n].data.Length)
                             sampleSum += notes[n].data[i];
                     }
                     short asShort;
@@ -120,35 +168,72 @@ namespace Stepquencer
                     else
                         asShort = (short)sampleSum;
 
-                    songData[i + (samplesPerBeat * b)] = asShort;
+                    beatData[i] = asShort;
                 }
             }
-            return songData;
+            return beatData;
         }
 
-        private void PlayAudioData(short[] songData)
-        {
-#if __IOS__
-            throw new NotImplementedException();
-#endif
 #if __ANDROID__
-            Android.Media.AudioTrack audioTrack = new Android.Media.AudioTrack(
+        private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
+        {
+            AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
+            nextBeat = (nextBeat + 1) % songDataReference.GetLength(0);
+        }
+#endif
+
+        private void StartStreamingAudio(short[] initialData)
+        {
+#if __ANDROID__
+            if (playingTrack != null)
+            {
+                if (playingTrack.PlayState == PlayState.Playing)
+                    throw new InvalidOperationException("Audio is already playing.");
+            }
+
+            playingTrack = new AudioTrack(
                 // Stream type
                 Android.Media.Stream.Music,
                 // Frequency
                 44100,
                 // Mono or stereo
-                Android.Media.ChannelOut.Mono,
+                ChannelOut.Mono,
                 // Audio encoding
                 Android.Media.Encoding.Pcm16bit,
                 // Length of the audio clip.
-                songData.Length,
+                (initialData.Length * 2) * 2, // Double buffering
                 // Mode. Stream or static.
-                Android.Media.AudioTrackMode.Static);
+                AudioTrackMode.Stream);
 
-            audioTrack.Write(songData, 0, songData.Length, Android.Media.WriteMode.Blocking);
-            audioTrack.SetLoopPoints(0, audioTrack.BufferSizeInFrames, -1);
-            audioTrack.Play();
+            playingTrack.PeriodicNotification += OnStreamingAudioPeriodicNotification;
+            playingTrack.SetPositionNotificationPeriod(initialData.Length);
+
+            playingTrack.Play();
+            playingTrack.Write(initialData, 0, initialData.Length);
+            
+#endif
+        }
+
+        private void AppendStreamingAudio(short[] data)
+        {
+#if __ANDROID__
+            if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
+                throw new InvalidOperationException("playingTrack has not been initialized. Call StartStreamingAudio() first");
+
+            playingTrack.Write(data, 0, data.Length);
+#endif
+        }
+
+        private void StopStreamingAudio()
+        {
+#if __ANDROID__
+            if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
+                throw new InvalidOperationException("Audio is not playing");
+
+            playingTrack.Pause();
+            //playingTrack.Flush();
+            playingTrack.Release();
+            playingTrack.Dispose();
 #endif
         }
     }
