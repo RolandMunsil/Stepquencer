@@ -12,6 +12,7 @@ namespace Stepquencer
         const int NumRows = 21;
         const int NumColumns = 16;
         const int NumInstruments = 4;
+		const double brightnessIncrease = 50;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
 		readonly static Color Grey = Color.FromHex("#606060");
 		readonly static Color Red = Color.FromHex("#ff0000");
@@ -23,8 +24,10 @@ namespace Stepquencer
         static Grid stepgrid;                                       // Grid for whole screen
         static Grid sidebar;						                // Grid for sidebar
         static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer, stored this way because C# is row-major
+        static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer
+		static Button[,] buttonArray;								// Array of the buttons to make it easy to light them up 
         static Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instruments
+		static bool firstNotePlayed = true;							// Boolean value keeping track of whether or note the song has just started playing
         static Color sideBarColor = Red;
         static Color sideBorderColor = Color.Black;
 
@@ -32,8 +35,8 @@ namespace Stepquencer
         {
             InitializeComponent();
 
-            // Initializing the song player and notes
-            noteArray = new SongPlayer.Note[NumColumns, NumRows];
+            // Initializing the song player and noteArray
+            noteArray = new SongPlayer.Note[NumColumns, NumRows];	//stored this way because C# is row-major and we want to access a column at a time
             SongPlayer player = new SongPlayer(noteArray);
 
             // Initializing the colorMap
@@ -43,6 +46,9 @@ namespace Stepquencer
             colorMap[Blue] = player.LoadInstrument("YRM1x Atmosphere");
             colorMap[Green] = player.LoadInstrument("Bass Drum");
             colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
+
+			// Initaialize the array of buttons
+			buttonArray = new Button[NumColumns, NumRows];			//stored this way because C# is row-major and we want to access a column at a time
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
@@ -83,6 +89,7 @@ namespace Stepquencer
                     stepgrid.Children.Add(button, j, i);                // Add it to the grid
                     button.Clicked += OnButtonClicked;                  // Add it to stepsquare event handler
                     noteArray[j, i] = SongPlayer.Note.None;             // Add a placeholder to songArray
+					buttonArray[j, i] = button;							// Add button to buttonArray
                 }
             }
 
@@ -119,6 +126,8 @@ namespace Stepquencer
                                                      //Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
 
             Content = mastergrid;
+
+			HighlightColumns(0);
 
             player.BeginPlaying(240);
 		}
@@ -177,14 +186,58 @@ namespace Stepquencer
 
 		}
 
-
-		void HighlightColumns(int beat)
+		/// <summary>
+		/// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
+		/// </summary>
+		/// <param name="currentBeat">Current beat.</param>
+		void HighlightColumns(int currentBeat, bool firstBeat)
 		{
 			// Each time the songplayer starts playing a beat, trigger this for loop:
 
+			int previousBeat;
+
+			if (currentBeat == 0)
+			{	
+				previousBeat = NumColumns - 1;
+			}
+			else
+			{
+				previousBeat = currentBeat - 1;
+			}
+
+			if (!firstBeat)
+			{
+				// De-highlight the previous column of buttons
+
+				for (int i = 0; i < NumRows; i++)
+				{
+					Color previousColor = buttonArray[previousBeat, i].BackgroundColor;
+					double previousRed = previousColor.R;
+					double previousGreen = previousColor.G;           // Get the initial color values from the next button to be de-highlighted
+					double previousBlue = previousColor.B;
+
+					previousRed -= brightnessIncrease;
+					previousGreen -= brightnessIncrease;            // Lower the RGB values back to their previous levels
+					previousBlue -= brightnessIncrease;
+
+					buttonArray[currentBeat, i].BackgroundColor = Color.FromRgb(previousRed, previousGreen, previousBlue);  // Set the new background color of the button
+				}
+			}
+
+			// Highlight the next column of buttons
+
 			for (int i = 0; i < NumRows; i++)
 			{
-				//stepgrid.Children.
+				Color nextColor = buttonArray[currentBeat, i].BackgroundColor;
+				double currentRed = nextColor.R;
+				double currentGreen = nextColor.G;			// Get the initial color values from the next button to be highlighted
+				double currentBlue = nextColor.B;
+
+				currentRed += brightnessIncrease;
+				currentGreen += brightnessIncrease;			// Increase the RGB color values
+				currentBlue += brightnessIncrease;
+
+				buttonArray[currentBeat, i].BackgroundColor = Color.FromRgb(currentRed, currentGreen, currentBlue);	//Set the new background color of the button
 			}
 		}
 	}
