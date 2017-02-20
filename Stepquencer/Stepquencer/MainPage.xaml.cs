@@ -12,7 +12,7 @@ namespace Stepquencer
         const int NumRows = 21;
         const int NumColumns = 16;
         const int NumInstruments = 4;
-		const double brightnessIncrease = 50;						// Amount to increase the red, green, and blue values of each button when it's highlighted
+		const double brightnessIncrease = 0.5;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
 		readonly static Color Grey = Color.FromHex("#606060");
 		readonly static Color Red = Color.FromHex("#ff0000");
@@ -26,8 +26,7 @@ namespace Stepquencer
         static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
         static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer
 		static Button[,] buttonArray;								// Array of the buttons to make it easy to light them up 
-        static Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instruments
-		static bool firstNotePlayed = true;							// Boolean value keeping track of whether or note the song has just started playing
+        static Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instruments						// Boolean value keeping track of whether or note the song has just started playing
         static Color sideBarColor = Red;
         static Color sideBorderColor = Color.Black;
 
@@ -126,9 +125,7 @@ namespace Stepquencer
                                                      //Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
 
             Content = mastergrid;
-
-			HighlightColumns(0);
-
+			//player.BeatStarted += HighlightColumns;
             player.BeginPlaying(240);
 		}
 
@@ -213,7 +210,7 @@ namespace Stepquencer
 				{
 					Color previousColor = buttonArray[previousBeat, i].BackgroundColor;
 					double previousRed = previousColor.R;
-					double previousGreen = previousColor.G;           // Get the initial color values from the next button to be de-highlighted
+					double previousGreen = previousColor.G;          // Get the initial color values from the next button to be de-highlighted
 					double previousBlue = previousColor.B;
 
 					previousRed -= brightnessIncrease;
