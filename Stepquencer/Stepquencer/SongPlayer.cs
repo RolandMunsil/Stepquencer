@@ -21,11 +21,14 @@ namespace Stepquencer
 #endif
         readonly Assembly assembly;
         const int playbackRate = 44100;
-        
+
+        public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
+        public event OnBeatDelegate BeatStarted;
 
         Note[,] songDataReference;
         int samplesPerBeat;
         int nextBeat;
+        int totalBeats;
 
         public struct Note
         {
@@ -119,12 +122,14 @@ namespace Stepquencer
         public void BeginPlaying(int bpm)
         {
             samplesPerBeat = ((60 * playbackRate) / bpm);
+            totalBeats = songDataReference.GetLength(0);
             short[] beat0 = MixBeat(GetNotes(0));
             short[] beat1 = MixBeat(GetNotes(1));
-            
+
             StartStreamingAudio(beat0);
             AppendStreamingAudio(beat1);
             nextBeat = 2;
+            BeatStarted?.Invoke(0, true);
         }
 
         public void StopPlaying()
@@ -177,8 +182,10 @@ namespace Stepquencer
 #if __ANDROID__
         private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
         {
+            BeatStarted?.BeginInvoke(((nextBeat-1)+ totalBeats) % totalBeats, false, null, null);
+
             AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
-            nextBeat = (nextBeat + 1) % songDataReference.GetLength(0);
+            nextBeat = (nextBeat + 1) % totalBeats;
         }
 #endif
 
@@ -210,7 +217,6 @@ namespace Stepquencer
 
             playingTrack.Play();
             playingTrack.Write(initialData, 0, initialData.Length);
-            
 #endif
         }
 
