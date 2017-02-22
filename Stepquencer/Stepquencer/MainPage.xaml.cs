@@ -12,7 +12,7 @@ namespace Stepquencer
         const int NumRows = 21;
         const int NumColumns = 16;
         const int NumInstruments = 4;
-		const double brightnessIncrease = 0.2;						// Amount to increase the red, green, and blue values of each button when it's highlighted
+		const double brightnessIncrease = 0.5;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
 		readonly static Color Grey = Color.FromHex("#606060");
 		readonly static Color Red = Color.FromHex("#ff0000");
@@ -55,6 +55,10 @@ namespace Stepquencer
 
 			// Initialize color of highlighted buttons
 			highLightedGrey = HighLightedVersion(Grey);
+			highLightedRed = HighLightedVersion(Red);
+			highLightedBlue = HighLightedVersion(Blue);
+			highLightedGreen = HighLightedVersion(Green);
+			highLightedYellow = HighLightedVersion(Yellow);
 
 			// Initaialize the array of buttons
 			buttonArray = new Button[NumColumns, NumRows];			//stored this way because C# is row-major and we want to access a column at a time
@@ -228,15 +232,29 @@ namespace Stepquencer
 					for (int i = 0; i < NumRows; i++)
 					{
 						Color previousColor = buttonArray[previousBeat, i].BackgroundColor;
-						double previousRed = previousColor.R;
-						double previousGreen = previousColor.G;          // Get the initial color values from the next button to be de-highlighted
-						double previousBlue = previousColor.B;
 
-						previousRed -= brightnessIncrease;
-						previousGreen -= brightnessIncrease;            // Lower the RGB values back to their previous levels
-						previousBlue -= brightnessIncrease;
+						if (previousColor.Equals(highLightedRed))
+						{
+							previousColor = Red;
+						}
+						else if (previousColor.Equals(highLightedBlue))
+						{
+							previousColor = Blue;
+						}
+						else if (previousColor.Equals(highLightedGreen))
+						{
+							previousColor = Green;
+						}
+						else if (previousColor.Equals(highLightedYellow))
+						{
+							previousColor = Yellow;
+						}
+						else
+						{
+							previousColor = Grey;
+						}
 
-						buttonArray[previousBeat, i].BackgroundColor = Color.FromRgb(previousRed, previousGreen, previousBlue);  // Set the new background color of the button
+						buttonArray[previousBeat, i].BackgroundColor = previousColor;  // Set the new background color of the button
 						}
 				});
 			}
