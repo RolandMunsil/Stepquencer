@@ -188,6 +188,8 @@ namespace Stepquencer
 		/// <summary>
 		/// Event handler for buttons in the sidebar
 		/// </summary>
+		/// Clicking new button if button is in use (dehighlighting old button) does not work quite yet,
+		/// 
 		void OnSidebarClicked(object sender, EventArgs e)
 		{
 			Button button = (Button)sender;
@@ -195,22 +197,33 @@ namespace Stepquencer
 			sideBarColor = button.BackgroundColor;
 			sideBorderColor = button.BorderColor;
 
-			if (button.BorderColor.Equals(Color.Black) & buttonInUse.Count == 0) //if button clicked has black border and no button in use yet
+			if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
+			{
+				return;													//do nothing
+			}
+
+			if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count == 0) //if button clicked has black border and no button in use yet
 			{
 				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
 				buttonInUse.Add(button);
 			}
 
-			else   //If button clicked has yellow border
-			  {
-				button.BorderColor = Color.Black;
-				buttonInUse.Clear();
-			}
+			//else   //If button clicked has yellow border //Conflicting if-else statements??
+			//{
+			//	button.BorderColor = Color.Black;
+			//	buttonInUse.Clear();
+			//}
 
-			if (button.BorderColor.Equals(Color.Black) & buttonInUse.Count > 0)
+			//else if (button.BorderColor.Equals(Color.FromHex("#ffff00"))) 
+			//{
+			//	button.BorderColor = Color.Black;
+			//	buttonInUse.Clear();
+			//}
+
+			else if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count > 0)
 			{
 				button.BorderColor = Color.FromHex("#ffff00");   //Change border highlight to yellow
-				buttonInUse[0].BorderColor.Equals(Color.Black);  //The button that WAS in use will now have a black border
+				buttonInUse[0].BorderColor = Color.Black;  //The button that WAS in use will now have a black border
 				buttonInUse.Clear();							 //Clear the USED button from the lost
 				buttonInUse.Add(button);						 //Add this CURRENTLY USED button to list
 
