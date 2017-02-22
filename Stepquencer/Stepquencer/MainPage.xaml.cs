@@ -30,8 +30,9 @@ namespace Stepquencer
 
         static Color sideBarColor = Red;
         static Color sideBorderColor = Color.Black;
+		static List<Button> buttonInUse = new List<Button>();
 
-		static Color highLightedGrey;
+		static Color highLightedGrey;           //Could static be a problem??
 		static Color highLightedRed;
 		static Color highLightedBlue;
 		static Color highLightedGreen;
@@ -150,7 +151,7 @@ namespace Stepquencer
 		{
             //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
-			if (button.BackgroundColor.Equals(Grey))						// If the button is unhighlighted
+			if (button.BackgroundColor.Equals(Grey) & buttonInUse.Count > 0)						// If the button is unhighlighted
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
@@ -194,14 +195,25 @@ namespace Stepquencer
 			sideBarColor = button.BackgroundColor;
 			sideBorderColor = button.BorderColor;
 
-			if (button.BorderColor.Equals(Color.Black))
+			if (button.BorderColor.Equals(Color.Black) & buttonInUse.Count == 0) //if button clicked has black border and no button in use yet
 			{
 				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
+				buttonInUse.Add(button);
 			}
 
-			else
-			{
+			else   //If button clicked has yellow border
+			  {
 				button.BorderColor = Color.Black;
+				buttonInUse.Clear();
+			}
+
+			if (button.BorderColor.Equals(Color.Black) & buttonInUse.Count > 0)
+			{
+				button.BorderColor = Color.FromHex("#ffff00");   //Change border highlight to yellow
+				buttonInUse[0].BorderColor.Equals(Color.Black);  //The button that WAS in use will now have a black border
+				buttonInUse.Clear();							 //Clear the USED button from the lost
+				buttonInUse.Add(button);						 //Add this CURRENTLY USED button to list
+
 			}
 
 		}
