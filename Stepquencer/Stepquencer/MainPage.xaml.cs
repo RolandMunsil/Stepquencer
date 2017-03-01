@@ -9,8 +9,8 @@ namespace Stepquencer
 {
     public partial class MainPage : ContentPage
     {
-        const int NumRows = 21;
-        const int NumColumns = 16;
+        const int NumRows = 12;
+        const int NumColumns = 8;
         const int NumInstruments = 4;
 		const double brightnessIncrease = 0.5;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
@@ -130,7 +130,7 @@ namespace Stepquencer
 
 			// Set up scroll view and put grid inside it
 			scroller = new ScrollView {
-                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
+				Orientation = ScrollOrientation.Vertical  //Both vertical and horizontal orientation
             };
             scroller.Content = stepgrid;
 
