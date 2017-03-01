@@ -38,6 +38,11 @@ namespace Stepquencer
 		static Color highLightedGreen;
 		static Color highLightedYellow;
 
+
+		//Create variable and method for double-tapping
+		//When a user double-taps a colored button on the grid,
+		//an alert will pop up that shows which sounds are being used
+
         public MainPage()
         {
             InitializeComponent();
@@ -125,7 +130,15 @@ namespace Stepquencer
 				Button button = new Button { BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
 				sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
 				button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
+
+				if (button.BackgroundColor.Equals(Color.Red))
+				{
+					button.BorderColor = Color.FromHex("#ffff00");
+					buttonInUse.Add(button);                         //Button now in use
+				}
 			}
+
+
 
 
 			// Set up scroll view and put grid inside it
@@ -207,18 +220,6 @@ namespace Stepquencer
 				button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
 				buttonInUse.Add(button);
 			}
-
-			//else   //If button clicked has yellow border //Conflicting if-else statements??
-			//{
-			//	button.BorderColor = Color.Black;
-			//	buttonInUse.Clear();
-			//}
-
-			//else if (button.BorderColor.Equals(Color.FromHex("#ffff00"))) 
-			//{
-			//	button.BorderColor = Color.Black;
-			//	buttonInUse.Clear();
-			//}
 
 			else if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count > 0)
 			{
