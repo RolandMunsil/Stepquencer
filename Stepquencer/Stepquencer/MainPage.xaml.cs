@@ -38,13 +38,15 @@ namespace Stepquencer
 		static Color highLightedGreen;
 		static Color highLightedYellow;
 
+		SongPlayer player;
+
         public MainPage()
         {
             InitializeComponent();
 
             // Initializing the song player and noteArray
             noteArray = new SongPlayer.Note[NumColumns, NumRows];	//stored this way because C# is row-major and we want to access a column at a time
-            SongPlayer player = new SongPlayer(noteArray);
+            player = new SongPlayer(noteArray);
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, SongPlayer.Instrument>();
@@ -151,7 +153,7 @@ namespace Stepquencer
 		{
             //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
-			if (button.BackgroundColor.Equals(Grey) & buttonInUse.Count > 0)						// If the button is unhighlighted
+			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)						// If the button is unhighlighted
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
