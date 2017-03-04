@@ -180,11 +180,7 @@ namespace Stepquencer
             //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
 
-
-			if (button.BackgroundColor.Equals(Grey) & buttonInUse.Count > 0)						// If the button is unhighlighted
-
 			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)						// If the button is unhighlighted
-
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
