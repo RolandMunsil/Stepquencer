@@ -130,7 +130,7 @@ namespace Stepquencer
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
-            for (int i = 0; i < NumInstruments; i++)
+            for (int i = 0; i < NumInstruments + 1; i++)
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
@@ -153,6 +153,14 @@ namespace Stepquencer
 				}
 			}
 
+            Button playStopButton = new Button
+            {
+                BackgroundColor = Color.Black,
+                Font = Font.SystemFontOfSize(70)
+            };
+            playStopButton.Text = "▶";
+            sidebar.Children.Add(playStopButton, 0, 4);
+            playStopButton.Clicked += OnPlayStopClicked;
 
 
 
@@ -169,8 +177,25 @@ namespace Stepquencer
 
             Content = mastergrid;
 			player.BeatStarted += HighlightColumns;
-            player.BeginPlaying(240);
 		}
+
+        void OnPlayStopClicked(object sender, EventArgs e)
+        {
+            if(player.IsPlaying)
+            {
+                player.StopPlaying();
+                ((Button)sender).Text = "▶";
+                foreach(Button button in buttonArray)
+                {
+                    DehighlightButton(button);
+                }
+            }
+            else
+            {
+                player.BeginPlaying(240);
+                ((Button)sender).Text = "■";
+            }
+        }
 
 		/// <summary>
 		/// Event handler for normal buttons in the grid
@@ -282,45 +307,20 @@ namespace Stepquencer
 
 			if (!firstBeat)
 			{
-				// De-highlight the previous column of buttons
+                // De-highlight the previous column of buttons
 
-				Device.BeginInvokeOnMainThread(delegate         // Ensures that the main thread does work on UI
+                Device.BeginInvokeOnMainThread(delegate         // Ensures that the main thread does work on UI
 				{
 					for (int i = 0; i < NumRows; i++)
-					{
-						Color previousColor = buttonArray[previousBeat, i].BackgroundColor;
-
-						if (previousColor.Equals(highLightedRed))
-						{
-							previousColor = Red;
-						}
-						else if (previousColor.Equals(highLightedBlue))
-						{
-							previousColor = Blue;
-						}
-						else if (previousColor.Equals(highLightedGreen))
-						{
-							previousColor = Green;
-						}
-						else if (previousColor.Equals(highLightedYellow))
-						{
-							previousColor = Yellow;
-						}
-						else
-						{
-							previousColor = Grey;
-						}
-
-						buttonArray[previousBeat, i].BackgroundColor = previousColor;  // Set the new background color of the button
-						}
-				});
+                    {
+                        DehighlightButton(buttonArray[previousBeat, i]);
+                    }
+                });
 			}
 
 			// Highlight the next column of buttons
-
 			Device.BeginInvokeOnMainThread(delegate     // Ensures that the main thread does work on UI
 			{
-
 				for (int i = 0; i < NumRows; i++)
 				{
 					Color nextColor = buttonArray[currentBeat, i].BackgroundColor;
@@ -332,13 +332,41 @@ namespace Stepquencer
 
 		}
 
+        void DehighlightButton(Button button)
+        {
+            Color previousColor = button.BackgroundColor;
 
-		/// <summary>
-		/// Returns the highlighted version of a color
-		/// </summary>
-		/// <returns>The lighted version.</returns>
-		/// <param name="c">C.</param>
-		Color HighLightedVersion(Color c)
+            if (previousColor.Equals(highLightedRed))
+            {
+                previousColor = Red;
+            }
+            else if (previousColor.Equals(highLightedBlue))
+            {
+                previousColor = Blue;
+            }
+            else if (previousColor.Equals(highLightedGreen))
+            {
+                previousColor = Green;
+            }
+            else if (previousColor.Equals(highLightedYellow))
+            {
+                previousColor = Yellow;
+            }
+            else
+            {
+                previousColor = Grey;
+            }
+
+            button.BackgroundColor = previousColor;  // Set the new background color of the button
+        }
+
+
+        /// <summary>
+        /// Returns the highlighted version of a color
+        /// </summary>
+        /// <returns>The lighted version.</returns>
+        /// <param name="c">C.</param>
+        Color HighLightedVersion(Color c)
 		{
 			double red = c.R;
 			double green = c.G;

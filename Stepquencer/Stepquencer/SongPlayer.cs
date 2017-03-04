@@ -88,6 +88,14 @@ namespace Stepquencer
             }
         }
 
+        public bool IsPlaying
+        {
+            get
+            {
+                return playingTrack != null;
+            }
+        }
+
         public SongPlayer(HashSet<Note>[] songDataReference)
         {
             this.songDataReference = songDataReference;
@@ -99,6 +107,7 @@ namespace Stepquencer
 #if __ANDROID__
             playingTrack.Release();
             playingTrack.Dispose();
+            playingTrack = null;
 #endif
         }
 
@@ -248,6 +257,7 @@ namespace Stepquencer
             //playingTrack.Flush();
             playingTrack.Release();
             playingTrack.Dispose();
+            playingTrack = null;
 #endif
         }
     }
