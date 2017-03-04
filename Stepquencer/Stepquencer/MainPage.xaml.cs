@@ -24,7 +24,7 @@ namespace Stepquencer
         static Grid stepgrid;                                       // Grid for whole screen
         static Grid sidebar;						                // Grid for sidebar
         static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        static SongPlayer.Note[,] noteArray;                        // Array of StepSquare data for SongPlayer
+		static HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
 		static Button[,] buttonArray;								// Array of the buttons to make it easy to light them up 
         static Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
 
@@ -54,8 +54,13 @@ namespace Stepquencer
             InitializeComponent();
 
             // Initializing the song player and noteArray
-            noteArray = new SongPlayer.Note[NumColumns, NumRows];	//stored this way because C# is row-major and we want to access a column at a time
-            player = new SongPlayer(noteArray);
+			noteList = new HashSet<SongPlayer.Note>[NumColumns];    //stored this way because C# is row-major and we want to access a column at a time
+			for (int i = 0; i < NumColumns; i++)
+			{
+				noteList[i] = new HashSet<SongPlayer.Note>();
+			}
+
+			player = new SongPlayer(noteList);
 
 			// For double-tapping 
 			var tapGestureRecognizer = new TapGestureRecognizer();
@@ -112,6 +117,7 @@ namespace Stepquencer
                 stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
+
             //Add the note buttons to the grid
             for (int i = 0; i < NumRows; i++)
             {
@@ -120,11 +126,11 @@ namespace Stepquencer
                     Button button = new Button { Style = greyButton };  // Make a new button
                     stepgrid.Children.Add(button, j, i);                // Add it to the grid
                     button.Clicked += OnButtonClicked;                  // Add it to stepsquare event handler
-                    noteArray[j, i] = SongPlayer.Note.None;             // Add a placeholder to songArray
 					buttonArray[j, i] = button;							// Add button to buttonArray
 					button.GestureRecognizers.Add(tapGestureRecognizer);// Allows grid button to be double-tapped
                 }
             }
+
 
 
             // Make the sidebar
@@ -177,29 +183,28 @@ namespace Stepquencer
 		/// </summary>
 		void OnButtonClicked(object sender, EventArgs e)
 		{
-            //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
 
 			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)						// If the button is unhighlighted
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
-				lock (noteArray)
+				lock (noteList)
 				{
-					noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = toAdd; // Puts the instrument/pitch combo for this button into noteArray
+					noteList[Grid.GetColumn(button)].Add(toAdd); // Puts the instrument/pitch combo for this button into noteArray
 				}
 			}
 			else if (button.BackgroundColor.Equals(highLightedGrey))		// If the button IS highlighted
 			{
 				button.BackgroundColor = HighLightedVersion(sideBarColor);
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
-				lock (noteArray)
+				lock (noteList)
 				{
-					noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = toAdd; // Puts the instrument/pitch combo for this button into noteArray
+					noteList[Grid.GetColumn(button)].Add(toAdd); // Puts the instrument/pitch combo for this button into noteArray
 				}
 			}
 
-			//Add condition here
+			//TODO: Handle multiple colors
 			//If grid button already has a color BUT the highlighted sidebar color is not the same as selected square
 			//Add instrument on same button
 			//else if (!(button.BackgroundColor.Equals(highLightedGrey)) & !(button.BackgroundColor.Equals(sideBarColor)))
@@ -215,19 +220,18 @@ namespace Stepquencer
 
 			else 
 				{
-					button.BackgroundColor = Grey;
-					lock (noteArray)
-			      {
-			            noteArray[Grid.GetColumn(button), Grid.GetRow(button)] = SongPlayer.Note.None;
-			        }
+				
+				SongPlayer.Note toRemove = colorMap[button.BackgroundColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
+				button.BackgroundColor = Grey;
+					
+				lock (noteList)
+				{
+					noteList[Grid.GetColumn(button)].Remove(toRemove);
 				}
 
+				}
 		}
 
-
-		//TODO: Add to method
-		//If a button on sidebar is already highlighted and another sidebar button is clicked....
-		//Unhighlight the 'old' button
 
 		/// <summary>
 		/// Event handler for buttons in the sidebar
