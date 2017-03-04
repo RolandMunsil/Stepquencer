@@ -39,10 +39,14 @@ namespace Stepquencer
 		static Color highLightedYellow;
 
 
+
 		//Create variable and method for double-tapping
 		//When a user double-taps a colored button on the grid,
 		//an alert will pop up that shows which sounds are being used
 
+
+
+		SongPlayer player;
 
 
         public MainPage()
@@ -51,7 +55,7 @@ namespace Stepquencer
 
             // Initializing the song player and noteArray
             noteArray = new SongPlayer.Note[NumColumns, NumRows];	//stored this way because C# is row-major and we want to access a column at a time
-            SongPlayer player = new SongPlayer(noteArray);
+            player = new SongPlayer(noteArray);
 
 			// For double-tapping 
 			var tapGestureRecognizer = new TapGestureRecognizer();
@@ -176,7 +180,11 @@ namespace Stepquencer
             //TODO: set it up so that it starts a new thread to add note?
 			Button button = (Button)sender;
 
+
 			if (button.BackgroundColor.Equals(Grey) & buttonInUse.Count > 0)						// If the button is unhighlighted
+
+			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)						// If the button is unhighlighted
+
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
