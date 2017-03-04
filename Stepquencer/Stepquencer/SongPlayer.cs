@@ -26,7 +26,7 @@ namespace Stepquencer
         public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
         public event OnBeatDelegate BeatStarted;
 
-        Note[,] songDataReference;
+        HashSet<Note>[] songDataReference;
         int samplesPerBeat;
         int nextBeat;
         int totalBeats;
@@ -88,7 +88,7 @@ namespace Stepquencer
             }
         }
 
-        public SongPlayer(Note[,] songDataReference)
+        public SongPlayer(HashSet<Note>[] songDataReference)
         {
             this.songDataReference = songDataReference;
             assembly = typeof(MainPage).GetTypeInfo().Assembly;
@@ -149,17 +149,14 @@ namespace Stepquencer
 
         private Note[] GetNotes(int beat)
         {
-            List<Note> notes = new List<Note>(songDataReference.GetLength(1));
-            lock(songDataReference)
+            HashSet<Note> beatData = songDataReference[beat];
+            Note[] notes;
+            lock (songDataReference)
             {
-                for(int n = 0; n < songDataReference.GetLength(1); n++)
-                {
-                    Note note = songDataReference[beat, n];
-                    if (!note.Equals(Note.None))
-                        notes.Add(note);
-                }
+                notes = new Note[beatData.Count];
+                songDataReference[beat].CopyTo(notes);
             }
-            return notes.ToArray();
+            return notes;
         }
 
         private short[] MixBeat(Note[] notes)
