@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 #if __ANDROID__
 using Android.Media;
@@ -10,7 +11,7 @@ using Android.Media;
 
 namespace Stepquencer
 {
-    class SongPlayer
+    class SongPlayer : IDisposable
     {
 #if __IOS__
         const String resourcePrefix = "Stepquencer.iOS.Instruments.";
@@ -93,6 +94,14 @@ namespace Stepquencer
             assembly = typeof(MainPage).GetTypeInfo().Assembly;
         }
 
+        public void Dispose()
+        {
+#if __ANDROID__
+            playingTrack.Release();
+            playingTrack.Dispose();
+#endif
+        }
+
         public Instrument LoadInstrument(String instrName)
         {
             String resourceString = $"{resourcePrefix}{instrName}.wav";
@@ -121,6 +130,7 @@ namespace Stepquencer
 
         public void BeginPlaying(int bpm)
         {
+            //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
             samplesPerBeat = ((60 * playbackRate) / bpm);
             totalBeats = songDataReference.GetLength(0);
             short[] beat0 = MixBeat(GetNotes(0));
@@ -157,6 +167,7 @@ namespace Stepquencer
             short[] beatData = new short[samplesPerBeat * 2];
             if (notes.Length > 0)
             {
+                //TODO: Use Parallel.For()?
                 for (int i = 0; i < samplesPerBeat; i++)
                 {
                     int sampleSum = 0;
@@ -182,7 +193,7 @@ namespace Stepquencer
 #if __ANDROID__
         private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
         {
-            BeatStarted?.BeginInvoke(((nextBeat-1)+ totalBeats) % totalBeats, false, null, null);
+            BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
 
             AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
             nextBeat = (nextBeat + 1) % totalBeats;
@@ -215,8 +226,8 @@ namespace Stepquencer
             playingTrack.PeriodicNotification += OnStreamingAudioPeriodicNotification;
             playingTrack.SetPositionNotificationPeriod(initialData.Length);
 
-            playingTrack.Play();
             playingTrack.Write(initialData, 0, initialData.Length);
+            playingTrack.Play();
 #endif
         }
 
