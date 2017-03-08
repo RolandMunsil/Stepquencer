@@ -184,6 +184,12 @@ namespace Stepquencer
 			player.BeatStarted += HighlightColumns;
 		}
 
+
+		/// <summary>
+		/// Event handler for the Play/Stop button
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
         void OnPlayStopClicked(object sender, EventArgs e)
         {
             if(player.IsPlaying)
