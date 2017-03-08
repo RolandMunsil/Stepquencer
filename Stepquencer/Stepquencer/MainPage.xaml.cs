@@ -20,23 +20,23 @@ namespace Stepquencer
 		readonly static Color Green = Color.FromHex("#33ff33");
 		readonly static Color Yellow = Color.FromHex("#ffff00");
 
-        static Grid mastergrid;
-        static Grid stepgrid;                                       // Grid for whole screen
-        static Grid sidebar;						                // Grid for sidebar
-        static ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-		static HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
-		static Button[,] buttonArray;								// Array of the buttons to make it easy to light them up 
-        static Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
+        Grid mastergrid;
+        Grid stepgrid;                                       // Grid for whole screen
+        Grid sidebar;						                 // Grid for sidebar
+        ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+		HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
+		Button[,] buttonArray;								 // Array of the buttons to make it easy to light them up 
+        Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
 
-        static Color sideBarColor = Red;
-        static Color sideBorderColor = Color.Black;
-		static List<Button> buttonInUse = new List<Button>();
+        Color sideBarColor = Red;
+        Color sideBorderColor = Color.Black;
+		List<Button> buttonInUse = new List<Button>();
 
-		static Color highLightedGrey;           //Could static be a problem??
-		static Color highLightedRed;
-		static Color highLightedBlue;
-		static Color highLightedGreen;
-		static Color highLightedYellow;
+		Color highLightedGrey;           //Could static be a problem??
+		Color highLightedRed;
+		Color highLightedBlue;
+		Color highLightedGreen;
+		Color highLightedYellow;
 
 
 
