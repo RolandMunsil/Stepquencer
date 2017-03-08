@@ -19,6 +19,10 @@ namespace Stepquencer
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
         AudioTrack playingTrack;
+
+        object trackDisposedOfSyncObject = new object();
+        object startStopSyncObject = new object();
+
 #endif
         readonly Assembly assembly;
         const int playbackRate = 44100;
@@ -139,16 +143,19 @@ namespace Stepquencer
 
         public void BeginPlaying(int bpm)
         {
-            //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
-            samplesPerBeat = ((60 * playbackRate) / bpm);
-            totalBeats = songDataReference.GetLength(0);
-            short[] beat0 = MixBeat(GetNotes(0));
-            short[] beat1 = MixBeat(GetNotes(1));
+            lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
+            {
+                //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
+                samplesPerBeat = ((60 * playbackRate) / bpm);
+                totalBeats = songDataReference.GetLength(0);
+                short[] beat0 = MixBeat(GetNotes(0));
+                short[] beat1 = MixBeat(GetNotes(1));
 
-            StartStreamingAudio(beat0);
-            AppendStreamingAudio(beat1);
-            nextBeat = 2;
-            BeatStarted?.Invoke(0, true);
+                StartStreamingAudio(beat0);
+                AppendStreamingAudio(beat1);
+                nextBeat = 2;
+                BeatStarted?.Invoke(0, true);
+            }
         }
 
         public void StopPlaying()
@@ -240,24 +247,31 @@ namespace Stepquencer
         private void AppendStreamingAudio(short[] data)
         {
 #if __ANDROID__
-            if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
-                throw new InvalidOperationException("playingTrack has not been initialized. Call StartStreamingAudio() first");
-
-            playingTrack.Write(data, 0, data.Length);
+            lock (trackDisposedOfSyncObject)
+            {
+                if (playingTrack != null)
+                    playingTrack.Write(data, 0, data.Length);
+            }
 #endif
         }
 
         private void StopStreamingAudio()
         {
 #if __ANDROID__
-            if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
-                throw new InvalidOperationException("Audio is not playing");
+            lock (startStopSyncObject) //Use lock so track is not stopped while it is being started or begins stopping twice
+            {
+                if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
+                    throw new InvalidOperationException("Audio is not playing");
 
-            playingTrack.Pause();
-            //playingTrack.Flush();
-            playingTrack.Release();
-            playingTrack.Dispose();
-            playingTrack = null;
+                playingTrack.Pause();
+
+                lock (trackDisposedOfSyncObject)
+                {
+                    playingTrack.Release();
+                    playingTrack.Dispose();
+                    playingTrack = null;
+                }
+            }
 #endif
         }
     }

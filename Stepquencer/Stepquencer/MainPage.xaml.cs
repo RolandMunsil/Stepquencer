@@ -47,7 +47,7 @@ namespace Stepquencer
 
 
 		SongPlayer player;
-
+        object highlightingSyncObject = new object();
 
         public MainPage()
         {
@@ -162,13 +162,12 @@ namespace Stepquencer
             Button playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
-                Font = Font.SystemFontOfSize(70)
+                Font = Font.SystemFontOfSize(40),
+                BorderRadius = 0,
             };
             playStopButton.Text = "▶";
             sidebar.Children.Add(playStopButton, 0, 4);
             playStopButton.Clicked += OnPlayStopClicked;
-
-
 
 			// Set up scroll view and put grid inside it
 			scroller = new ScrollView {
@@ -191,10 +190,12 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 ((Button)sender).Text = "▶";
-                foreach(Button button in buttonArray)
+                System.Threading.Monitor.Enter(highlightingSyncObject);
+                foreach (Button button in buttonArray)
                 {
                     DehighlightButton(button);
                 }
+                System.Threading.Monitor.Exit(highlightingSyncObject);
             }
             else
             {
@@ -244,8 +245,8 @@ namespace Stepquencer
 
 
 			else 
-				{
-				
+			{
+				//TODO: this fails when the user clicks on a highlighted button.
 				SongPlayer.Note toRemove = colorMap[button.BackgroundColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
 				button.BackgroundColor = Grey;
 					
@@ -254,7 +255,7 @@ namespace Stepquencer
 					noteList[Grid.GetColumn(button)].Remove(toRemove);
 				}
 
-				}
+			}
 		}
 
 
@@ -298,41 +299,48 @@ namespace Stepquencer
 		/// <param name="currentBeat">Current beat.</param>
 		void HighlightColumns(int currentBeat, bool firstBeat)
 		{
-			int previousBeat;
+            Device.BeginInvokeOnMainThread(delegate ()
+            {
+                if (!System.Threading.Monitor.TryEnter(highlightingSyncObject))
+                {
+                    //Dehighlighting of entire grid has already started.
+                    return;
+                }
+                if (!player.IsPlaying)
+                {
+                    //Player has stopped so the grid will already be dehighlighted.
+                    return;
+                }
+                int previousBeat;
 
-			if (currentBeat == 0)
-			{
-				previousBeat = NumColumns - 1;
-			}
-			else
-			{
-				previousBeat = currentBeat - 1;
-			}
+                if (currentBeat == 0)
+                {
+                    previousBeat = NumColumns - 1;
+                }
+                else
+                {
+                    previousBeat = currentBeat - 1;
+                }
 
-			if (!firstBeat)
-			{
-                // De-highlight the previous column of buttons
-
-                Device.BeginInvokeOnMainThread(delegate         // Ensures that the main thread does work on UI
-				{
-					for (int i = 0; i < NumRows; i++)
+                if (!firstBeat)
+                {
+                    // De-highlight the previous column of buttons
+                    for (int i = 0; i < NumRows; i++)
                     {
                         DehighlightButton(buttonArray[previousBeat, i]);
                     }
-                });
-			}
+                }
 
-			// Highlight the next column of buttons
-			Device.BeginInvokeOnMainThread(delegate     // Ensures that the main thread does work on UI
-			{
-				for (int i = 0; i < NumRows; i++)
-				{
-					Color nextColor = buttonArray[currentBeat, i].BackgroundColor;
+                // Highlight the next column of buttons
+                for (int i = 0; i < NumRows; i++)
+                {
+                    Color nextColor = buttonArray[currentBeat, i].BackgroundColor;
 
-					buttonArray[currentBeat, i].BackgroundColor = HighLightedVersion(nextColor); //Set the new background color of the button	
-				
-				}
-			});
+                    buttonArray[currentBeat, i].BackgroundColor = HighLightedVersion(nextColor); //Set the new background color of the button	
+                }
+
+                System.Threading.Monitor.Exit(highlightingSyncObject);
+            });
 
 		}
 
@@ -356,9 +364,14 @@ namespace Stepquencer
             {
                 previousColor = Yellow;
             }
-            else
+            else if (previousColor.Equals(highLightedGrey))
             {
                 previousColor = Grey;
+            }
+            else
+            {
+                //Button is not highlighted, return;
+                return;
             }
 
             button.BackgroundColor = previousColor;  // Set the new background color of the button
