@@ -21,11 +21,11 @@ namespace Stepquencer
         AudioTrack playingTrack;
 
         object trackDisposedOfSyncObject = new object();
-        object startStopSyncObject = new object();
 
 #endif
         readonly Assembly assembly;
         const int playbackRate = 44100;
+        object startStopSyncObject = new object();
 
         public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
         public event OnBeatDelegate BeatStarted;
@@ -96,7 +96,12 @@ namespace Stepquencer
         {
             get
             {
+#if __ANDROID__
                 return playingTrack != null;
+#endif
+#if __IOS__
+                throw new NotImplementedException();
+#endif
             }
         }
 
