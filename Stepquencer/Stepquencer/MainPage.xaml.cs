@@ -39,13 +39,6 @@ namespace Stepquencer
 		Color highLightedYellow;
 
 
-
-		//Create variable and method for double-tapping
-		//When a user double-taps a colored button on the grid,
-		//an alert will pop up that shows which sounds are being used
-
-
-
 		SongPlayer player;
         object highlightingSyncObject = new object();
 
@@ -159,6 +152,8 @@ namespace Stepquencer
 				}
 			}
 
+			//Play/stop button
+			//TODO: Make play/pause button and stop button
             Button playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
@@ -213,11 +208,12 @@ namespace Stepquencer
 		/// <summary>
 		/// Event handler for normal buttons in the grid
 		/// </summary>
+		//TODO: Handle multiple sounds on one button
 		void OnButtonClicked(object sender, EventArgs e)
 		{
 			Button button = (Button)sender;
 
-			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)						// If the button is unhighlighted
+			if (button.BackgroundColor.Equals(Grey) && buttonInUse.Count > 0)                       // If the button is unhighlighted
 			{
 				button.BackgroundColor = sideBarColor;
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
@@ -226,7 +222,7 @@ namespace Stepquencer
 					noteList[Grid.GetColumn(button)].Add(toAdd); // Puts the instrument/pitch combo for this button into noteArray
 				}
 			}
-			else if (button.BackgroundColor.Equals(highLightedGrey))		// If the button IS highlighted
+			else if (button.BackgroundColor.Equals(highLightedGrey))        // If the button IS highlighted
 			{
 				button.BackgroundColor = HighLightedVersion(sideBarColor);
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
@@ -236,23 +232,30 @@ namespace Stepquencer
 				}
 			}
 
-			//TODO: Handle multiple colors
-			//If grid button already has a color BUT the highlighted sidebar color is not the same as selected square
-			//Add instrument on same button
-			//else if (!(button.BackgroundColor.Equals(highLightedGrey)) & !(button.BackgroundColor.Equals(sideBarColor)))
-			//        //Add new instrument--button now has >1 sounds
-			//        //Make the button gradient
-			//
-			//
-			//
-			//
-			// 
+			//TODO: Visual representation of multiple sounds on one button
+			//If clicked button already contains a sound
+			else if (!(button.BackgroundColor.Equals(Grey)) && noteList[Grid.GetColumn(button)].Count > 1)
+			{
+				if (noteList[Grid.GetColumn(button)].Count == 2)
+				{
+					//Make grid of two buttons (two rectangular halves)
 
 
+				}
 
+				else if (noteList[Grid.GetColumn(button)].Count == 3)
+				{
+					//Make grid have three buttons (taking up entire square space?)
+				}
+
+				else
+				{
+					//Make mini grid have four buttons
+				}
+			}
 			else 
 			{
-				//TODO: this fails when the user clicks on a highlighted button.
+				//TODO: this fails when the user clicks on a highlighted button
 				SongPlayer.Note toRemove = colorMap[button.BackgroundColor].AtPitch((NumRows - 1) - Grid.GetRow(button));
 				button.BackgroundColor = Grey;
 					
@@ -298,6 +301,7 @@ namespace Stepquencer
 			}
 
 		}
+
 
 		/// <summary>
 		/// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
