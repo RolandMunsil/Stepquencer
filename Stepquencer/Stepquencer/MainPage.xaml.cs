@@ -239,8 +239,32 @@ namespace Stepquencer
 				if (noteList[Grid.GetColumn(button)].Count == 2)
 				{
 					//Make grid of two buttons (two rectangular halves)
+					//HashSet holds notes--not button
+					//Only matters where user clicks--TapGestureRecognizer?
+					//Don't remove button, place grid on top of it?
+
+					int rowNum = 1;
+					int colNum = 2;
+					Grid minigrid;                                      //Create new grid
+					minigrid = new Grid { ColumnSpacing = 2 };          //Grid has two columns
+
+					//Initialize rows + columns
+					for (int i = 0; i < rowNum; i++)
+					{
+						stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+					}
+					for (int i = 0; i < colNum; i++)
+					{
+						stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+					}
 
 
+					//Add boxView objects to minigrid
+					BoxView box = new BoxView { Color = button.BackgroundColor, WidthRequest = 0.5, HeightRequest = 1};  // Make a new button
+					minigrid.Children.Add(box, 0, 1);                // Add it to the grid
+					                                                 // Add it to stepsquare event handled
+
+					//Figure out x, y coordinates where minigrid will be placed
 				}
 
 				else if (noteList[Grid.GetColumn(button)].Count == 3)
@@ -266,6 +290,7 @@ namespace Stepquencer
 
 			}
 		}
+
 
 
 		/// <summary>
