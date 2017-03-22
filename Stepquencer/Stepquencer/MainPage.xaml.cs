@@ -28,7 +28,7 @@ namespace Stepquencer
         Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
 
         Color sideBarColor = Red;
-        List<Button> buttonInUse = new List<Button>();
+        Button selectedInstrButton = null;
 
         BoxView highlight;
 
@@ -166,7 +166,7 @@ namespace Stepquencer
                 if (button.BackgroundColor.Equals(Color.Red))
                 {
                     button.BorderColor = Color.FromHex("#ffff00");
-                    buttonInUse.Add(button);                         //Button now in use
+                    selectedInstrButton = button;                         //Button now in use
                 }
             }
 
@@ -361,23 +361,21 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
-            if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
+            if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
             {
-                return;													//do nothing
+                return;
             }
 
-            if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count == 0) //if button clicked has black border and no button in use yet
+            if (button.BorderColor == Color.Black)
             {
-                button.BorderColor = Color.FromHex("#ffff00"); //Change border highlight to yellow
-                buttonInUse.Add(button);
-            }
+                //Remove border fom previously selected instrument
+                if(selectedInstrButton != null)
+                {
+                    selectedInstrButton.BorderColor = Color.Black;
+                }
 
-            else if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count > 0)
-            {
-                button.BorderColor = Color.FromHex("#ffff00");   //Change border highlight to yellow
-                buttonInUse[0].BorderColor = Color.Black;        //The button that WAS in use will now have a black border
-                buttonInUse.Clear();							 //Clear the USED button from the lost
-                buttonInUse.Add(button);						 //Add this CURRENTLY USED button to list
+                button.BorderColor = Color.Yellow;   //Change border highlight to yellow
+                selectedInstrButton = button;				     //Set this button to be the currently selected button
 
             }
 
