@@ -9,20 +9,28 @@ using System.Diagnostics;
 using Android.Media;
 #endif
 
+#if __IOS__
+using AVFoundation;
+using AudioToolbox;
+using AudioUnit;
+#endif
+
 namespace Stepquencer
 {
-    class SongPlayer : IDisposable
-    {
+	class SongPlayer : IDisposable
+	{
 #if __IOS__
         const String resourcePrefix = "Stepquencer.iOS.Instruments.";
+		AVAudioPlayer player;
 #endif
 #if __ANDROID__
-        const String resourcePrefix = "Stepquencer.Droid.Instruments.";
-        AudioTrack playingTrack;
+		const String resourcePrefix = "Stepquencer.Droid.Instruments.";
+		AudioTrack playingTrack;
 
-        object trackDisposedOfSyncObject = new object();
+		object trackDisposedOfSyncObject = new object();
 
 #endif
+
         readonly Assembly assembly;
         const int playbackRate = 44100;
         object startStopSyncObject = new object();
@@ -107,24 +115,25 @@ namespace Stepquencer
                     return playingTrack != null;
 #endif
 #if __IOS__
+                    //return player != null;
                     throw new NotImplementedException();
 #endif
                 }
             }
         }
 
-        public SongPlayer(HashSet<Note>[] songDataReference)
-        {
-            this.songDataReference = songDataReference;
-            assembly = typeof(MainPage).GetTypeInfo().Assembly;
-        }
+		public SongPlayer(HashSet<Note>[] songDataReference)
+		{
+			this.songDataReference = songDataReference;
+			assembly = typeof(MainPage).GetTypeInfo().Assembly;
+		}
 
-        public void Dispose()
-        {
+		public void Dispose()
+		{
 #if __ANDROID__
-            playingTrack.Release();
-            playingTrack.Dispose();
-            playingTrack = null;
+			playingTrack.Release();
+			playingTrack.Dispose();
+			playingTrack = null;
 #endif
         }
 
@@ -224,17 +233,17 @@ namespace Stepquencer
         }
 
 #if __ANDROID__
-        private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
-        {
-            BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
+		private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
+		{
+			BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
 
-            AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
-            nextBeat = (nextBeat + 1) % totalBeats;
-        }
+			AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
+			nextBeat = (nextBeat + 1) % totalBeats;
+		}
 #endif
 
-        private void StartStreamingAudio(short[] initialData)
-        {
+		private void StartStreamingAudio(short[] initialData)
+		{
 #if __ANDROID__
             playingTrack = new AudioTrack(
                 // Stream type
@@ -256,7 +265,7 @@ namespace Stepquencer
             playingTrack.Write(initialData, 0, initialData.Length);
             playingTrack.Play();
 #endif
-        }
+		}
 
         private void AppendStreamingAudio(short[] data)
         {
