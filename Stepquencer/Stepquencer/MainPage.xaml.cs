@@ -38,11 +38,10 @@ namespace Stepquencer
 		Color highLightedGreen;
 		Color highLightedYellow;
 
-
 		SongPlayer player;
         object highlightingSyncObject = new object();
 
-        public MainPage()
+		public MainPage()
         {
             InitializeComponent();
 
@@ -251,19 +250,20 @@ namespace Stepquencer
 					//Initialize rows + columns
 					for (int i = 0; i < rowNum; i++)
 					{
-						stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+						stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(0.25, GridUnitType.Star) });
 					}
 					for (int i = 0; i < colNum; i++)
 					{
-						stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+						stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.125, GridUnitType.Star) });
 					}
 
-
 					//Add boxView objects to minigrid
-					BoxView box = new BoxView { Color = button.BackgroundColor, WidthRequest = 0.5, HeightRequest = 1};  // Make a new button
+					BoxView box = new BoxView { Color = button.BackgroundColor, WidthRequest = 0.125, HeightRequest = 0.25};  // Make a new button
 					minigrid.Children.Add(box, 0, 1);                // Add it to the grid
-					                                                 // Add it to stepsquare event handled
+					BoxView box2 = new BoxView { Color = buttonInUse[0].BackgroundColor, WidthRequest = 0.125, HeightRequest = 0.25  };
+					minigrid.Children.Add(box2, 0, 2);
 
+					stepgrid.Children.Add(minigrid, (int) button.X, (int) button.Y);
 					//Figure out x, y coordinates where minigrid will be placed
 				}
 
@@ -319,7 +319,7 @@ namespace Stepquencer
 			else if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count > 0)
 			{
 				button.BorderColor = Color.FromHex("#ffff00");   //Change border highlight to yellow
-				buttonInUse[0].BorderColor = Color.Black;  //The button that WAS in use will now have a black border
+				buttonInUse[0].BorderColor = Color.Black;        //The button that WAS in use will now have a black border
 				buttonInUse.Clear();							 //Clear the USED button from the lost
 				buttonInUse.Add(button);						 //Add this CURRENTLY USED button to list
 
@@ -349,15 +349,15 @@ namespace Stepquencer
                 int previousBeat;
 
                 if (currentBeat == 0)
-                {
+				{
                     previousBeat = NumColumns - 1;
                 }
-                else
-                {
-                    previousBeat = currentBeat - 1;
-                }
+				else
+				{
+					previousBeat = currentBeat - 1;
+				}
 
-                if (!firstBeat)
+				if (!firstBeat)
                 {
                     // De-highlight the previous column of buttons
                     for (int i = 0; i < NumRows; i++)
