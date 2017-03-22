@@ -228,7 +228,7 @@ namespace Stepquencer
         {
             // TODO: check what obj's type is-- i.e. handle if the user taps on the grid
             Grid grid = (Grid) (((BoxView) obj).Parent);
-            HashSet<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
+            List<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
 
 
             if (!colors.Contains(sideBarColor))     // If sidebar color isn't part of button's new set of colors, remove it
@@ -256,25 +256,27 @@ namespace Stepquencer
         /// Correctly changes UI representation of a note when clicked and returns list of colors in new note
         /// </summary>
         /// <param name="grid">Grid.</param>
-        HashSet<Color> ChangeColor(Grid grid)
+        List<Color> ChangeColor(Grid grid)
         {
-            HashSet<Color> colorList = new HashSet<Color>();		// Array to store the colors to be added to the new button
-
             BoxView topLeft = (BoxView)grid.Children.ElementAt(0);	// Gets the top left box
             BoxView topRight = (BoxView)grid.Children.ElementAt(1);     // Might be 2, gets top right box
             BoxView bottomRight = (BoxView)grid.Children.ElementAt(3);	// gets bottom right box
             BoxView bottomLeft = (BoxView)grid.Children.ElementAt(2);   // Might be 1, gets bottom left box
 
+            List<Color> colorList = new List<Color>();		// List to store the colors to be added to the new button
+
             foreach (BoxView box in grid.Children)
             {
-                if (!(box.BackgroundColor.Equals(Grey)))		// If the box isn't grey
+                if (box.BackgroundColor != Grey)
                 {
                     colorList.Add(box.BackgroundColor);	// Add the box's color to the array
 
-                    box.BackgroundColor = Grey;             // Default the box's color to grey
-                    Grid.SetRowSpan(box, 1);				// Default the box to span one row
-                    Grid.SetColumnSpan(box, 1);				// Default the box to span one column
+                    box.BackgroundColor = Grey;             // Default the box's color to grey   
+                    Grid.SetRowSpan(box, 1);                // Default the box to span one row
+                    Grid.SetColumnSpan(box, 1);             // Default the box to span one column               
                 }
+                
+                box.IsVisible = false;
             }
 
 
@@ -290,81 +292,43 @@ namespace Stepquencer
 
             if (colorList.Count == 0)		// If the box is reverting to grey
             {
+                topLeft.IsVisible = true;
+
                 Grid.SetRowSpan(topLeft, 2);
                 Grid.SetColumnSpan(topLeft, 2);     // Make one box take up the whole space
-                 
-                topRight.IsVisible = true;
-                bottomRight.IsVisible = true;		// Make all boxes visible
-                bottomLeft.IsVisible = true;
             }
-
             else if (colorList.Count == 1)		// If box will have one color
             {
-                //TODO: FIX THIS MOFO. It's not always the sideways color
-                if (colorList.Contains(sideBarColor))
-                {
-                    topLeft.BackgroundColor = sideBarColor;     // If we're not removing a color
-                }
-                else
-                {
-                    topLeft.BackgroundColor = colorList.First();	// If we're removing a color, use the only other one
-                }
+                topLeft.IsVisible = true;
+
+                topLeft.BackgroundColor = colorList[0];
+
                 Grid.SetRowSpan(topLeft, 2);
                 Grid.SetColumnSpan(topLeft, 2);     // Make one button take up the whole space
-
-                topRight.IsVisible = false;
-                bottomRight.IsVisible = false;		// Make other boxes invisible
-                bottomLeft.IsVisible = false;
             }
-
             else if (colorList.Count == 2)	// If box will have two colors
             {
-
+                topLeft.IsVisible = true;
                 topRight.IsVisible = true;
-                bottomRight.IsVisible = false;		// Make topRight visible and bottom invisible
-                bottomLeft.IsVisible = false;
 
-                foreach (Color color in colorList)		// Assign the correct colors
-                {
-                    if (topLeft.BackgroundColor.Equals(Grey))		// If top left is grey
-                    {
-                        topLeft.BackgroundColor = color;
-                    }
-                    else
-                    {
-                        topRight.BackgroundColor = color;
-                    }
-                }
+                topLeft.BackgroundColor = colorList[0];
+                topRight.BackgroundColor = colorList[1];
 
                 Grid.SetRowSpan(topLeft, 2);		// Make topLeft take up half of grid
                 Grid.SetRowSpan(topRight, 2);		// Make topRight take up half of grid
             }
-
             else if (colorList.Count == 3)	// If box will have three colors
             {
+                topLeft.IsVisible = true;
                 topRight.IsVisible = true;
                 bottomRight.IsVisible = true;	//Make topright and bottomright visible, make bottom left invisible
-                bottomLeft.IsVisible = false;
 
-                foreach (Color color in colorList)      // Assign the correct colors
-                {
-                    if (topLeft.BackgroundColor.Equals(Grey))    // If top left is grey
-                    {
-                        topLeft.BackgroundColor = color;
-                    }
-                    else if (topRight.BackgroundColor.Equals(Grey))    // If top right is grey
-                    {
-                        topRight.BackgroundColor = color;
-                    }
-                    else
-                    {
-                        bottomRight.BackgroundColor = color;
-                    }
-                }
+                topLeft.BackgroundColor = colorList[0];
+                topRight.BackgroundColor = colorList[1];
+                bottomRight.BackgroundColor = colorList[2];
 
                 Grid.SetRowSpan(topLeft, 2);	// Make topLeft up take up half the grid; other two split the remaining space
             }
-
             else                    // If box will have four colors
             {
                 topRight.IsVisible = true;
@@ -373,28 +337,12 @@ namespace Stepquencer
                 bottomLeft.IsVisible = true;
 
                 // Assign the correct colors
-                foreach (Color color in colorList)      
-                {
-                    if (topLeft.BackgroundColor.Equals(Grey))    // If top left is grey
-                    {
-                        topLeft.BackgroundColor = color;
-                    }
-                    else if (topRight.BackgroundColor.Equals(Grey))    // If top right is grey
-                    {
-                        topRight.BackgroundColor = color;
-                    }
-                    else if (bottomLeft.BackgroundColor.Equals(Grey))	// If bottom left is grey
-                    {
-                        bottomLeft.BackgroundColor = color;
-                    }
-                    else
-                    {
-                        bottomRight.BackgroundColor = color;
-                    }
-                }
+                topLeft.BackgroundColor = colorList[0];
+                topRight.BackgroundColor = colorList[1];
+                bottomLeft.BackgroundColor = colorList[2];
+                bottomRight.BackgroundColor = colorList[3];
 
                 // No resizing needed
-
             }
 
             return colorList;
