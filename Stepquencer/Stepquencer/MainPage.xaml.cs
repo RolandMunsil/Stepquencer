@@ -59,9 +59,6 @@ namespace Stepquencer
             colorMap[Green] = player.LoadInstrument("Bass Drum");
             colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
 
-			// Initaialize the array of buttons
-			buttonArray = new Button[NumColumns, NumRows];			//stored this way because C# is row-major and we want to access a column at a time
-
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
@@ -414,7 +411,6 @@ namespace Stepquencer
 			Button button = (Button)sender;
 
 			sideBarColor = button.BackgroundColor;
-			sideBorderColor = button.BorderColor;
 
 			if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
 			{
