@@ -25,11 +25,9 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
 		HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
-		Button[,] buttonArray;								 // Array of the buttons to make it easy to light them up 
         Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
 
         Color sideBarColor = Red;
-        Color sideBorderColor = Color.Black;
 		List<Button> buttonInUse = new List<Button>();
 
         BoxView highlight;
