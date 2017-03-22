@@ -86,7 +86,7 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-					Grid colorGrid = new Grid { ColumnSpacing = 1, RowSpacing = 1, BackgroundColor = Color.Black };		// Make a grid
+					Grid colorGrid = new Grid { ColumnSpacing = 0, RowSpacing = 0, BackgroundColor = Color.Black };		// Make a grid
 					colorGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 					colorGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Add in column definitions
 					colorGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -224,9 +224,10 @@ namespace Stepquencer
 		/// Event handler for normal buttons in the grid
 		/// </summary>
 
-		void OnColorGridTapped(object boxview)
+		void OnColorGridTapped(object obj)
 		{
-			Grid grid = (Grid) (((BoxView) boxview).Parent);
+			// TODO: check what obj's type is-- i.e. handle if the user taps on the grid
+			Grid grid = (Grid) (((BoxView) obj).Parent);
 			HashSet<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
 
 
@@ -432,7 +433,7 @@ namespace Stepquencer
 
 			}
 
-		}
+		}            
 
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
@@ -463,7 +464,6 @@ namespace Stepquencer
 
                 System.Threading.Monitor.Exit(highlightingSyncObject);
             });
-
 		}
 	}
 }
