@@ -13,9 +13,9 @@ using System.Threading;
 
 namespace Stepquencer.Droid
 {
-	[Activity (Label = "Stepquencer", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
-	{
+    [Activity (Label = "Stepquencer", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+    {
         struct Note
         {
             public AudioTrack track;
@@ -28,12 +28,12 @@ namespace Stepquencer.Droid
             }
         }
 
-		protected override void OnCreate (Bundle bundle)
-		{
-			base.OnCreate (bundle);
+        protected override void OnCreate (Bundle bundle)
+        {
+            base.OnCreate (bundle);
 
-			global::Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new Stepquencer.App ());
+            global::Xamarin.Forms.Forms.Init (this, bundle);
+            LoadApplication (new Stepquencer.App ());
 
             /*
             Note hihat = new Note(AudioTrackFromRawResource(Resource.Raw.hihat), new AutoResetEvent(false));

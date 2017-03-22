@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Stepquencer"
              x:Class="Stepquencer.MainPage">
 
-	<Label Text="Welcome to Xamarin Forms!" 
+    <Label Text="Welcome to Xamarin Forms!" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" />
 
