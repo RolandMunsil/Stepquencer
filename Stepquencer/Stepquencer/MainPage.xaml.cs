@@ -38,18 +38,10 @@ namespace Stepquencer
 		Color highLightedGreen;
 		Color highLightedYellow;
 
-
-
-		//Create variable and method for double-tapping
-		//When a user double-taps a colored button on the grid,
-		//an alert will pop up that shows which sounds are being used
-
-
-
 		SongPlayer player;
         object highlightingSyncObject = new object();
 
-        public MainPage()
+		public MainPage()
         {
             InitializeComponent();
 
@@ -192,6 +184,8 @@ namespace Stepquencer
 				}
 			}
 
+			//Play/stop button
+			//TODO: Make play/pause button and stop button
             Button playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
@@ -248,10 +242,12 @@ namespace Stepquencer
 		/// <summary>
 		/// Event handler for normal buttons in the grid
 		/// </summary>
+
 		void OnColorGridTapped(object boxview)
 		{
 			Grid grid = (Grid) (((BoxView) boxview).Parent);
 			HashSet<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
+
 
 			if (!colors.Contains(sideBarColor))     // If sidebar color isn't part of button's new set of colors, remove it
 			{
@@ -261,7 +257,9 @@ namespace Stepquencer
 					noteList[Grid.GetColumn(grid)].Remove(toRemove);
 				}
 			}
+
 			else
+
 			{
 				SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
 				lock (noteList)
@@ -421,6 +419,7 @@ namespace Stepquencer
 		}
 
 
+
 		/// <summary>
 		/// Event handler for buttons in the sidebar
 		/// </summary>
@@ -447,13 +446,14 @@ namespace Stepquencer
 			else if (button.BorderColor.Equals(Color.Black) && buttonInUse.Count > 0)
 			{
 				button.BorderColor = Color.FromHex("#ffff00");   //Change border highlight to yellow
-				buttonInUse[0].BorderColor = Color.Black;  //The button that WAS in use will now have a black border
+				buttonInUse[0].BorderColor = Color.Black;        //The button that WAS in use will now have a black border
 				buttonInUse.Clear();							 //Clear the USED button from the lost
 				buttonInUse.Add(button);						 //Add this CURRENTLY USED button to list
 
 			}
 
 		}
+
 
 		/// <summary>
 		/// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
@@ -476,15 +476,15 @@ namespace Stepquencer
                 int previousBeat;
 
                 if (currentBeat == 0)
-                {
+				{
                     previousBeat = NumColumns - 1;
                 }
-                else
-                {
-                    previousBeat = currentBeat - 1;
-                }
+				else
+				{
+					previousBeat = currentBeat - 1;
+				}
 
-                if (!firstBeat)
+				if (!firstBeat)
                 {
                     // De-highlight the previous column of buttons
                     for (int i = 0; i < NumRows; i++)
