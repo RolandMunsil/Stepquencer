@@ -35,11 +35,11 @@ namespace Stepquencer
         int nextBeat;
         int totalBeats;
 
+        /// <summary>
+        /// Represents a specific instrument played a specific pitch
+        /// </summary>
         public struct Note
-        {
-            //Use to specify that there is no note corresponding to a given beat & pitch
-            public static Note None = new Note(null);
-
+        {    
             public readonly short[] data;
 
             public Note(short[] data)
@@ -59,11 +59,16 @@ namespace Stepquencer
                 pitchedNotes = new Dictionary<int, Note>(72);
             }
 
+            /// <summary>
+            /// Returns a note representing this instrument at the given pitch
+            /// </summary>
+            /// <param name="semitoneShift">The number of semitones the returned note will differ from the base audio file</param>
             public Note AtPitch(int semitoneShift)
             {
                 if (semitoneShift == 0)
                     return new Note(unpitchedData);
 
+                //Either return an already generated note or generate the note
                 Note pitchedNote;
                 if(pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
                 {
@@ -96,12 +101,15 @@ namespace Stepquencer
         {
             get
             {
+                lock (trackDisposedOfSyncObject)
+                {
 #if __ANDROID__
-                return playingTrack != null;
+                    return playingTrack != null;
 #endif
 #if __IOS__
-                throw new NotImplementedException();
+                    throw new NotImplementedException();
 #endif
+                }
             }
         }
 
@@ -150,6 +158,11 @@ namespace Stepquencer
         {
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
             {
+                if (IsPlaying)
+                {
+                    throw new InvalidOperationException("Audio is already playing.");
+                }
+
                 //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
                 samplesPerBeat = ((60 * playbackRate) / bpm);
                 totalBeats = songDataReference.GetLength(0);
@@ -194,6 +207,8 @@ namespace Stepquencer
                         if (i < notes[n].data.Length)
                             sampleSum += notes[n].data[i];
                     }
+                    //Reduce audio clipping.
+                    sampleSum /= 4;
                     short asShort;
                     if (sampleSum >= short.MaxValue)
                         asShort = short.MaxValue;
@@ -221,12 +236,6 @@ namespace Stepquencer
         private void StartStreamingAudio(short[] initialData)
         {
 #if __ANDROID__
-            if (playingTrack != null)
-            {
-                if (playingTrack.PlayState == PlayState.Playing)
-                    throw new InvalidOperationException("Audio is already playing.");
-            }
-
             playingTrack = new AudioTrack(
                 // Stream type
                 Android.Media.Stream.Music,
@@ -254,7 +263,7 @@ namespace Stepquencer
 #if __ANDROID__
             lock (trackDisposedOfSyncObject)
             {
-                if (playingTrack != null)
+                if (IsPlaying)
                     playingTrack.Write(data, 0, data.Length);
             }
 #endif
@@ -265,7 +274,7 @@ namespace Stepquencer
 #if __ANDROID__
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started or begins stopping twice
             {
-                if (playingTrack == null || playingTrack.PlayState != PlayState.Playing)
+                if (!IsPlaying)
                     throw new InvalidOperationException("Audio is not playing");
 
                 playingTrack.Pause();
