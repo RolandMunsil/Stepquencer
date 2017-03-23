@@ -226,8 +226,18 @@ namespace Stepquencer
 
         void OnColorGridTapped(object obj)
         {
-            // TODO: check what obj's type is-- i.e. handle if the user taps on the grid
-            Grid grid = (Grid) (((BoxView) obj).Parent);
+            Grid grid;
+
+            if (obj.GetType() == typeof(BoxView))       // If user clicks on a box, get the box's parent grid
+            {
+                grid = (Grid)(((BoxView)obj).Parent);
+            }
+            else                                        // Otherwise, the user must have clicked on the grid.
+            {
+                grid = (Grid) obj;
+            }
+
+
             List<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
 
 
