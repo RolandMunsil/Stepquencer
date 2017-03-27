@@ -21,15 +21,18 @@ namespace Stepquencer
     {
 #if __IOS__
         const String resourcePrefix = "Stepquencer.iOS.Instruments.";
-        AVAudioPlayer player;
+        OutputAudioQueue audioQueue;
+        AudioStreamBasicDescription streamDesc;
+
+
 #endif
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
         AudioTrack playingTrack;
+#endif
 
         object trackDisposedOfSyncObject = new object();
 
-#endif
 
         readonly Assembly assembly;
         const int playbackRate = 44100;
@@ -47,7 +50,7 @@ namespace Stepquencer
         /// Represents a specific instrument played a specific pitch
         /// </summary>
         public struct Note
-        {    
+        {
             public readonly short[] data;
 
             public Note(short[] data)
@@ -78,7 +81,7 @@ namespace Stepquencer
 
                 //Either return an already generated note or generate the note
                 Note pitchedNote;
-                if(pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
+                if (pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
                 {
                     return pitchedNote;
                 }
@@ -115,8 +118,8 @@ namespace Stepquencer
                     return playingTrack != null;
 #endif
 #if __IOS__
-                    //return player != null;
-                    throw new NotImplementedException();
+                    return audioQueue != null;
+                    //throw new NotImplementedException();
 #endif
                 }
             }
@@ -126,6 +129,10 @@ namespace Stepquencer
         {
             this.songDataReference = songDataReference;
             assembly = typeof(MainPage).GetTypeInfo().Assembly;
+
+#if __IOS__
+            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(44100, 1, 16, false);  // Might need to check if little or big endian
+#endif
         }
 
         public void Dispose()
@@ -153,7 +160,7 @@ namespace Stepquencer
             //Convert to short
             short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
             //Start at 22 since 22 is 2 * the size of the WAV header.
-            for(int i = 22; i < dataAsShorts.Length; i++)
+            for (int i = 22; i < dataAsShorts.Length; i++)
             {
                 dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
             }
@@ -234,13 +241,16 @@ namespace Stepquencer
 
 #if __ANDROID__
         private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
+#endif
+#if __IOS__
+        private void OnStreamingAudioPeriodicNotification(object sender, BufferCompletedEventArgs args)
+#endif
         {
             BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
-
             AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
             nextBeat = (nextBeat + 1) % totalBeats;
         }
-#endif
+
 
         private void StartStreamingAudio(short[] initialData)
         {
@@ -265,37 +275,72 @@ namespace Stepquencer
             playingTrack.Write(initialData, 0, initialData.Length);
             playingTrack.Play();
 #endif
+#if __IOS__
+
+            audioQueue = new OutputAudioQueue(streamDesc);
+            unsafe
+            {
+                AudioQueueBuffer* buffer1;
+                AudioQueueBuffer* buffer2;
+                audioQueue.AllocateBuffer(initialData.Length, out buffer1);
+                audioQueue.AllocateBuffer(initialData.Length, out buffer2);
+            }
+            audioQueue.BufferCompleted += OnStreamingAudioPeriodicNotification;
+            audioQueue.Start();
+#endif
         }
 
         private void AppendStreamingAudio(short[] data)
         {
-#if __ANDROID__
+
             lock (trackDisposedOfSyncObject)
             {
                 if (IsPlaying)
+                {
+#if __ANDROID__
                     playingTrack.Write(data, 0, data.Length);
-            }
 #endif
+#if __IOS__
+                    unsafe
+                    {
+                        fixed (short* p = data)
+                        {
+                            audioQueue.EnqueueBuffer((IntPtr)p, data.Length * 2, null);
+                        }
+                    }
+#endif
+                }
+            }
+
         }
 
         private void StopStreamingAudio()
         {
-#if __ANDROID__
+
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started or begins stopping twice
             {
                 if (!IsPlaying)
                     throw new InvalidOperationException("Audio is not playing");
-
+#if __ANDROID__
                 playingTrack.Pause();
 
                 lock (trackDisposedOfSyncObject)
                 {
+
                     playingTrack.Release();
                     playingTrack.Dispose();
                     playingTrack = null;
                 }
-            }
 #endif
+#if __IOS__
+                audioQueue.Stop(true);
+
+#endif
+            }
+
+
+
+
         }
     }
 }

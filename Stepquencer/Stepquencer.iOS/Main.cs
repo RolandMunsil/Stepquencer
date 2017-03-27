@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using AudioToolbox;
 using Foundation;
 using UIKit;
 
@@ -16,5 +16,16 @@ namespace Stepquencer.iOS
 			// you can specify it here.
 			UIApplication.Main(args, null, "AppDelegate");
 		}
+
+        static void IOSAppendStreamingAudio(short[] data, OutputAudioQueue audioQueue)
+        {
+            unsafe
+            {
+                fixed (short* p = data)
+                {
+                    audioQueue.EnqueueBuffer((IntPtr)p, data.Length * 2, null);
+                }
+            }
+        }
 	}
 }
