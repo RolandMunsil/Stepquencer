@@ -289,6 +289,8 @@ namespace Stepquencer
                 colorList.Add(sideBarColor);
             }
 
+            colorList.Sort((c1, c2)=>Math.Sign(c1.Hue - c2.Hue));
+
 
             if (colorList.Count == 0)		// If the box is reverting to grey
             {
