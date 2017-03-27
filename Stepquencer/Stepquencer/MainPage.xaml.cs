@@ -68,7 +68,7 @@ namespace Stepquencer
 
 
             //Set up grid of note squares
-            stepgrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
+            stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
 
             //Initialize the number of rows and columns
             for (int i = 0; i < NumRows; i++)
@@ -171,7 +171,6 @@ namespace Stepquencer
             }
 
             //Play/stop button
-            //TODO: Make play/pause button and stop button
             Button playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
