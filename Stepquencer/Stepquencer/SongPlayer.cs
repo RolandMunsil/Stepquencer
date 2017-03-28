@@ -184,9 +184,13 @@ namespace Stepquencer
                 totalBeats = songDataReference.GetLength(0);
                 short[] beat0 = MixBeat(GetNotes(0));
                 short[] beat1 = MixBeat(GetNotes(1));
-
+#if __ANDROID__
                 StartStreamingAudio(beat0);
                 AppendStreamingAudio(beat1);
+#endif
+#if __IOS__
+                StartStreamingAudio(beat0, beat1);
+#endif
                 nextBeat = 2;
                 BeatStarted?.Invoke(0, true);
             }
@@ -247,12 +251,25 @@ namespace Stepquencer
 #endif
         {
             BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
+
+#if __ANDROID__
             AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
+#endif
+#if __IOS__
+            unsafe
+            {
+                AppendStreamingAudio(args.UnsafeBuffer, MixBeat(GetNotes(nextBeat)));
+            }
+#endif
             nextBeat = (nextBeat + 1) % totalBeats;
         }
 
-
+#if __ANDROID__
         private void StartStreamingAudio(short[] initialData)
+#endif
+#if __IOS__
+        private void StartStreamingAudio(short[] beat0, short[] beat1)
+#endif
         {
 #if __ANDROID__
             playingTrack = new AudioTrack(
@@ -280,17 +297,24 @@ namespace Stepquencer
             audioQueue = new OutputAudioQueue(streamDesc);
             unsafe
             {
+                AudioQueueBuffer* buffer0;
                 AudioQueueBuffer* buffer1;
-                AudioQueueBuffer* buffer2;
-                audioQueue.AllocateBuffer(initialData.Length, out buffer1);
-                audioQueue.AllocateBuffer(initialData.Length, out buffer2);
+                audioQueue.AllocateBuffer(beat0.Length * 2, out buffer0);
+                audioQueue.AllocateBuffer(beat1.Length * 2, out buffer1);
+                AppendStreamingAudio(buffer0, beat0);
+                AppendStreamingAudio(buffer1, beat1);
             }
+
             audioQueue.BufferCompleted += OnStreamingAudioPeriodicNotification;
             audioQueue.Start();
 #endif
         }
-
+#if __ANDROID__
         private void AppendStreamingAudio(short[] data)
+#endif
+#if __IOS__
+        private unsafe void AppendStreamingAudio(AudioQueueBuffer* buffer, short[] data)
+#endif
         {
 
             lock (trackDisposedOfSyncObject)
@@ -301,13 +325,14 @@ namespace Stepquencer
                     playingTrack.Write(data, 0, data.Length);
 #endif
 #if __IOS__
-                    unsafe
+
+                    fixed (short* beatData = data)
                     {
-                        fixed (short* p = data)
-                        {
-                            audioQueue.EnqueueBuffer((IntPtr)p, data.Length * 2, null);
-                        }
+                        buffer->CopyToAudioData((IntPtr)beatData, data.Length * 2);
                     }
+
+
+                    audioQueue.EnqueueBuffer((IntPtr) buffer, data.Length * 2, null);
 #endif
                 }
             }
