@@ -119,7 +119,6 @@ namespace Stepquencer
 #endif
 #if __IOS__
                     return audioQueue != null;
-                    //throw new NotImplementedException();
 #endif
                 }
             }
@@ -359,6 +358,12 @@ namespace Stepquencer
 #endif
 #if __IOS__
                 audioQueue.Stop(true);
+                lock (trackDisposedOfSyncObject)
+                {
+                    audioQueue.Dispose();
+                    audioQueue = null;
+                }
+
 
 #endif
             }
