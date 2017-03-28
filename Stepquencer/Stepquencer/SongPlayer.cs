@@ -35,7 +35,7 @@ namespace Stepquencer
 
 
         readonly Assembly assembly;
-        const int playbackRate = 44100;
+        const int playbackRate = 22050;
         object startStopSyncObject = new object();
 
         public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
