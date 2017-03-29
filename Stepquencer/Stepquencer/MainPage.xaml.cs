@@ -41,6 +41,7 @@ namespace Stepquencer
 
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
+            highlight.IsVisible = false;
 
             // Initializing the song player and noteArray
             song = new Song(NumColumns);
@@ -75,7 +76,6 @@ namespace Stepquencer
             {
                 stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
-
 
             //Add grids to the grid, and give each 2 columns, two rows and a BoxView
             for (int i = 0; i < NumRows; i++)
@@ -137,6 +137,9 @@ namespace Stepquencer
                     stepgrid.Children.Add(colorGrid, j, i);
                 }
             }
+
+            stepgrid.Children.Add(highlight, 0, 0);
+            Grid.SetRowSpan(highlight, NumRows);
 
 
 
@@ -204,14 +207,15 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 ((Button)sender).Text = "\u25BA";
-                System.Threading.Monitor.Enter(highlightingSyncObject);
-                stepgrid.Children.Remove(highlight);
-                System.Threading.Monitor.Exit(highlightingSyncObject);
+                highlight.IsVisible = false;
             }
             else
             {
                 player.BeginPlaying(240);
                 ((Button)sender).Text = "■";
+                
+                highlight.IsVisible = true;
+                Grid.SetColumn(highlight, 0);
             }
         }
 
@@ -358,8 +362,6 @@ namespace Stepquencer
             }
         }
 
-
-
         /// <summary>
         /// Event handler for buttons in the sidebar
         /// </summary>
@@ -399,26 +401,7 @@ namespace Stepquencer
         {
             Device.BeginInvokeOnMainThread(delegate ()
             {
-                if (!System.Threading.Monitor.TryEnter(highlightingSyncObject))
-                {
-                    //Dehighlighting of entire grid has already started.
-                    return;
-                }
-                if (!player.IsPlaying)
-                {
-                    //Player has stopped so the grid will already be dehighlighted.
-                    return;
-                }
-
-                if (firstBeat)
-                {
-                    stepgrid.Children.Add(highlight, 0, 0);
-                    Grid.SetRowSpan(highlight, NumRows);
-                }
-
                 Grid.SetColumn(highlight, currentBeat);
-
-                System.Threading.Monitor.Exit(highlightingSyncObject);
             });
         }
     }
