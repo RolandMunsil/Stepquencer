@@ -24,8 +24,8 @@ namespace Stepquencer
         Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
-        Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
+        Song song;                 // Array of HashSets of Songplayer notes
+        Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
 
         Color sideBarColor = Red;
         Button selectedInstrButton = null;
@@ -43,21 +43,17 @@ namespace Stepquencer
             highlight.InputTransparent = true;
 
             // Initializing the song player and noteArray
-            noteList = new HashSet<SongPlayer.Note>[NumColumns];    //stored this way because C# is row-major and we want to access a column at a time
-            for (int i = 0; i < NumColumns; i++)
-            {
-                noteList[i] = new HashSet<SongPlayer.Note>();
-            }
+            song = new Song(NumColumns);
 
-            player = new SongPlayer(noteList);
+            player = new SongPlayer(song);
 
             // Initializing the colorMap
-            colorMap = new Dictionary<Color, SongPlayer.Instrument>();
+            colorMap = new Dictionary<Color, Instrument>();
 
-            colorMap[Red] = player.LoadInstrument("Snare");
-            colorMap[Blue] = player.LoadInstrument("YRM1x Atmosphere");
-            colorMap[Green] = player.LoadInstrument("Bass Drum");
-            colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
+            colorMap[Red] = Instrument.LoadByName("Snare");
+            colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");
+            colorMap[Green] = Instrument.LoadByName("Bass Drum");
+            colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
@@ -242,21 +238,15 @@ namespace Stepquencer
 
             if (!colors.Contains(sideBarColor))     // If sidebar color isn't part of button's new set of colors, remove it
             {
-                SongPlayer.Note toRemove = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
-                lock (noteList)
-                {
-                    noteList[Grid.GetColumn(grid)].Remove(toRemove);
-                }
+                Instrument.Note toRemove = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
+                song.RemoveNote(toRemove, Grid.GetColumn(grid));
             }
 
             else
 
             {
-                SongPlayer.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
-                lock (noteList)
-                {
-                    noteList[Grid.GetColumn(grid)].Add(toAdd); // Puts the instrument/pitch combo for this button into noteArray
-                }
+                Instrument.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
+                song.AddNote(toAdd, Grid.GetColumn(grid));
             }
 
         }
