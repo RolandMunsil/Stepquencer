@@ -25,6 +25,7 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
         HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
+
         Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
 
         Color sideBarColor = Red;
@@ -35,6 +36,9 @@ namespace Stepquencer
         SongPlayer player;
         object highlightingSyncObject = new object();
 
+
+
+
         public MainPage()
         {
             InitializeComponent();
@@ -42,24 +46,31 @@ namespace Stepquencer
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
 
+
             // Initializing the song player and noteArray
             noteList = new HashSet<SongPlayer.Note>[NumColumns];    //stored this way because C# is row-major and we want to access a column at a time
             for (int i = 0; i < NumColumns; i++)
             {
-                noteList[i] = new HashSet<SongPlayer.Note>();
-            }
-
+                noteList[i] = new HashSet<SongPlayer.Note>();       //Create array of hash sets
+            }                                                       //Each hash set corresponds to each column in main grid
             player = new SongPlayer(noteList);
+
+
+            // List of notes for sidebar
+            // Use SongPlayer class?
+            //sidebarNoteList = 
+
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, SongPlayer.Instrument>();
 
-            colorMap[Red] = player.LoadInstrument("Snare");
+            colorMap[Red] = player.LoadInstrument("Bass Drum");
             colorMap[Blue] = player.LoadInstrument("YRM1x Atmosphere");
-            colorMap[Green] = player.LoadInstrument("Bass Drum");
+            colorMap[Green] = player.LoadInstrument("Snare");
             colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
+
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2};
@@ -143,7 +154,6 @@ namespace Stepquencer
             }
 
 
-
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
@@ -156,12 +166,29 @@ namespace Stepquencer
 
             // Fill sidebar it with buttons
             Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
-
+            //TODO: Change these buttons so that they show text/icon
             for (int i = 0; i < colors.Length; i++)
             {
-                Button button = new Button { BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
+                Button button = new Button { Font = Font.SystemFontOfSize(10), BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
                 sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
                 button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
+
+                if (i == 0)
+                {
+                    button.Image = "editedbass.png";
+                }
+                if (i == 1)
+                {
+                    button.Image = "editedpiano.png";
+                }
+                if (i == 2)
+                {
+                    button.Image = "editedinst.png";
+                }
+                if (i == 3)
+                {
+                    button.Image = "editedhihat.png";
+                }
 
                 if (button.BackgroundColor.Equals(Color.Red))
                 {
@@ -169,6 +196,7 @@ namespace Stepquencer
                     buttonInUse.Add(button);                         //Button now in use
                 }
             }
+
 
             //Play/stop button
             //TODO: Make play/pause button and stop button
@@ -412,6 +440,9 @@ namespace Stepquencer
             Button button = (Button)sender;
 
             sideBarColor = button.BackgroundColor;
+
+            //TODO: Have sidebar buttons make designated sound when clicked/tapped
+
 
             if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
             {

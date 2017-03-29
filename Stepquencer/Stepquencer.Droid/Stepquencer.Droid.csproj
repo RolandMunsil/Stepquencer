@@ -114,10 +114,13 @@
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
-    <None Include="Resources\imgres.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\Icon.png" />
+    <AndroidResource Include="Resources\Drawable\editedbass.png" />
+    <AndroidResource Include="Resources\Drawable\editedpiano.png" />
+    <AndroidResource Include="Resources\Drawable\editedinst.png" />
+    <AndroidResource Include="Resources\Drawable\editedhihat.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
