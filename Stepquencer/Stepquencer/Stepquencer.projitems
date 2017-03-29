@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MiniGrid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Song.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SongPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MoreOptionsPage.xaml.cs">

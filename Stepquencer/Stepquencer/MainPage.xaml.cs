@@ -14,7 +14,7 @@ namespace Stepquencer
         const int NumInstruments = 4;
         const double brightnessIncrease = 0.25;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        readonly static Color Grey = Color.FromHex("#606060");
+        public readonly static Color Grey = Color.FromHex("#606060");
         readonly static Color Red = Color.FromHex("#ff0000");
         readonly static Color Blue = Color.FromHex("#3333ff");
         readonly static Color Green = Color.FromHex("#33ff33");
@@ -24,10 +24,10 @@ namespace Stepquencer
         Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        Song song;                 // Array of HashSets of Songplayer notes
-        Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
+        public Song song;                 // Array of HashSets of Songplayer notes
+        public Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
 
-        Color sideBarColor = Red;
+        public Color sideBarColor = Red;
         Button selectedInstrButton = null;
 
         BoxView highlight;
@@ -82,59 +82,7 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-                    Grid colorGrid = new Grid { ColumnSpacing = 0, RowSpacing = 0, BackgroundColor = Color.Black };		// Make a grid
-                    colorGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                    colorGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Add in column definitions
-                    colorGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    colorGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });  // Add in row definitions
-
-                    // Add in boxviews
-                    BoxView box1 = new BoxView { BackgroundColor = Grey };
-                    BoxView box2 = new BoxView { BackgroundColor = Grey };
-                    BoxView box3 = new BoxView { BackgroundColor = Grey };
-                    BoxView box4 = new BoxView { BackgroundColor = Grey };
-
-                    colorGrid.Children.Add(box1, 0, 0);
-                    colorGrid.Children.Add(box2, 1, 0);
-                    colorGrid.Children.Add(box3, 0, 1);
-                    colorGrid.Children.Add(box4, 1, 1);
-
-                    Grid.SetColumnSpan(box1, 2);
-                    Grid.SetRowSpan(box1, 2);
-
-
-                    // Give the grid a tapGesture recognizer
-                    TapGestureRecognizer tgr = new TapGestureRecognizer();
-                    tgr.CommandParameter = colorGrid;
-                    tgr.Command = new Command(OnColorGridTapped);
-                    colorGrid.GestureRecognizers.Add(tgr);
-
-                    // Give box1 a tapGesture recognizer
-                    TapGestureRecognizer tgr1 = new TapGestureRecognizer();
-                    tgr1.CommandParameter = box1;
-                    tgr1.Command = new Command(OnColorGridTapped);
-                    box1.GestureRecognizers.Add(tgr1);
-
-                    // Give box2 a tapGesture recognizer
-                    TapGestureRecognizer tgr2 = new TapGestureRecognizer();
-                    tgr2.CommandParameter = box2;
-                    tgr2.Command = new Command(OnColorGridTapped);
-                    box2.GestureRecognizers.Add(tgr2);
-
-                    // Give box3 a tapGesture recognizer
-
-                    TapGestureRecognizer tgr3 = new TapGestureRecognizer();
-                    tgr3.CommandParameter = box3;
-                    tgr3.Command = new Command(OnColorGridTapped);
-                    box3.GestureRecognizers.Add(tgr3);
-
-                    // Give box4 a tapGesture recognizer
-                    TapGestureRecognizer tgr4 = new TapGestureRecognizer();
-                    tgr4.CommandParameter = box4;
-                    tgr4.Command = new Command(OnColorGridTapped);
-                    box4.GestureRecognizers.Add(tgr4);
-
-                    stepgrid.Children.Add(colorGrid, j, i);
+                    stepgrid.Children.Add(new MiniGrid(this,(NumColumns - 1) - i), j, i);
                 }
             }
 
@@ -216,149 +164,6 @@ namespace Stepquencer
                 
                 highlight.IsVisible = true;
                 Grid.SetColumn(highlight, 0);
-            }
-        }
-
-        /// <summary>
-        /// Event handler for normal buttons in the grid
-        /// </summary>
-
-        void OnColorGridTapped(object obj)
-        {
-            Grid grid;
-
-            if (obj.GetType() == typeof(BoxView))       // If user clicks on a box, get the box's parent grid
-            {
-                grid = (Grid)(((BoxView)obj).Parent);
-            }
-            else                                        // Otherwise, the user must have clicked on the grid.
-            {
-                grid = (Grid) obj;
-            }
-
-
-            List<Color> colors = ChangeColor(grid);      // Changes UI represenation and returns colors that new button has
-
-
-            if (!colors.Contains(sideBarColor))     // If sidebar color isn't part of button's new set of colors, remove it
-            {
-                Instrument.Note toRemove = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
-                song.RemoveNote(toRemove, Grid.GetColumn(grid));
-            }
-
-            else
-
-            {
-                Instrument.Note toAdd = colorMap[sideBarColor].AtPitch((NumRows - 1) - Grid.GetRow(grid));
-                song.AddNote(toAdd, Grid.GetColumn(grid));
-            }
-
-        }
-
-        /// <summary>
-        /// Correctly changes UI representation of a note when clicked and returns list of colors in new note
-        /// </summary>
-        /// <param name="grid">Grid.</param>
-        List<Color> ChangeColor(Grid grid)
-        {
-            List<Color> colorList = new List<Color>();		// List to store the colors to be added to the new button
-
-            foreach (BoxView box in grid.Children)
-            {
-                if (box.BackgroundColor != Grey)
-                {
-                    colorList.Add(box.BackgroundColor);	// Add the box's color to the array       
-                }
-            }
-
-            if (colorList.Contains(sideBarColor))			// If button already has the sidebar color, remove it from colorList
-            {
-                colorList.Remove(sideBarColor);
-            }
-            else    										// If button doesn't already have the sidebar color, add it to colorList
-            {
-                colorList.Add(sideBarColor);
-            }
-
-            SetColors(grid, colorList);
-
-            return colorList;
-        }
-
-        void SetColors(Grid grid, List<Color> colors)
-        {
-            foreach (BoxView box in grid.Children)
-            {
-                if (box.BackgroundColor != Grey)
-                {
-                    box.BackgroundColor = Grey;             // Default the box's color to grey   
-                    Grid.SetRowSpan(box, 1);                // Default the box to span one row
-                    Grid.SetColumnSpan(box, 1);             // Default the box to span one column               
-                }
-
-                box.IsVisible = false;
-            }
-
-            BoxView topLeft = (BoxView)grid.Children.ElementAt(0);	// Gets the top left box
-            BoxView topRight = (BoxView)grid.Children.ElementAt(1);     // Might be 2, gets top right box    
-            BoxView bottomLeft = (BoxView)grid.Children.ElementAt(2);   // Might be 1, gets bottom left box
-            BoxView bottomRight = (BoxView)grid.Children.ElementAt(3);	// gets bottom right box
-
-            colors.Sort((c1, c2) => Math.Sign(c1.Hue - c2.Hue));
-
-            if (colors.Count == 0)		// If the box is reverting to grey
-            {
-                topLeft.IsVisible = true;
-
-                Grid.SetRowSpan(topLeft, 2);
-                Grid.SetColumnSpan(topLeft, 2);     // Make one box take up the whole space
-            }
-            else if (colors.Count == 1)		// If box will have one color
-            {
-                topLeft.IsVisible = true;
-
-                topLeft.BackgroundColor = colors[0];
-
-                Grid.SetRowSpan(topLeft, 2);
-                Grid.SetColumnSpan(topLeft, 2);     // Make one button take up the whole space
-            }
-            else if (colors.Count == 2)	// If box will have two colors
-            {
-                topLeft.IsVisible = true;
-                topRight.IsVisible = true;
-
-                topLeft.BackgroundColor = colors[0];
-                topRight.BackgroundColor = colors[1];
-
-                Grid.SetRowSpan(topLeft, 2);		// Make topLeft take up half of grid
-                Grid.SetRowSpan(topRight, 2);		// Make topRight take up half of grid
-            }
-            else if (colors.Count == 3)	// If box will have three colors
-            {
-                topLeft.IsVisible = true;
-                topRight.IsVisible = true;
-                bottomRight.IsVisible = true;	//Make topright and bottomright visible, make bottom left invisible
-
-                topLeft.BackgroundColor = colors[0];
-                topRight.BackgroundColor = colors[1];
-                bottomRight.BackgroundColor = colors[2];
-
-                Grid.SetRowSpan(topLeft, 2);	// Make topLeft up take up half the grid; other two split the remaining space
-            }
-            else                    // If box will have four colors
-            {
-                topRight.IsVisible = true;
-                topLeft.IsVisible = true;
-                bottomRight.IsVisible = true;		// Make all boxes visible
-                bottomLeft.IsVisible = true;
-
-                // Assign the correct colors
-                topLeft.BackgroundColor = colors[0];
-                topRight.BackgroundColor = colors[1];
-                bottomLeft.BackgroundColor = colors[2];
-                bottomRight.BackgroundColor = colors[3];
-
-                // No resizing needed
             }
         }
 
