@@ -17,93 +17,27 @@ using AudioUnit;
 
 namespace Stepquencer
 {
-    class SongPlayer : IDisposable
+    class SongPlayer
     {
 #if __IOS__
-        const String resourcePrefix = "Stepquencer.iOS.Instruments.";
-        AVAudioPlayer player;
+        OutputAudioQueue audioQueue;
+        AudioStreamBasicDescription streamDesc;
 #endif
 #if __ANDROID__
-        const String resourcePrefix = "Stepquencer.Droid.Instruments.";
         AudioTrack playingTrack;
-
-        object trackDisposedOfSyncObject = new object();
-
 #endif
 
-        readonly Assembly assembly;
-        const int playbackRate = 44100;
+        object trackDisposedOfSyncObject = new object();
         object startStopSyncObject = new object();
+
+        const int PLAYBACK_RATE = 44100;
 
         public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
         public event OnBeatDelegate BeatStarted;
 
-        HashSet<Note>[] songDataReference;
+        Song song;
         int samplesPerBeat;
         int nextBeat;
-        int totalBeats;
-
-        /// <summary>
-        /// Represents a specific instrument played a specific pitch
-        /// </summary>
-        public struct Note
-        {    
-            public readonly short[] data;
-
-            public Note(short[] data)
-            {
-                this.data = data;
-            }
-        }
-
-        public class Instrument
-        {
-            private short[] unpitchedData;
-            private Dictionary<int, Note> pitchedNotes;
-
-            public Instrument(short[] unpitchedData)
-            {
-                this.unpitchedData = unpitchedData;
-                pitchedNotes = new Dictionary<int, Note>(72);
-            }
-
-            /// <summary>
-            /// Returns a note representing this instrument at the given pitch
-            /// </summary>
-            /// <param name="semitoneShift">The number of semitones the returned note will differ from the base audio file</param>
-            public Note AtPitch(int semitoneShift)
-            {
-                if (semitoneShift == 0)
-                    return new Note(unpitchedData);
-
-                //Either return an already generated note or generate the note
-                Note pitchedNote;
-                if(pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
-                {
-                    return pitchedNote;
-                }
-                else
-                {
-                    Note note = new Note(Resample(semitoneShift));
-                    pitchedNotes[semitoneShift] = note;
-                    return note;
-                }
-            }
-
-            private short[] Resample(int semitoneShift)
-            {
-                double mult = Math.Pow(2, -semitoneShift / 12.0);
-                int outputSize = (int)(unpitchedData.Length * mult);
-                short[] output = new short[outputSize];
-                for (int s = 0; s < outputSize; s++)
-                {
-                    double sourcePos = s / mult;
-                    int left = (int)Math.Floor(sourcePos);
-                    output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (unpitchedData[left + 1] - unpitchedData[left])));
-                }
-                return output;
-            }
-        }
 
         public bool IsPlaying
         {
@@ -115,53 +49,19 @@ namespace Stepquencer
                     return playingTrack != null;
 #endif
 #if __IOS__
-                    //return player != null;
-                    throw new NotImplementedException();
+                    return audioQueue != null;
 #endif
                 }
             }
         }
 
-        public SongPlayer(HashSet<Note>[] songDataReference)
+        public SongPlayer(Song song)
         {
-            this.songDataReference = songDataReference;
-            assembly = typeof(MainPage).GetTypeInfo().Assembly;
-        }
-
-        public void Dispose()
-        {
-#if __ANDROID__
-            playingTrack.Release();
-            playingTrack.Dispose();
-            playingTrack = null;
+            this.song = song;
+#if __IOS__
+            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  // Might need to check if little or big endian
 #endif
         }
-
-        public Instrument LoadInstrument(String instrName)
-        {
-            String resourceString = $"{resourcePrefix}{instrName}.wav";
-
-            //Read in data
-            byte[] rawInstrumentData;
-            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceString))
-            {
-                int streamLength = (int)stream.Length;
-                rawInstrumentData = new byte[streamLength];
-                stream.Read(rawInstrumentData, 0, streamLength);
-            }
-
-            //Convert to short
-            short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
-            //Start at 22 since 22 is 2 * the size of the WAV header.
-            for(int i = 22; i < dataAsShorts.Length; i++)
-            {
-                dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
-            }
-
-            return new Instrument(dataAsShorts);
-        }
-
-
 
         public void BeginPlaying(int bpm)
         {
@@ -173,38 +73,20 @@ namespace Stepquencer
                 }
 
                 //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
-                samplesPerBeat = ((60 * playbackRate) / bpm);
-                totalBeats = songDataReference.GetLength(0);
-                short[] beat0 = MixBeat(GetNotes(0));
-                short[] beat1 = MixBeat(GetNotes(1));
+                samplesPerBeat = ((60 * PLAYBACK_RATE) / bpm);
+                short[] beat0 = MixBeat(song.NotesAtBeat(0));
+                short[] beat1 = MixBeat(song.NotesAtBeat(1));
 
-                StartStreamingAudio(beat0);
-                AppendStreamingAudio(beat1);
+                StartStreamingAudio(beat0, beat1);
+
                 nextBeat = 2;
                 BeatStarted?.Invoke(0, true);
             }
         }
 
-        public void StopPlaying()
+        private short[] MixBeat(Instrument.Note[] notes)
         {
-            StopStreamingAudio();
-        }
-
-        private Note[] GetNotes(int beat)
-        {
-            HashSet<Note> beatData = songDataReference[beat];
-            Note[] notes;
-            lock (songDataReference)
-            {
-                notes = new Note[beatData.Count];
-                songDataReference[beat].CopyTo(notes);
-            }
-            return notes;
-        }
-
-        private short[] MixBeat(Note[] notes)
-        {
-            short[] beatData = new short[samplesPerBeat * 2];
+            short[] beatData = new short[samplesPerBeat];
             if (notes.Length > 0)
             {
                 //TODO: Use Parallel.For()?
@@ -234,15 +116,40 @@ namespace Stepquencer
 
 #if __ANDROID__
         private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
-        {
-            BeatStarted?.BeginInvoke(((nextBeat - 1) + totalBeats) % totalBeats, false, null, null);
-
-            AppendStreamingAudio(MixBeat(GetNotes(nextBeat)));
-            nextBeat = (nextBeat + 1) % totalBeats;
-        }
 #endif
+#if __IOS__
+        private void OnStreamingAudioPeriodicNotification(object sender, BufferCompletedEventArgs args)
+#endif
+        {
+            int prevBeat = ((nextBeat - 1) + song.BeatCount) % song.BeatCount;
+            BeatStarted?.BeginInvoke(prevBeat, false, null, null);
 
-        private void StartStreamingAudio(short[] initialData)
+            short[] data = MixBeat(song.NotesAtBeat(nextBeat));
+
+            lock (trackDisposedOfSyncObject)
+            {
+                if (IsPlaying)
+                {
+#if __ANDROID__
+                    playingTrack.Write(data, 0, data.Length);
+#endif
+#if __IOS__
+                    unsafe
+                    {
+                        fixed (short* beatData = data)
+                        {
+                            args.UnsafeBuffer->CopyToAudioData((IntPtr)beatData, data.Length * 2);
+                        }
+                    }
+                    audioQueue.EnqueueBuffer(args.IntPtrBuffer, data.Length * 2, null);
+#endif
+                }
+            }
+
+            nextBeat = (nextBeat + 1) % song.BeatCount;
+        }
+
+        private void StartStreamingAudio(short[] beat0, short[] beat1)
         {
 #if __ANDROID__
             playingTrack = new AudioTrack(
@@ -255,37 +162,54 @@ namespace Stepquencer
                 // Audio encoding
                 Android.Media.Encoding.Pcm16bit,
                 // Length of the audio clip.
-                (initialData.Length * 2) * 2, // Double buffering
+                (samplesPerBeat * 2) * 2, // Double buffering
                 // Mode. Stream or static.
                 AudioTrackMode.Stream);
 
             playingTrack.PeriodicNotification += OnStreamingAudioPeriodicNotification;
-            playingTrack.SetPositionNotificationPeriod(initialData.Length);
+            playingTrack.SetPositionNotificationPeriod(samplesPerBeat);
 
-            playingTrack.Write(initialData, 0, initialData.Length);
+            playingTrack.Write(beat0, 0, beat0.Length);
+            playingTrack.Write(beat1, 0, beat1.Length);
             playingTrack.Play();
 #endif
-        }
+#if __IOS__
 
-        private void AppendStreamingAudio(short[] data)
-        {
-#if __ANDROID__
-            lock (trackDisposedOfSyncObject)
+            audioQueue = new OutputAudioQueue(streamDesc);
+            unsafe
             {
-                if (IsPlaying)
-                    playingTrack.Write(data, 0, data.Length);
+                AudioQueueBuffer* buffer0;
+                AudioQueueBuffer* buffer1;
+                audioQueue.AllocateBuffer(beat0.Length * 2, out buffer0);
+                audioQueue.AllocateBuffer(beat1.Length * 2, out buffer1);
+
+                fixed (short* beatData0 = beat0)
+                {
+                    buffer0->CopyToAudioData((IntPtr)beatData0, beat0.Length * 2);
+                }
+                fixed (short* beatData1 = beat1)
+                {
+                    buffer1->CopyToAudioData((IntPtr)beatData1, beat1.Length * 2);
+                }
+
+
+                audioQueue.EnqueueBuffer((IntPtr)buffer0, beat0.Length * 2, null);
+                audioQueue.EnqueueBuffer((IntPtr)buffer1, beat1.Length * 2, null);
             }
+
+            audioQueue.BufferCompleted += OnStreamingAudioPeriodicNotification;
+            audioQueue.Start();
 #endif
         }
 
-        private void StopStreamingAudio()
+        public void StopPlaying()
         {
-#if __ANDROID__
+
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started or begins stopping twice
             {
                 if (!IsPlaying)
                     throw new InvalidOperationException("Audio is not playing");
-
+#if __ANDROID__
                 playingTrack.Pause();
 
                 lock (trackDisposedOfSyncObject)
@@ -294,8 +218,16 @@ namespace Stepquencer
                     playingTrack.Dispose();
                     playingTrack = null;
                 }
-            }
 #endif
+#if __IOS__
+                audioQueue.Stop(true);
+                lock (trackDisposedOfSyncObject)
+                {
+                    audioQueue.Dispose();
+                    audioQueue = null;
+                }
+#endif
+            }
         }
     }
 }
