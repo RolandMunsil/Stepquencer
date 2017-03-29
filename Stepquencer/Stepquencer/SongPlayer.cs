@@ -182,8 +182,19 @@ namespace Stepquencer
                 AudioQueueBuffer* buffer1;
                 audioQueue.AllocateBuffer(beat0.Length * 2, out buffer0);
                 audioQueue.AllocateBuffer(beat1.Length * 2, out buffer1);
-                AppendStreamingAudio(buffer0, beat0);
-                AppendStreamingAudio(buffer1, beat1);
+
+                fixed (short* beatData0 = beat0)
+                {
+                    buffer0->CopyToAudioData((IntPtr)beatData0, beat0.Length * 2);
+                }
+                fixed (short* beatData1 = beat1)
+                {
+                    buffer1->CopyToAudioData((IntPtr)beatData1, beat1.Length * 2);
+                }
+
+
+                audioQueue.EnqueueBuffer((IntPtr)buffer0, beat0.Length * 2, null);
+                audioQueue.EnqueueBuffer((IntPtr)buffer1, beat1.Length * 2, null);
             }
 
             audioQueue.BufferCompleted += OnStreamingAudioPeriodicNotification;
