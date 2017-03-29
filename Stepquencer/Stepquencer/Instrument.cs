@@ -10,13 +10,19 @@ namespace Stepquencer
         /// <summary>
         /// Represents a specific instrument played a specific pitch
         /// </summary>
-        public struct Note
+        public class Note
         {
             public readonly short[] data;
 
-            public Note(short[] data)
+            //Used for constructing button layouts from a Song
+            public readonly Instrument instrument;
+            public readonly int semitoneShift;
+
+            public Note(short[] data, Instrument instrument, int semitoneShift)
             {
                 this.data = data;
+                this.instrument = instrument;
+                this.semitoneShift = semitoneShift;
             }
         }
 
@@ -27,14 +33,17 @@ namespace Stepquencer
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
 #endif
+        //Used for saving
+        public String instrumentName;
 
         private short[] unpitchedData;
         private Dictionary<int, Note> pitchedNotes;
 
-        private Instrument(short[] unpitchedData)
+        private Instrument(short[] unpitchedData, String instrumentName)
         {
             this.unpitchedData = unpitchedData;
             pitchedNotes = new Dictionary<int, Note>(72);
+            this.instrumentName = instrumentName;
         }
 
         public static Instrument LoadByName(String instrName)
@@ -58,7 +67,7 @@ namespace Stepquencer
                 dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
             }
 
-            return new Instrument(dataAsShorts);
+            return new Instrument(dataAsShorts, instrName);
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace Stepquencer
         public Note AtPitch(int semitoneShift)
         {
             if (semitoneShift == 0)
-                return new Note(unpitchedData);
+                return new Note(unpitchedData, this, semitoneShift);
 
             //Either return an already generated note or generate the note
             Note pitchedNote;
@@ -78,7 +87,7 @@ namespace Stepquencer
             }
             else
             {
-                Note note = new Note(Resample(semitoneShift));
+                Note note = new Note(Resample(semitoneShift), this, semitoneShift);
                 pitchedNotes[semitoneShift] = note;
                 return note;
             }
