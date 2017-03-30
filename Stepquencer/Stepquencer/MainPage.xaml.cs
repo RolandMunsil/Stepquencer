@@ -25,10 +25,6 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
 
-        HashSet<SongPlayer.Note>[] noteList;                 // Array of HashSets of Songplayer notes
-
-        Dictionary<Color, SongPlayer.Instrument> colorMap;   // Dictionary mapping colors to instrument
-
         public Song song;                 // Array of HashSets of Songplayer notes
         public Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
 
@@ -40,9 +36,6 @@ namespace Stepquencer
         SongPlayer player;
         object highlightingSyncObject = new object();
 
-
-
-
         public MainPage()
         {
             InitializeComponent();
@@ -53,42 +46,19 @@ namespace Stepquencer
 
 
             // Initializing the song player and noteArray
-
-            noteList = new HashSet<SongPlayer.Note>[NumColumns];    //stored this way because C# is row-major and we want to access a column at a time
-            for (int i = 0; i < NumColumns; i++)
-            {
-                noteList[i] = new HashSet<SongPlayer.Note>();       //Create array of hash sets
-            }                                                       //Each hash set corresponds to each column in main grid
-            player = new SongPlayer(noteList);
-
             song = new Song(NumColumns);
 
             player = new SongPlayer(song);
 
-
-
-            // List of notes for sidebar
-            // Use SongPlayer class?
-            //sidebarNoteList = 
-
-
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
-
-
-            colorMap[Red] = player.LoadInstrument("Bass Drum");
-            colorMap[Blue] = player.LoadInstrument("YRM1x Atmosphere");
-            colorMap[Green] = player.LoadInstrument("Snare");
-            colorMap[Yellow] = player.LoadInstrument("Hi-Hat");
 
             colorMap[Red] = Instrument.LoadByName("Snare");
             colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");
             colorMap[Green] = Instrument.LoadByName("Bass Drum");
             colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");
 
-
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
-
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2};
@@ -227,12 +197,7 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
-
             //TODO: Have sidebar buttons make designated sound when clicked/tapped
-
-
-            if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
-
             if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
 
             {
