@@ -120,6 +120,10 @@
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small%403x.png" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
+    <BundleResource Include="Resources\editedbass.png" />
+    <BundleResource Include="Resources\editedhihat.png" />
+    <BundleResource Include="Resources\editedinst.png" />
+    <BundleResource Include="Resources\editedpiano.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
