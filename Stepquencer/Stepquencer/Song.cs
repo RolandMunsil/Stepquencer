@@ -6,48 +6,71 @@ namespace Stepquencer
 {
     public class Song
     {
-        HashSet<Instrument.Note>[] notesAtBeat;
+        /// <summary>
+        /// An array of hashsets. Each hashset contains all of the notes in a given beat
+        /// </summary>
+        HashSet<Instrument.Note>[] beats;
 
+        /// <summary>
+        /// The number of beats in this song
+        /// </summary>
         public int BeatCount
         {
             get
             {
-                return notesAtBeat.Length;
+                return beats.Length;
             }
         }
 
-        public Song(int beats)
+        public Song(int numBeats)
         {
-            notesAtBeat = new HashSet<Instrument.Note>[beats];
-            for(int i = 0; i < beats; i++)
+            beats = new HashSet<Instrument.Note>[numBeats];
+            for(int i = 0; i < numBeats; i++)
             {
-                notesAtBeat[i] = new HashSet<Instrument.Note>();
+                beats[i] = new HashSet<Instrument.Note>();
             }
         }
 
+        /// <summary>
+        /// Add a note to the song at a specific beat
+        /// </summary>
+        /// <param name="note">The note to add to the song</param>
+        /// <param name="beat">The beat to add the note at</param>
         public void AddNote(Instrument.Note note, int beat)
         {
-            lock (notesAtBeat)
+            lock (beats)
             {
-                notesAtBeat[beat].Add(note);
+                beats[beat].Add(note);
             }
         }
 
+        /// <summary>
+        /// Remove a note from the song at a specific beat
+        /// </summary>
+        /// <param name="note">The note to remove from the song</param>
+        /// <param name="beat">The beat to remove the note from</param>
         public void RemoveNote(Instrument.Note note, int beat)
         {
-            lock (notesAtBeat)
+            lock (beats)
             {
-                notesAtBeat[beat].Remove(note);
+                beats[beat].Remove(note);
             }
         }
 
+        /// <summary>
+        /// Returns an array containing the notes at the given beat
+        /// </summary>
+        /// <param name="beat">The beat to get the notes from</param>
+        /// <returns>The notes at <code>beat</code></returns>
         public Instrument.Note[] NotesAtBeat(int beat)
         {
             Instrument.Note[] notes;
-            lock (notesAtBeat)
+
+            //Lock so that the notes do not change while they are being copied
+            lock (beats)
             {
-                notes = new Instrument.Note[notesAtBeat[beat].Count];
-                notesAtBeat[beat].CopyTo(notes);
+                notes = new Instrument.Note[beats[beat].Count];
+                beats[beat].CopyTo(notes);
             }
             return notes;
         }

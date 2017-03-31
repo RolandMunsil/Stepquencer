@@ -12,11 +12,22 @@ namespace Stepquencer
         /// </summary>
         public class Note
         {
+            /// <summary>
+            /// The raw audio data representing this note
+            /// </summary>
             public readonly short[] data;
 
-            //Used for constructing button layouts from a Song
+            #region Used for constructing button layouts from a Song
+            /// <summary>
+            /// The instrument that generated this note.
+            /// </summary>
             public readonly Instrument instrument;
+
+            /// <summary>
+            /// The pitch shift of this note from the original audio file
+            /// </summary>
             public readonly int semitoneShift;
+            #endregion
 
             public Note(short[] data, Instrument instrument, int semitoneShift)
             {
@@ -26,6 +37,9 @@ namespace Stepquencer
             }
         }
 
+        /// <summary>
+        /// Used to get the audio files embedded in our program
+        /// </summary>
         private static Assembly assembly = typeof(MainPage).GetTypeInfo().Assembly;
 #if __IOS__
         const String resourcePrefix = "Stepquencer.iOS.Instruments.";
@@ -33,21 +47,37 @@ namespace Stepquencer
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
 #endif
-        //Used for saving
+        /// <summary>
+        /// The name of the audio file this instrument is based on
+        /// </summary>
         public String instrumentName;
 
+        /// <summary>
+        /// The raw audio data for the original audio file
+        /// </summary>
         private short[] unpitchedData;
+
+        /// <summary>
+        /// A dictionary mapping pitches to Notes. Used so that notes are not regenerated every time they are needed
+        /// </summary>
         private Dictionary<int, Note> pitchedNotes;
 
         private Instrument(short[] unpitchedData, String instrumentName)
         {
             this.unpitchedData = unpitchedData;
             pitchedNotes = new Dictionary<int, Note>(72);
+            pitchedNotes.Add(0, new Note(unpitchedData, this, 0));
             this.instrumentName = instrumentName;
         }
 
+        /// <summary>
+        /// Creates an instrument based on the file Instruments/<code>instrName</code>.wav
+        /// </summary>
+        /// <param name="instrName">The name of the wav file the created instrument will be based on</param>
+        /// <returns>An instrument</returns>
         public static Instrument LoadByName(String instrName)
         {
+            //Generate the path to the audio file
             String resourceString = $"{resourcePrefix}{instrName}.wav";
 
             //Read in data
@@ -59,9 +89,9 @@ namespace Stepquencer
                 stream.Read(rawInstrumentData, 0, streamLength);
             }
 
-            //Convert to short
+            //Convert to shorts
+            //Note that we skip 44 bytes because that is the size of the WAV header
             short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
-            //Start at 22 since 22 is 2 * the size of the WAV header.
             for (int i = 22; i < dataAsShorts.Length; i++)
             {
                 dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
@@ -76,9 +106,6 @@ namespace Stepquencer
         /// <param name="semitoneShift">The number of semitones the returned note will differ from the base audio file</param>
         public Note AtPitch(int semitoneShift)
         {
-            if (semitoneShift == 0)
-                return new Note(unpitchedData, this, semitoneShift);
-
             //Either return an already generated note or generate the note
             Note pitchedNote;
             if (pitchedNotes.TryGetValue(semitoneShift, out pitchedNote))
@@ -93,14 +120,24 @@ namespace Stepquencer
             }
         }
 
+        /// <summary>
+        /// Generates audio data for this instrument at the given pitch by resampling the audio data
+        /// </summary>
+        /// <param name="semitoneShift">Semitones to shift the base audio file by</param>
+        /// <returns></returns>
         private short[] Resample(int semitoneShift)
         {
+            //The amount to stretch the audio by
             double mult = Math.Pow(2, -semitoneShift / 12.0);
+
             int outputSize = (int)(unpitchedData.Length * mult);
             short[] output = new short[outputSize];
             for (int s = 0; s < outputSize; s++)
             {
+                //The position to sample from
                 double sourcePos = s / mult;
+
+                //Linearly interpolate between the samples before and after the given position
                 int left = (int)Math.Floor(sourcePos);
                 output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (unpitchedData[left + 1] - unpitchedData[left])));
             }
