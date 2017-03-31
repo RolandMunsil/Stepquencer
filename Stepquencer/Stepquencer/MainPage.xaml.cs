@@ -25,8 +25,12 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
 
-        public Song song;                 // Array of HashSets of Songplayer notes
-        public Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
+        public Song song;                                    // Array of HashSets of Songplayer notes
+        public Song bass;
+        public Song synth;
+        public Song snare;
+        public Song hihat;
+        public Dictionary<Color, Instrument> colorMap;       // Dictionary mapping colors to instrument
 
         public Color sideBarColor = Red;
         Button selectedInstrButton = null;
@@ -34,7 +38,12 @@ namespace Stepquencer
         BoxView highlight;
 
         SongPlayer player;
+        SongPlayer sidebarBass;
+        SongPlayer sidebarSynth;
+        SongPlayer sidebarSnare;
+        SongPlayer sidebarHiHat;
         object highlightingSyncObject = new object();
+
 
         public MainPage()
         {
@@ -48,18 +57,19 @@ namespace Stepquencer
 
             // Initializing the song player and noteArray
             song = new Song(NumColumns);
-
             player = new SongPlayer(song);
+
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
 
-            colorMap[Red] = Instrument.LoadByName("Snare");
+            colorMap[Red] = Instrument.LoadByName("Bass Drum");
             colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");
-            colorMap[Green] = Instrument.LoadByName("Bass Drum");
+            colorMap[Green] = Instrument.LoadByName("Snare");
             colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
+
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2};
@@ -93,6 +103,7 @@ namespace Stepquencer
             Grid.SetRowSpan(highlight, NumRows);
 
 
+
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
@@ -101,6 +112,25 @@ namespace Stepquencer
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
             sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+
+
+            //Define sounds in sidebar
+            bass = new Song(1);
+            bass.AddNote(colorMap[Red].AtPitch(3), 0);          //Add note to song + Not sure how to define pitch
+            sidebarBass = new SongPlayer(bass);
+
+            synth = new Song(1);
+            //synth.AddNote(colorMap[Blue].AtPitch(3), 1);
+            sidebarSynth = new SongPlayer(synth);
+
+            snare = new Song(1);
+            sidebarSnare = new SongPlayer(snare);
+
+            hihat = new Song(1);
+            sidebarHiHat = new SongPlayer(hihat);
+
+
 
 
             // Fill sidebar it with buttons
@@ -219,7 +249,12 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
+            //if (sideBarColor == Red)
+            //{
+            //    sidebarBass.BeginPlaying(240);
+            //}
             //TODO: Have sidebar buttons make designated sound when clicked/tapped
+
             if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
 
             {
