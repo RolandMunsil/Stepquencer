@@ -24,6 +24,10 @@ namespace Stepquencer
         Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
         public Song song;                 // Array of HashSets of Songplayer notes
         public Dictionary<Color, Instrument> colorMap;   // Dictionary mapping colors to instrument
 
@@ -35,8 +39,11 @@ namespace Stepquencer
         SongPlayer player;
         object highlightingSyncObject = new object();
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
         public MainPage()
         {
             InitializeComponent();
@@ -51,18 +58,23 @@ namespace Stepquencer
 
             player = new SongPlayer(song);
 
+<<<<<<< HEAD
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
 
             colorMap[Red] = Instrument.LoadByName("Bass Drum");
+=======
+            // Initializing the colorMap
+            colorMap = new Dictionary<Color, Instrument>();
+
+            colorMap[Red] = Instrument.LoadByName("Snare");
+>>>>>>> origin/master
             colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");
             colorMap[Green] = Instrument.LoadByName("Snare");
             colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");
 
-
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
-
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2};
@@ -201,12 +213,7 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
-
             //TODO: Have sidebar buttons make designated sound when clicked/tapped
-
-
-            if (button.BorderColor.Equals(Color.FromHex("#ffff00")))
-
             if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
 
             {
