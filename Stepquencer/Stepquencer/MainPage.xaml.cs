@@ -39,6 +39,7 @@ namespace Stepquencer
         public MainPage()
         {
             InitializeComponent();
+            NavigationPage.SetHasNavigationBar(this, false);
 
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
@@ -69,7 +70,7 @@ namespace Stepquencer
             //Set up grid of note squares
             stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
 
-            //Initialize the number of rows and columns
+            //Initialize the number of rows and columns for the stepgrid
             for (int i = 0; i < NumRows; i++)
             {
                 stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -79,7 +80,7 @@ namespace Stepquencer
                 stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
-            //Add grids to the grid, and give each 2 columns, two rows and a BoxView
+            //Add grids to the stepgrid, and give each 2 columns, two rows and a BoxView
             for (int i = 0; i < NumRows; i++)
             {
                 for (int j = 0; j < NumColumns; j++)
@@ -95,7 +96,7 @@ namespace Stepquencer
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
-            for (int i = 0; i < NumInstruments + 1; i++)
+            for (int i = 0; i < NumInstruments + 2; i++)
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
@@ -104,26 +105,25 @@ namespace Stepquencer
 
             // Fill sidebar it with buttons
             Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
-            //TODO: Change these buttons so that they show text/icon
-            for (int i = 0; i < colors.Length; i++)
+            for (int i = 1; i <= colors.Length; i++)
             {
-                Button button = new Button { Font = Font.SystemFontOfSize(10), BackgroundColor = colors[i], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
+                Button button = new Button { Font = Font.SystemFontOfSize(10), BackgroundColor = colors[i-1], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
                 sidebar.Children.Add(button, 0, i);                                 // Add it to the sidebar
                 button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler
 
-                if (i == 0)
+                if (i == 1)
                 {
                     button.Image = "editedbass.png";
                 }
-                if (i == 1)
+                if (i == 2)
                 {
                     button.Image = "editedpiano.png";
                 }
-                if (i == 2)
+                if (i == 3)
                 {
                     button.Image = "editedinst.png";
                 }
-                if (i == 3)
+                if (i == 4)
                 {
                     button.Image = "editedhihat.png";
                 }
@@ -135,8 +135,18 @@ namespace Stepquencer
                 }
             }
 
+            // More options button
+            Button moreOptionsButton = new Button
+            {
+                BackgroundColor = Color.Black,
+                Font = Font.SystemFontOfSize(40),
+                Text = "->",
+                TextColor = Color.White
+            };
+            sidebar.Children.Add(moreOptionsButton, 0, 0);
+            moreOptionsButton.Clicked += OnMoreOptionsClicked;
 
-            //Play/stop button
+            // Play/stop button
             Button playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
@@ -144,7 +154,7 @@ namespace Stepquencer
                 BorderRadius = 0,
             };
             playStopButton.Text = "\u25BA";
-            sidebar.Children.Add(playStopButton, 0, 4);
+            sidebar.Children.Add(playStopButton, 0, 5);
             playStopButton.Clicked += OnPlayStopClicked;
 
             // Set up scroll view and put grid inside it
@@ -185,6 +195,18 @@ namespace Stepquencer
                 Grid.SetColumn(highlight, 0);
             }
         }
+
+
+        /// <summary>
+        /// Event handler for the more options button. Sends user to more options page.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        async void OnMoreOptionsClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MoreOptionsPage());
+        }
+
 
         /// <summary>
         /// Event handler for buttons in the sidebar

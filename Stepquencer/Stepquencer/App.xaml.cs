@@ -11,9 +11,12 @@ namespace Stepquencer
     {
         public App ()
         {
-            InitializeComponent();
+            MainPage = new NavigationPage(new MainPage()) 
+            {
+                BarBackgroundColor = Color.Black,
+                BarTextColor = Color.White
+            };
 
-            MainPage = new Stepquencer.MainPage();
         }
 
         protected override void OnStart ()
