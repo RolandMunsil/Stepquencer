@@ -16,7 +16,6 @@ namespace Stepquencer
         private Grid tempoGrid;
         private Grid buttonGrid;
         private Label tempoLabel;
-        private Label bpmLabel;
         private Slider tempoSlider;
         private Button saveButton, loadButton, clearAllButton, undoClearButton;
 
@@ -41,11 +40,11 @@ namespace Stepquencer
             }
 
 
-            // Initialize tempo label and slider and add them to tempoGrid
+            // Initialize tempo label and slider
 
             tempoLabel = new Label
             {
-                Text = "Tempo:",
+                Text = "Tempo: 240 BPM",
                 TextColor = Color.White,
                 FontSize = 20,
                 HorizontalTextAlignment = TextAlignment.End, 
@@ -55,6 +54,10 @@ namespace Stepquencer
 
             tempoSlider = new Slider(minBPM, maxBPM, 240);
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;
+            tempoSlider.ValueChanged += OnSliderChanged;
+
+
+            // Add tempo label and slider to tempoGrid
 
             tempoGrid.Children.Add(tempoLabel, 0, 0);
             tempoGrid.Children.Add(tempoSlider, tempoColumns - 1, 0);
@@ -92,6 +95,16 @@ namespace Stepquencer
             masterLayout.Children.Add(buttonGrid);
 
             Content = masterLayout;
+        }
+
+        /// <summary>
+        /// Changes the BPM visualization when slider changes
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void OnSliderChanged(object sender, ValueChangedEventArgs e)
+        {
+            tempoLabel.Text = "Tempo: " + (int)e.NewValue + " BPM";
         }
     }
 }

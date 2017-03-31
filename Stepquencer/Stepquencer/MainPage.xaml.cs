@@ -80,6 +80,7 @@ namespace Stepquencer
             //Set up grid of note squares
             stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
 
+
             //Initialize the number of rows and columns for the stepgrid
             for (int i = 0; i < NumRows; i++)
             {
@@ -89,6 +90,7 @@ namespace Stepquencer
             {
                 stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
+
 
             //Add grids to the stepgrid, and give each 2 columns, two rows and a BoxView
             for (int i = 0; i < NumRows; i++)
@@ -134,7 +136,7 @@ namespace Stepquencer
 
 
             // Fill sidebar it with buttons
-            Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
+            Color[] colors = new Color[] { Green, Blue, Red, Yellow };      // Array of colors
             for (int i = 1; i <= colors.Length; i++)
             {
                 Button button = new Button { Font = Font.SystemFontOfSize(10), BackgroundColor = colors[i-1], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
@@ -143,7 +145,7 @@ namespace Stepquencer
 
                 if (i == 1)
                 {
-                    button.Image = "editedbass.png";
+                    button.Image = "editedinst.png";
                 }
                 if (i == 2)
                 {
@@ -151,16 +153,16 @@ namespace Stepquencer
                 }
                 if (i == 3)
                 {
-                    button.Image = "editedinst.png";
+                    button.Image = "editedbass.png";
                 }
                 if (i == 4)
                 {
                     button.Image = "editedhihat.png";
                 }
 
-                if (button.BackgroundColor.Equals(Color.Red))
+                if (button.BackgroundColor.Equals(Color.Red))       // Initialize red sidebar button to be highlighted
                 {
-                    button.BorderColor = Color.FromHex("#ffff00");
+                    button.BorderColor = Color.White;
                     selectedInstrButton = button;                         //Button now in use
                 }
             }
@@ -181,6 +183,7 @@ namespace Stepquencer
             {
                 BackgroundColor = Color.Black,
                 Font = Font.SystemFontOfSize(40),
+                TextColor = Color.White,
                 BorderRadius = 0,
             };
             playStopButton.Text = "\u25BA";
@@ -269,7 +272,7 @@ namespace Stepquencer
                     selectedInstrButton.BorderColor = Color.Black;
                 }
 
-                button.BorderColor = Color.Yellow;   //Change border highlight to yellow
+                button.BorderColor = Color.White;   //Change border highlight to yellow
                 selectedInstrButton = button;				     //Set this button to be the currently selected button
 
             }
