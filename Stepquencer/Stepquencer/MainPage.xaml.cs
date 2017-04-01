@@ -247,7 +247,7 @@ namespace Stepquencer
             player.StopPlaying();
             Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
             PlayButton.Text = "\u25BA";
-            highlight.IsVisible = false;
+            stepgrid.Children.Remove(highlight);
 
             await Navigation.PushAsync(new MoreOptionsPage(this, song));
 
