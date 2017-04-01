@@ -117,10 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\Icon.png" />
-    <AndroidResource Include="Resources\Drawable\editedbass.png" />
     <AndroidResource Include="Resources\Drawable\editedpiano.png" />
-    <AndroidResource Include="Resources\Drawable\editedinst.png" />
     <AndroidResource Include="Resources\Drawable\editedhihat.png" />
+    <AndroidResource Include="Resources\Drawable\editedsnaree.png" />
+    <AndroidResource Include="Resources\Drawable\editedbasss.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />

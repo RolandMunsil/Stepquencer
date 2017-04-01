@@ -40,10 +40,6 @@ namespace Stepquencer
         BoxView highlight;
 
         SongPlayer player;
-        SongPlayer sidebarBass;
-        SongPlayer sidebarSynth;
-        SongPlayer sidebarSnare;
-        SongPlayer sidebarHiHat;
         object highlightingSyncObject = new object();
 
 
@@ -62,10 +58,10 @@ namespace Stepquencer
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
 
-            colorMap[Red] = Instrument.LoadByName("Bass Drum");
-            colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");
-            colorMap[Green] = Instrument.LoadByName("Snare");
-            colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");
+            colorMap[Red] = Instrument.LoadByName("Snare");                 //Red = Snare
+            colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");     //Blue = Synth
+            colorMap[Green] = Instrument.LoadByName("Bass Drum");           //Green = Bass Drum
+            colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");             //Yellow = Hi-Hat
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
@@ -90,26 +86,8 @@ namespace Stepquencer
 
 
 
-            //Define sounds in sidebar
-            bass = new Song(1);
-            bass.AddNote(colorMap[Red].AtPitch(3), 0);          //Add note to song + Not sure how to define pitch
-            sidebarBass = new SongPlayer(bass);
-
-            synth = new Song(1);
-            //synth.AddNote(colorMap[Blue].AtPitch(3), 1);
-            sidebarSynth = new SongPlayer(synth);
-
-            snare = new Song(1);
-            sidebarSnare = new SongPlayer(snare);
-
-            hihat = new Song(1);
-            sidebarHiHat = new SongPlayer(hihat);
-
-
-
-
             // Fill sidebar it with buttons
-            Color[] colors = new Color[] { Green, Blue, Red, Yellow };      // Array of colors
+            Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
             for (int i = 1; i <= colors.Length; i++)
             {
                 Button button = new Button { Font = Font.SystemFontOfSize(10), BackgroundColor = colors[i-1], BorderColor = Color.Black, BorderWidth = 3 };     // Make a new button
@@ -118,7 +96,7 @@ namespace Stepquencer
 
                 if (i == 1)
                 {
-                    button.Image = "editedinst.png";
+                    button.Image = "editedsnaree.png";   //Show snare image w/ red
                 }
                 if (i == 2)
                 {
@@ -126,7 +104,7 @@ namespace Stepquencer
                 }
                 if (i == 3)
                 {
-                    button.Image = "editedbass.png";
+                    button.Image = "editedbasss.png";
                 }
                 if (i == 4)
                 {
@@ -265,10 +243,15 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
-            //if (sideBarColor == Red)
-            //{
-            //    sidebarBass.BeginPlaying(240);
-            //}
+            if (sideBarColor == Green)                          //If bass drum icon is clicked
+            {
+                SongPlayer.PlayNote(colorMap[Red].AtPitch(3));  //Play bass drum sound
+            }
+
+            if (sideBarColor == Green)
+            {
+                
+            }
             //TODO: Have sidebar buttons make designated sound when clicked/tapped
 
             if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
