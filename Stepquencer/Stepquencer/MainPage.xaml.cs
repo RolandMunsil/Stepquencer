@@ -221,11 +221,13 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnMoreOptionsClicked(object sender, EventArgs e)
         {
-
-            player.StopPlaying();
-            Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
-            PlayButton.Text = "\u25BA";
-            stepgrid.Children.Remove(highlight);
+            if (player.IsPlaying)
+            {
+                player.StopPlaying();
+                Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
+                PlayButton.Text = "\u25BA";
+                stepgrid.Children.Remove(highlight);
+            }
 
             await Navigation.PushAsync(new MoreOptionsPage(this, song));
 
