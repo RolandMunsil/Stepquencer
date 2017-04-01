@@ -97,7 +97,7 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-                    stepgrid.Children.Add(new MiniGrid(this,(NumColumns - 1) - i), j, i);
+                    stepgrid.Children.Add(new MiniGrid(this,(NumRows - 1) - i), j, i);
                 }
             }
 

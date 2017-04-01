@@ -139,7 +139,9 @@ namespace Stepquencer
 
                 //Linearly interpolate between the samples before and after the given position
                 int left = (int)Math.Floor(sourcePos);
-                output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (unpitchedData[left + 1] - unpitchedData[left])));
+                short rightSample = left + 1 < unpitchedData.Length ? unpitchedData[left + 1] : (short)0;
+
+                output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (rightSample - unpitchedData[left])));
             }
             return output;
         }
