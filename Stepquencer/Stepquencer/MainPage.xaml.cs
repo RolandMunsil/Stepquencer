@@ -53,13 +53,10 @@ namespace Stepquencer
 
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
-            highlight.IsVisible = false;
-
 
             // Initializing the song player and noteArray
             song = new Song(NumColumns);
             player = new SongPlayer(song);
-
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
@@ -101,10 +98,6 @@ namespace Stepquencer
                     stepgrid.Children.Add(new MiniGrid(this,(NumRows - 1) - i), j, i);
                 }
             }
-
-            stepgrid.Children.Add(highlight, 0, 0);
-            Grid.SetRowSpan(highlight, NumRows);
-
 
 
             // Make the sidebar
@@ -218,15 +211,15 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 ((Button)sender).Text = "\u25BA";
-                highlight.IsVisible = false;
+
+                stepgrid.Children.Remove(highlight);
             }
             else
             {
+                stepgrid.Children.Add(highlight, 0, 0);
+                Grid.SetRowSpan(highlight, NumRows);
                 player.BeginPlaying(currentTempo);
                 ((Button)sender).Text = "■";
-                
-                highlight.IsVisible = true;
-                Grid.SetColumn(highlight, 0);
             }
         }
 
