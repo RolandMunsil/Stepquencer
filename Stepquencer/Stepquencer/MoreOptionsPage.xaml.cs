@@ -27,8 +27,8 @@ namespace Stepquencer
         public MoreOptionsPage(MainPage passedpage, Song passedSong)
         {
 
-            mainpage = passedpage;
-            song = passedSong;
+            this.mainpage = passedpage;
+            this.song = passedSong;
 
             NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
             this.Title = "More Options";                        // Set title of page
@@ -64,7 +64,7 @@ namespace Stepquencer
 
             // Initialize tempo slider
 
-            tempoSlider = new Slider(minBPM, maxBPM, 240);
+            tempoSlider = new Slider(minBPM, maxBPM, mainpage.currentTempo);
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;
             tempoSlider.ValueChanged += OnSliderChanged;
 
@@ -121,8 +121,9 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
+            int newTempo = (int)e.NewValue;
             tempoLabel.Text = "Tempo: " + (int)e.NewValue + " BPM";
-
+            mainpage.currentTempo = newTempo;
         }
 
         /// <summary>
