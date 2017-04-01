@@ -24,6 +24,7 @@ namespace Stepquencer
         Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
         ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+        public int currentTempo = 240;
 
         public Song song;                                    // Array of HashSets of Songplayer notes
         public Song bass;
@@ -221,7 +222,7 @@ namespace Stepquencer
             }
             else
             {
-                player.BeginPlaying(240);
+                player.BeginPlaying(currentTempo);
                 ((Button)sender).Text = "■";
                 
                 highlight.IsVisible = true;
@@ -237,6 +238,11 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnMoreOptionsClicked(object sender, EventArgs e)
         {
+            player.StopPlaying();
+            Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
+            PlayButton.Text = "\u25BA";
+            highlight.IsVisible = false;
+
             await Navigation.PushAsync(new MoreOptionsPage());
         }
 
