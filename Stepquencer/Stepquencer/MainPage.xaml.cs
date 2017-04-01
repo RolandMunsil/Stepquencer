@@ -172,7 +172,7 @@ namespace Stepquencer
             {
                 BackgroundColor = Color.Black,
                 Font = Font.SystemFontOfSize(40),
-                Text = "->",
+                Text = "\u2699",
                 TextColor = Color.White
             };
             sidebar.Children.Add(moreOptionsButton, 0, 0);
