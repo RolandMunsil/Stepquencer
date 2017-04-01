@@ -18,10 +18,15 @@ namespace Stepquencer
         private Label tempoLabel;
         private Slider tempoSlider;
         private Button saveButton, loadButton, clearAllButton, undoClearButton;
+        private MainPage mainpage;
+        private Song song;
 
 
-        public MoreOptionsPage()
+        public MoreOptionsPage(MainPage passedpage, Song passedSong)
         {
+            mainpage = passedpage;
+            song = passedSong;
+
             NavigationPage.SetHasNavigationBar(this, true);
             this.Title = "More Options";                        // Set up basic page details
             this.BackgroundColor = Color.FromHex("#2C2C2C");
@@ -95,6 +100,8 @@ namespace Stepquencer
             masterLayout.Children.Add(buttonGrid);
 
             Content = masterLayout;
+
+            clearAllButton.Clicked += OnClearAllClicked;
         }
 
         /// <summary>
@@ -105,6 +112,22 @@ namespace Stepquencer
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
             tempoLabel.Text = "Tempo: " + (int)e.NewValue + " BPM";
+        }
+
+        /// <summary>
+        /// Clears the stepgrid and audio data when ClearAllButton is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClearAllClicked(object sender, EventArgs e)
+        {
+            mainpage.MakeNewStepGrid();
+            song.ClearAllBeats();
+            mainpage.scroller.Content = mainpage.stepgrid;
+
+            // Add the scroller (which contains stepgrid) and sidebar to mastergrid
+            mainpage.mastergrid.Children.Add(mainpage.scroller, 0, 0); // Add scroller to first column of mastergrid
+            mainpage.Content = mainpage.mastergrid;
         }
     }
 }

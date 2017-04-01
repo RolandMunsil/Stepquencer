@@ -20,10 +20,10 @@ namespace Stepquencer
         readonly static Color Green = Color.FromHex("#33ff33");
         readonly static Color Yellow = Color.FromHex("#ffff00");
 
-        Grid mastergrid;
-        Grid stepgrid;                                       // Grid for whole screen
+        public Grid mastergrid;
+        public Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
-        ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+        public ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
 
         public Song song;                                    // Array of HashSets of Songplayer notes
         public Song bass;
@@ -76,30 +76,8 @@ namespace Stepquencer
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-
-            //Set up grid of note squares
-            stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
-
-
-            //Initialize the number of rows and columns for the stepgrid
-            for (int i = 0; i < NumRows; i++)
-            {
-                stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            }
-            for (int i = 0; i < NumColumns; i++)
-            {
-                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            }
-
-
-            //Add grids to the stepgrid, and give each 2 columns, two rows and a BoxView
-            for (int i = 0; i < NumRows; i++)
-            {
-                for (int j = 0; j < NumColumns; j++)
-                {
-                    stepgrid.Children.Add(new MiniGrid(this,(NumRows - 1) - i), j, i);
-                }
-            }
+            // Make the stepgrid and fill it with boxes
+            MakeNewStepGrid();
 
             stepgrid.Children.Add(highlight, 0, 0);
             Grid.SetRowSpan(highlight, NumRows);
@@ -206,6 +184,39 @@ namespace Stepquencer
         }
 
 
+        public void MakeNewStepGrid()
+        {
+
+            //Set up grid of note squares
+            Grid tempGrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
+
+
+            //Initialize the number of rows and columns for the tempGrid
+            for (int i = 0; i < NumRows; i++)
+            {
+                tempGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            }
+            for (int i = 0; i < NumColumns; i++)
+            {
+                tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
+
+
+            //Add grids to the tempGrid, and give each 2 columns, two rows and a BoxView
+            for (int i = 0; i < NumRows; i++)
+            {
+                for (int j = 0; j < NumColumns; j++)
+                {
+                    tempGrid.Children.Add(new MiniGrid(this, (NumRows - 1) - i), j, i);
+                }
+            }
+
+            stepgrid = tempGrid;
+        }
+
+        
+
+
         /// <summary>
         /// Event handler for the Play/Stop button
         /// </summary>
@@ -237,7 +248,7 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnMoreOptionsClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new MoreOptionsPage());
+            await Navigation.PushAsync(new MoreOptionsPage(this, song));
         }
 
 
