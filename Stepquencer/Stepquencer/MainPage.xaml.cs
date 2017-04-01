@@ -23,7 +23,9 @@ namespace Stepquencer
         public Grid mastergrid;
         public Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar
+
         public ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
+        public int currentTempo = 240;
 
         public Song song;                                    // Array of HashSets of Songplayer notes
         public Song bass;
@@ -52,13 +54,10 @@ namespace Stepquencer
 
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
-            highlight.IsVisible = false;
-
 
             // Initializing the song player and noteArray
             song = new Song(NumColumns);
             player = new SongPlayer(song);
-
 
             // Initializing the colorMap
             colorMap = new Dictionary<Color, Instrument>();
@@ -78,10 +77,6 @@ namespace Stepquencer
 
             // Make the stepgrid and fill it with boxes
             MakeNewStepGrid();
-
-            stepgrid.Children.Add(highlight, 0, 0);
-            Grid.SetRowSpan(highlight, NumRows);
-
 
 
             // Make the sidebar
@@ -150,7 +145,7 @@ namespace Stepquencer
             {
                 BackgroundColor = Color.Black,
                 Font = Font.SystemFontOfSize(40),
-                Text = "->",
+                Text = "\u2699",
                 TextColor = Color.White
             };
             sidebar.Children.Add(moreOptionsButton, 0, 0);
@@ -228,15 +223,15 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 ((Button)sender).Text = "\u25BA";
-                highlight.IsVisible = false;
+
+                stepgrid.Children.Remove(highlight);
             }
             else
             {
-                player.BeginPlaying(240);
+                stepgrid.Children.Add(highlight, 0, 0);
+                Grid.SetRowSpan(highlight, NumRows);
+                player.BeginPlaying(currentTempo);
                 ((Button)sender).Text = "■";
-                
-                highlight.IsVisible = true;
-                Grid.SetColumn(highlight, 0);
             }
         }
 
@@ -248,7 +243,14 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnMoreOptionsClicked(object sender, EventArgs e)
         {
+
+            player.StopPlaying();
+            Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
+            PlayButton.Text = "\u25BA";
+            highlight.IsVisible = false;
+
             await Navigation.PushAsync(new MoreOptionsPage(this, song));
+
         }
 
 

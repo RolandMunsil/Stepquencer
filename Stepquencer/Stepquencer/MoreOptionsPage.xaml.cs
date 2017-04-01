@@ -7,29 +7,33 @@ namespace Stepquencer
 {
     public partial class MoreOptionsPage : ContentPage
     {
-        const int tempoRows = 1;
-        const int tempoColumns = 6;
-        const double minBPM = 100;
-        const double maxBPM = 480;
+        const int tempoRows = 1;            // Number of rows in tempoGrid
+        const int tempoColumns = 6;         // Number of columns in tempoGrid
+        const double minBPM = 100;          // Minimum BPM user can change to
+        const double maxBPM = 480;          // Maximum BPM user can go to
 
-        private StackLayout masterLayout;
-        private Grid tempoGrid;
-        private Grid buttonGrid;
-        private Label tempoLabel;
-        private Slider tempoSlider;
-        private Button saveButton, loadButton, clearAllButton, undoClearButton;
+
+        private StackLayout masterLayout;   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
+        private Grid tempoGrid;             // Layout to hold tempo label and slider
+        private Grid buttonGrid;            // Grid to hold save, load, clear, and other button
+        private Label tempoLabel;           // Label showing the current BPM
+        private Slider tempoSlider;         // Slider that user can interact with to change BPM
+        private Button saveButton, loadButton, clearAllButton, undoClearButton;     // Buttons to save, load, clear, etc
         private MainPage mainpage;
         private Song song;
 
 
+
         public MoreOptionsPage(MainPage passedpage, Song passedSong)
         {
+
             mainpage = passedpage;
             song = passedSong;
 
-            NavigationPage.SetHasNavigationBar(this, true);
-            this.Title = "More Options";                        // Set up basic page details
-            this.BackgroundColor = Color.FromHex("#2C2C2C");
+            NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
+            this.Title = "More Options";                        // Set title of page
+            this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
+
 
 
             // Initialize tempoGrid to hold tempo and slider
@@ -45,7 +49,7 @@ namespace Stepquencer
             }
 
 
-            // Initialize tempo label and slider
+            // Initialize tempo label
 
             tempoLabel = new Label
             {
@@ -57,6 +61,9 @@ namespace Stepquencer
                 HorizontalOptions = LayoutOptions.End
             };
 
+
+            // Initialize tempo slider
+
             tempoSlider = new Slider(minBPM, maxBPM, 240);
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;
             tempoSlider.ValueChanged += OnSliderChanged;
@@ -67,10 +74,10 @@ namespace Stepquencer
             tempoGrid.Children.Add(tempoLabel, 0, 0);
             tempoGrid.Children.Add(tempoSlider, tempoColumns - 1, 0);
             Grid.SetColumnSpan(tempoLabel, 2);
-            Grid.SetColumnSpan(tempoSlider, 4);
+            Grid.SetColumnSpan(tempoSlider, 4);     // This was just to mess with spacing
 
 
-            // Initialize buttonGrid to hold buttons
+            // Initialize buttonGrid to hold buttons (2 rows and 2 columns)
 
             buttonGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand};
 
@@ -99,9 +106,12 @@ namespace Stepquencer
             masterLayout.Children.Add(tempoGrid);           
             masterLayout.Children.Add(buttonGrid);
 
-            Content = masterLayout;
+
 
             clearAllButton.Clicked += OnClearAllClicked;
+
+            Content = masterLayout;             // Put masterLayout on page
+
         }
 
         /// <summary>
@@ -112,6 +122,7 @@ namespace Stepquencer
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
             tempoLabel.Text = "Tempo: " + (int)e.NewValue + " BPM";
+
         }
 
         /// <summary>

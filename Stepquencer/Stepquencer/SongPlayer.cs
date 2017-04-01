@@ -149,6 +149,44 @@ namespace Stepquencer
             nextBeat = (nextBeat + 1) % song.BeatCount;
         }
 
+        public static void PlayNote(Instrument.Note note)
+        {
+#if __ANDROID__
+            AudioTrack track = new AudioTrack(
+                // Stream type
+                Android.Media.Stream.Music,
+                // Frequency
+                44100,
+                // Mono or stereo
+                ChannelOut.Mono,
+                // Audio encoding
+                Android.Media.Encoding.Pcm16bit,
+                // Length of the audio clip.
+                (note.data.Length * 2), // Double buffering
+                // Mode. Stream or static.
+                AudioTrackMode.Static);
+
+            track.Write(note.data, 0, note.data.Length);
+            track.Play();
+#endif
+#if __IOS__
+            OutputAudioQueue queue = new OutputAudioQueue(streamDesc);
+            unsafe
+            {
+                AudioQueueBuffer* buffer;
+                queue.AllocateBuffer(note.data.Length * 2, out buffer);
+
+                fixed (short* beatData = note.data)
+                {
+                    buffer->CopyToAudioData((IntPtr)beatData, note.data.Length * 2);
+                }
+
+                audioQueue.EnqueueBuffer((IntPtr)buffer, note.data.Length * 2, null);
+            }
+            audioQueue.Start();
+#endif
+        }
+
         private void StartStreamingAudio(short[] beat0, short[] beat1)
         {
 #if __ANDROID__
