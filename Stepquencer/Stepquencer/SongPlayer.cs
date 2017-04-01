@@ -149,6 +149,7 @@ namespace Stepquencer
             nextBeat = (nextBeat + 1) % song.BeatCount;
         }
 
+
         public static void PlayNote(Instrument.Note note)
         {
 #if __ANDROID__
@@ -170,7 +171,7 @@ namespace Stepquencer
             track.Play();
 #endif
 #if __IOS__
-            OutputAudioQueue queue = new OutputAudioQueue(streamDesc);
+            OutputAudioQueue queue = new OutputAudioQueue(AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false));
             unsafe
             {
                 AudioQueueBuffer* buffer;
@@ -181,9 +182,9 @@ namespace Stepquencer
                     buffer->CopyToAudioData((IntPtr)beatData, note.data.Length * 2);
                 }
 
-                audioQueue.EnqueueBuffer((IntPtr)buffer, note.data.Length * 2, null);
+                queue.EnqueueBuffer((IntPtr)buffer, note.data.Length * 2, null);
             }
-            audioQueue.Start();
+            queue.Start();
 #endif
         }
 
