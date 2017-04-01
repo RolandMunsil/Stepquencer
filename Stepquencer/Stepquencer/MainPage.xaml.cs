@@ -245,14 +245,21 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
+            if (sideBarColor == Red)
+            {
+                SongPlayer.PlayNote(colorMap[Red].AtPitch(3));
+            }
+            if (sideBarColor == Blue)
+            {
+                SongPlayer.PlayNote(colorMap[Blue].AtPitch(3));
+            }
             if (sideBarColor == Green)                          //If bass drum icon is clicked
             {
-                SongPlayer.PlayNote(colorMap[Red].AtPitch(3));  //Play bass drum sound
+                SongPlayer.PlayNote(colorMap[Green].AtPitch(3));  //Play bass drum sound
             }
-
-            if (sideBarColor == Green)
+            if (sideBarColor == Yellow)
             {
-                
+                SongPlayer.PlayNote(colorMap[Yellow].AtPitch(3));
             }
             //TODO: Have sidebar buttons make designated sound when clicked/tapped
 
