@@ -187,6 +187,11 @@ namespace Stepquencer
             stepgrid = tempGrid;
         }
 
+        public void SetSong(Song song)
+        {
+            throw new NotImplementedException();
+        }
+
         
 
 

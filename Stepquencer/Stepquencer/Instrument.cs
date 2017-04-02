@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Stepquencer
 {
+    [System.Diagnostics.DebuggerDisplay("{instrumentName}")]
     public class Instrument
     {
+        [System.Diagnostics.DebuggerDisplay("{instrument.instrumentName} @ {semitoneShift}")]
         /// <summary>
         /// Represents a specific instrument played a specific pitch
         /// </summary>
@@ -62,6 +64,8 @@ namespace Stepquencer
         /// </summary>
         private Dictionary<int, Note> pitchedNotes;
 
+        public static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
+
         private Instrument(short[] unpitchedData, String instrumentName)
         {
             this.unpitchedData = unpitchedData;
@@ -97,7 +101,9 @@ namespace Stepquencer
                 dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
             }
 
-            return new Instrument(dataAsShorts, instrName);
+            Instrument instrument = new Instrument(dataAsShorts, instrName);
+            loadedInstruments.Add(instrName, instrument);
+            return instrument;
         }
 
         /// <summary>
