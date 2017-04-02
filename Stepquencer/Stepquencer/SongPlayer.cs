@@ -26,7 +26,7 @@ namespace Stepquencer
 #if __ANDROID__
         AudioTrack playingTrack;
 #endif
-
+        //Used to synchronize multithreaded accesses
         object trackDisposedOfSyncObject = new object();
         object startStopSyncObject = new object();
 
@@ -37,8 +37,13 @@ namespace Stepquencer
 
         Song song;
         int samplesPerBeat;
+
+        //The next beat to generate
         int nextBeat;
 
+        /// <summary>
+        /// Whether the song is currently being played.
+        /// </summary>
         public bool IsPlaying
         {
             get
@@ -63,6 +68,9 @@ namespace Stepquencer
 #endif
         }
 
+        /// <summary>
+        /// Begins playing at the specified BPM
+        /// </summary>
         public void BeginPlaying(int bpm)
         {
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
@@ -71,35 +79,40 @@ namespace Stepquencer
                 {
                     throw new InvalidOperationException("Audio is already playing.");
                 }
-
-                //TODO: this takes a long time (~100ms) - perhaps start it on a different thread?
+                
                 samplesPerBeat = ((60 * PLAYBACK_RATE) / bpm);
                 short[] beat0 = MixBeat(song.NotesAtBeat(0));
                 short[] beat1 = MixBeat(song.NotesAtBeat(1));
 
                 StartStreamingAudio(beat0, beat1);
 
+                //Beats 0 and 1 have already been generated, so the next beet to generate is 2
                 nextBeat = 2;
                 BeatStarted?.Invoke(0, true);
             }
         }
 
+        /// <summary>
+        /// Combines the given set of notes into a single array of audio data
+        /// </summary>
         private short[] MixBeat(Instrument.Note[] notes)
         {
             short[] beatData = new short[samplesPerBeat];
             if (notes.Length > 0)
             {
-                //TODO: Use Parallel.For()?
                 for (int i = 0; i < samplesPerBeat; i++)
                 {
                     int sampleSum = 0;
+                    //Add together the samples from each note
                     for (int n = 0; n < notes.Length; n++)
                     {
                         if (i < notes[n].data.Length)
                             sampleSum += notes[n].data[i];
                     }
-                    //Reduce audio clipping.
+                    //Divide sample sum by 4 to reduce audio clipping.
                     sampleSum /= 4;
+
+                    //Clamp to short range
                     short asShort;
                     if (sampleSum >= short.MaxValue)
                         asShort = short.MaxValue;
@@ -114,6 +127,9 @@ namespace Stepquencer
             return beatData;
         }
 
+        /// <summary>
+        /// Called every time a beat is completed
+        /// </summary>
 #if __ANDROID__
         private void OnStreamingAudioPeriodicNotification(object sender, AudioTrack.PeriodicNotificationEventArgs args)
 #endif
@@ -122,10 +138,12 @@ namespace Stepquencer
 #endif
         {
             int prevBeat = ((nextBeat - 1) + song.BeatCount) % song.BeatCount;
+            //Call the BeatStarted callback on a separate thread
             BeatStarted?.BeginInvoke(prevBeat, false, null, null);
 
             short[] data = MixBeat(song.NotesAtBeat(nextBeat));
 
+            //Make sure the track isnt disposed of after we check if it's playing
             lock (trackDisposedOfSyncObject)
             {
                 if (IsPlaying)
@@ -149,7 +167,10 @@ namespace Stepquencer
             nextBeat = (nextBeat + 1) % song.BeatCount;
         }
 
-
+        /// <summary>
+        /// Plays a single note
+        /// </summary>
+        /// <param name="note"></param>
         public static void PlayNote(Instrument.Note note)
         {
 #if __ANDROID__
@@ -163,12 +184,13 @@ namespace Stepquencer
                 // Audio encoding
                 Android.Media.Encoding.Pcm16bit,
                 // Length of the audio clip.
-                (note.data.Length * 2), // Double buffering
+                (note.data.Length * 2),
                 // Mode. Stream or static.
                 AudioTrackMode.Static);
 
             track.Write(note.data, 0, note.data.Length);
 
+            //Release the track after it's done playing
             track.SetPositionNotificationPeriod(track.BufferSizeInFrames);
             track.PeriodicNotification += (sender, args) =>
             {
@@ -218,6 +240,7 @@ namespace Stepquencer
                 // Mode. Stream or static.
                 AudioTrackMode.Stream);
 
+            //Setup notifications at the end of beats
             playingTrack.PeriodicNotification += OnStreamingAudioPeriodicNotification;
             playingTrack.SetPositionNotificationPeriod(samplesPerBeat);
 
@@ -254,14 +277,17 @@ namespace Stepquencer
 #endif
         }
 
+        /// <summary>
+        /// Stops the currently playing audio
+        /// </summary>
         public void StopPlaying()
         {
-
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started or begins stopping twice
             {
                 if (!IsPlaying)
                     throw new InvalidOperationException("Audio is not playing");
 #if __ANDROID__
+                //We use pause instead of stop because stop waits a bit before ending audio playing
                 playingTrack.Pause();
 
                 lock (trackDisposedOfSyncObject)

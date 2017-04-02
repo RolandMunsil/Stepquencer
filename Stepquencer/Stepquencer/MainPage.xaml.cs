@@ -28,10 +28,6 @@ namespace Stepquencer
         public int currentTempo;
 
         public Song song;                                    // Array of HashSets of Songplayer notes
-        public Song bass;
-        public Song synth;
-        public Song snare;
-        public Song hihat;
         public Dictionary<Color, Instrument> colorMap;       // Dictionary mapping colors to instrument
 
         public Color sideBarColor = Red;
@@ -200,9 +196,6 @@ namespace Stepquencer
             throw new NotImplementedException();
         }
 
-        
-
-
         /// <summary>
         /// Event handler for the Play/Stop button
         /// </summary>
@@ -259,24 +252,9 @@ namespace Stepquencer
             sideBarColor = button.BackgroundColor;
 
 
-            if (player.IsPlaying == false)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
+            if (!player.IsPlaying)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
-                if (sideBarColor == Red)
-                {
-                    SongPlayer.PlayNote(colorMap[Red].AtPitch(3));
-                }
-                if (sideBarColor == Blue)
-                {
-                    SongPlayer.PlayNote(colorMap[Blue].AtPitch(3));
-                }
-                if (sideBarColor == Green)                          //If bass drum icon is clicked
-                {
-                    SongPlayer.PlayNote(colorMap[Green].AtPitch(3));  //Play bass drum sound
-                }
-                if (sideBarColor == Yellow)
-                {
-                    SongPlayer.PlayNote(colorMap[Yellow].AtPitch(3));
-                }
+                SongPlayer.PlayNote(colorMap[sideBarColor].AtPitch(3));
             }
 
             if (button.BorderColor == Color.Black)

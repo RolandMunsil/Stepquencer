@@ -23,6 +23,7 @@ namespace Stepquencer
             this.mainPage = mainPage;
             this.semitoneShift = semitoneShift;
 
+            //No grid spacing
             this.ColumnSpacing = 0;
             this.RowSpacing = 0;
             this.BackgroundColor = Color.Black;
@@ -34,15 +35,16 @@ namespace Stepquencer
 
             // Add in boxviews
             topLeft = new BoxView { BackgroundColor = MainPage.Grey };
-            topRight = new BoxView { BackgroundColor = MainPage.Grey };
-            bottomLeft = new BoxView { BackgroundColor = MainPage.Grey };
-            bottomRight = new BoxView { BackgroundColor = MainPage.Grey };
+            topRight = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
+            bottomLeft = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
+            bottomRight = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
 
             this.Children.Add(topLeft, 0, 0);
             this.Children.Add(topRight, 1, 0);
             this.Children.Add(bottomLeft, 0, 1);
             this.Children.Add(bottomRight, 1, 1);
 
+            //When created the top left boxview will cover the whole grid
             Grid.SetColumnSpan(topLeft, 2);
             Grid.SetRowSpan(topLeft, 2);
 
@@ -61,13 +63,16 @@ namespace Stepquencer
 
         void OnTap()
         {
+            //Grab the stuff we need from mainPage
             Color sidebarColor = mainPage.sideBarColor;
             Song song = mainPage.song;
             Dictionary<Color, Instrument> colorMap = mainPage.colorMap;
 
-            List<Color> colors = ChangeColor(sidebarColor);      // Changes UI represenation and returns colors that new button has
+            // Changes UI represenation and returns new set of colors on this grid
+            List<Color> colors = ChangeColor(sidebarColor);      
 
-            if (!colors.Contains(sidebarColor))     // If sidebar color isn't part of button's new set of colors, remove it
+            // If sidebar color isn't part of button's new set of colors, remove it
+            if (!colors.Contains(sidebarColor))
             {
                 Instrument.Note toRemove = colorMap[sidebarColor].AtPitch(semitoneShift);
                 song.RemoveNote(toRemove, Grid.GetColumn(this));
@@ -80,12 +85,13 @@ namespace Stepquencer
         }
 
         /// <summary>
-        /// Correctly changes UI representation of a note when clicked and returns list of colors in new note
+        /// Adds or removes <code>sidebarColor</code> from this grid.
         /// </summary>
         List<Color> ChangeColor(Color sidebarColor)
         {
             List<Color> colorList = new List<Color>();		// List to store the colors to be added to the new button
 
+            //Figure out what colors are already on this grid
             foreach (BoxView box in this.Children)
             {
                 if (box.BackgroundColor != MainPage.Grey)
@@ -94,6 +100,7 @@ namespace Stepquencer
                 }
             }
 
+            //Remove/add sidebarColor depending on if it's on this grid already
             if (colorList.Contains(sidebarColor))			// If button already has the sidebar color, remove it from colorList
             {
                 colorList.Remove(sidebarColor);
@@ -108,8 +115,13 @@ namespace Stepquencer
             return colorList;
         }
 
+        /// <summary>
+        /// Sets this grid's display to show the colors in <code>colors</code>
+        /// </summary>
+        /// <param name="colors"></param>
         public void SetColors(List<Color> colors)
         {
+            //Reset all of the boxes
             foreach (BoxView box in this.Children)
             {
                 if (box.BackgroundColor != MainPage.Grey)
@@ -122,6 +134,7 @@ namespace Stepquencer
                 box.IsVisible = false;
             }
 
+            //Sort colors so the same set of colors always looks the same
             colors.Sort((c1, c2) => Math.Sign(c1.Hue - c2.Hue));
 
             if (colors.Count == 0)		// If the box is reverting to grey
