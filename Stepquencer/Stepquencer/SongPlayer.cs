@@ -168,6 +168,14 @@ namespace Stepquencer
                 AudioTrackMode.Static);
 
             track.Write(note.data, 0, note.data.Length);
+
+            track.SetPositionNotificationPeriod(track.BufferSizeInFrames);
+            track.PeriodicNotification += (sender, args) =>
+            {
+                track.Release();
+                track.Dispose();
+            };
+
             track.Play();
 #endif
 #if __IOS__
@@ -184,6 +192,11 @@ namespace Stepquencer
 
                 queue.EnqueueBuffer((IntPtr)buffer, note.data.Length * 2, null);
             }
+
+            queue.BufferCompleted += (sender, args) =>
+            {
+                queue.Dispose();
+            };
             queue.Start();
 #endif
         }
