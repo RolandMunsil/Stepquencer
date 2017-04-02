@@ -8,7 +8,7 @@ namespace Stepquencer
     public partial class MoreOptionsPage : ContentPage
     {
         const int tempoRows = 1;            // Number of rows in tempoGrid
-        const int tempoColumns = 6;         // Number of columns in tempoGrid
+        const int tempoColumns = 3;         // Number of columns in tempoGrid
         const double minBPM = 100;          // Minimum BPM user can change to
         const double maxBPM = 480;          // Maximum BPM user can go to
 
@@ -16,12 +16,12 @@ namespace Stepquencer
         private StackLayout masterLayout;   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
         private Grid tempoGrid;             // Layout to hold tempo label and slider
         private Grid buttonGrid;            // Grid to hold save, load, clear, and other button
-        private Label tempoLabel;           // Label showing the current BPM
+        private Label tempoLabel;           // Label for the phrase "Tempo: "
+        private Label bpmLabel;             // Label to show the current BPM
         private Slider tempoSlider;         // Slider that user can interact with to change BPM
         private Button saveButton, loadButton, clearAllButton, undoClearButton;     // Buttons to save, load, clear, etc
-        private MainPage mainpage;
-        private Song song;
-
+        private MainPage mainpage;          // The MainPage this screen came from
+        private Song song;                  // The user's current Song
 
 
         public MoreOptionsPage(MainPage passedpage, Song passedSong)
@@ -39,26 +39,35 @@ namespace Stepquencer
             // Initialize tempoGrid to hold tempo and slider
 
             tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
-            for (int i = 0; i < tempoRows; i++)
-            {
-                tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            }
-            for (int i = 0; i < tempoColumns; i++)
-            {
-                tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            }
+            tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for BPM label should take up 1/3 of horizontal space
+            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }); // Column for slider should take up 2/3 of horizontal space
 
 
             // Initialize tempo label
 
             tempoLabel = new Label
             {
-                Text = "Tempo: 240 BPM",
+                Text = "Tempo: ",
                 TextColor = Color.White,
                 FontSize = 20,
-                HorizontalTextAlignment = TextAlignment.End, 
+                HorizontalTextAlignment = TextAlignment.Center, 
                 VerticalTextAlignment = TextAlignment.Center,
-                HorizontalOptions = LayoutOptions.End
+                HorizontalOptions = LayoutOptions.EndAndExpand
+            };
+
+
+            // Initialize the BPM label
+
+            bpmLabel = new Label
+            {
+                Text = mainpage.currentTempo + "\nBPM",
+                TextColor = Color.White,
+                FontSize = 20,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.StartAndExpand
             };
 
 
@@ -66,15 +75,15 @@ namespace Stepquencer
 
             tempoSlider = new Slider(minBPM, maxBPM, mainpage.currentTempo);
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;
+            tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;
             tempoSlider.ValueChanged += OnSliderChanged;
 
 
-            // Add tempo label and slider to tempoGrid
+            // Add tempo label, BPM label and slider to tempoGrid
 
             tempoGrid.Children.Add(tempoLabel, 0, 0);
-            tempoGrid.Children.Add(tempoSlider, tempoColumns - 1, 0);
-            Grid.SetColumnSpan(tempoLabel, 2);
-            Grid.SetColumnSpan(tempoSlider, 4);     // This was just to mess with spacing
+            tempoGrid.Children.Add(bpmLabel, 1, 0);
+            tempoGrid.Children.Add(tempoSlider, 2, 0);
 
 
             // Initialize buttonGrid to hold buttons (2 rows and 2 columns)
@@ -184,7 +193,7 @@ namespace Stepquencer
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
             int newTempo = (int)e.NewValue;
-            tempoLabel.Text = "Tempo: " + (int)e.NewValue + " BPM";
+            bpmLabel.Text =  newTempo + "\nBPM";
             mainpage.currentTempo = newTempo;
         }
 

@@ -25,7 +25,7 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
 
         public ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        public int currentTempo = 240;
+        public int currentTempo;
 
         public Song song;                                    // Array of HashSets of Songplayer notes
         public Song bass;
@@ -46,8 +46,15 @@ namespace Stepquencer
         public MainPage()
         {
             InitializeComponent();
-            NavigationPage.SetHasNavigationBar(this, false);
+            NavigationPage.SetHasNavigationBar(this, false);    // Make sure navigation bar doesn't show up on this screen
 
+            if (currentTempo == 0)          
+            {
+                System.Diagnostics.Debug.WriteLine("currentTempo was reset");
+                currentTempo = 240;                   // If the tempo hasn't been changed, initialize it to 240
+            }
+
+            // Initialize the highlight box
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
 
@@ -157,6 +164,9 @@ namespace Stepquencer
         }
 
 
+        /// <summary>
+        /// Method to make a fresh stepGrid
+        /// </summary>
         public void MakeNewStepGrid()
         {
 
@@ -250,28 +260,25 @@ namespace Stepquencer
 
             sideBarColor = button.BackgroundColor;
 
-            if (sideBarColor == Red)
-            {
-                SongPlayer.PlayNote(colorMap[Red].AtPitch(3));
-            }
-            if (sideBarColor == Blue)
-            {
-                SongPlayer.PlayNote(colorMap[Blue].AtPitch(3));
-            }
-            if (sideBarColor == Green)                          //If bass drum icon is clicked
-            {
-                SongPlayer.PlayNote(colorMap[Green].AtPitch(3));  //Play bass drum sound
-            }
-            if (sideBarColor == Yellow)
-            {
-                SongPlayer.PlayNote(colorMap[Yellow].AtPitch(3));
-            }
-            //TODO: Have sidebar buttons make designated sound when clicked/tapped
 
-            if (button == selectedInstrButton) //User has selected the instrument that is aleady selected
-
+            if (player.IsPlaying == false)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
-                return;
+                if (sideBarColor == Red)
+                {
+                    SongPlayer.PlayNote(colorMap[Red].AtPitch(3));
+                }
+                if (sideBarColor == Blue)
+                {
+                    SongPlayer.PlayNote(colorMap[Blue].AtPitch(3));
+                }
+                if (sideBarColor == Green)                          //If bass drum icon is clicked
+                {
+                    SongPlayer.PlayNote(colorMap[Green].AtPitch(3));  //Play bass drum sound
+                }
+                if (sideBarColor == Yellow)
+                {
+                    SongPlayer.PlayNote(colorMap[Yellow].AtPitch(3));
+                }
             }
 
             if (button.BorderColor == Color.Black)
