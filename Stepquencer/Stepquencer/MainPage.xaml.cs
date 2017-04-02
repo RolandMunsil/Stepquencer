@@ -40,7 +40,6 @@ namespace Stepquencer
         BoxView highlight;
 
         SongPlayer player;
-        object highlightingSyncObject = new object();
 
 
         public MainPage()
@@ -50,7 +49,6 @@ namespace Stepquencer
 
             if (currentTempo == 0)          
             {
-                System.Diagnostics.Debug.WriteLine("currentTempo was reset");
                 currentTempo = 240;                   // If the tempo hasn't been changed, initialize it to 240
             }
 
