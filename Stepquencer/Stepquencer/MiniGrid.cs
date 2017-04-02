@@ -35,9 +35,9 @@ namespace Stepquencer
 
             // Add in boxviews
             topLeft = new BoxView { BackgroundColor = MainPage.Grey };
-            topRight = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
-            bottomLeft = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
-            bottomRight = new BoxView { BackgroundColor = MainPage.Grey, IsVisible = false };
+            topRight = new BoxView { BackgroundColor = MainPage.Grey, };
+            bottomLeft = new BoxView { BackgroundColor = MainPage.Grey, };
+            bottomRight = new BoxView { BackgroundColor = MainPage.Grey, };
 
             this.Children.Add(topLeft, 0, 0);
             this.Children.Add(topRight, 1, 0);
