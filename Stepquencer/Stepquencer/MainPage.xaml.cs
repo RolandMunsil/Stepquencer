@@ -61,7 +61,7 @@ namespace Stepquencer
 
             colorMap[Red] = Instrument.LoadByName("Snare");                 //Red = Snare
             colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");     //Blue = Synth
-            colorMap[Green] = Instrument.LoadByName("Bass Drum");           //Green = Bass Drum
+            colorMap[Green] = Instrument.LoadByName("Slap Bass Low");           //Green = Bass Drum
             colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");             //Yellow = Hi-Hat
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
