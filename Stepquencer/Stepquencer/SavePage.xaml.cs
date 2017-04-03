@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 using Xamarin.Forms;
 
@@ -108,11 +109,37 @@ namespace Stepquencer
 
             if (buttonPressed.Equals(this.cancelButton))
             {                                                                       // If the cancel button was pushed, send user
-                await Navigation.PushAsync(new MoreOptionsPage(mainpage, song));    // back to MoreOptionsPage.
+                await Navigation.PopToRootAsync();    // back to MoreOptionsPage.
             }
             else
             {
-                
+                SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                await Navigation.PopToRootAsync();
+            }
+        }
+
+
+        private void SaveSongToFile(Song songToSave, String songName)
+        {
+            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String savePath = Path.Combine(documentsPath, "stepsongs/");
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+
+            String filePath = Path.Combine(savePath, $"{songName}.txt");
+
+            using (StreamWriter file = File.CreateText(filePath))
+            {
+                file.WriteLine($"{songToSave.BeatCount} total beats");
+                for (int i = 0; i < songToSave.BeatCount; i++)
+                {
+                    Instrument.Note[] notes = songToSave.NotesAtBeat(i);
+                    file.WriteLine($"Beat {i}|{notes.Length}");
+                    foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
+                    {
+                        file.WriteLine($"{note.instrument.instrumentName}:{note.semitoneShift}");
+                    }
+                }
             }
         }
     }
