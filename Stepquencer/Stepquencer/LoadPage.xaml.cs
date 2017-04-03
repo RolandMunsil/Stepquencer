@@ -22,11 +22,13 @@ namespace Stepquencer
 
             Song loadedSong = LoadSongFromFile("TEST");
             mainpage.SetSong(loadedSong);
-            returnToMainPage();
 
+            Button test = new Button { Text = "Load TEST" };
+            test.Clicked += returnToMainPage;
+            Content = test;
         }
 
-        async void returnToMainPage()
+        async void returnToMainPage(Object sender, EventArgs e)
         {
             //Navigation.InsertPageBefore(mainpage, this);
             await Navigation.PopToRootAsync();
