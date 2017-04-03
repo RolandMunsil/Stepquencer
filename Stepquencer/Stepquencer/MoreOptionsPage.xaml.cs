@@ -145,9 +145,9 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-            int newTempo = (int)e.NewValue;
-            bpmLabel.Text = newTempo + "\nBPM";
-            mainpage.currentTempo = newTempo;
+            int newTempo = (int)e.NewValue;         // Cast new BPM value to an int
+            bpmLabel.Text = newTempo + "\nBPM";     // Change the label to reflect the new BPM
+            mainpage.currentTempo = newTempo;       // Update the value stored by the mainpage
         }
 
 
@@ -156,10 +156,10 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSaveButtonClicked(object sender, EventArgs e)
+        async void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            this.DisplayAlert("title", "message", "Save", "Cancel");
 
+            await Navigation.PushAsync(new SavePage(mainpage, song));   // Send to SavePage
 
             String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             String savePath = Path.Combine(documentsPath, "stepsongs/");
