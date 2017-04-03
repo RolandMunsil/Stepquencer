@@ -159,6 +159,7 @@ namespace Stepquencer
         private void OnSaveButtonClicked(object sender, EventArgs e)
         {
             SaveSongToFile(mainpage.song, "TEST");
+            this.DisplayAlert("title", "message", "Save", "Cancel");
         }
 
         private void SaveSongToFile(Song songToSave, String songName)
