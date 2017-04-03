@@ -29,6 +29,7 @@ namespace Stepquencer
 
         public Song song;                                    // Array of HashSets of Songplayer notes
         public Dictionary<Color, Instrument> colorMap;       // Dictionary mapping colors to instrument
+        public Dictionary<Instrument, Color> instrumentMap;       // Dictionary mapping instrument to color
 
         public Color sideBarColor = Red;
         Button selectedInstrButton = null;
@@ -63,6 +64,13 @@ namespace Stepquencer
             colorMap[Blue] = Instrument.LoadByName("YRM1x Atmosphere");     //Blue = Synth
             colorMap[Green] = Instrument.LoadByName("Slap Bass Low");           //Green = Bass Drum
             colorMap[Yellow] = Instrument.LoadByName("Hi-Hat");             //Yellow = Hi-Hat
+
+            //Initialize instrument map
+            instrumentMap = new Dictionary<Instrument, Color>();
+            foreach (var kvPair in colorMap)
+            {
+                instrumentMap.Add(kvPair.Value, kvPair.Key);
+            }
 
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
 
@@ -193,7 +201,30 @@ namespace Stepquencer
 
         public void SetSong(Song song)
         {
-            throw new NotImplementedException();
+            this.song = song;
+            this.player = new SongPlayer(song);
+
+            Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[song.BeatCount];
+            for(int i = 0; i < song.BeatCount; i++)
+            {
+                Instrument.Note[] notes = song.NotesAtBeat(i);
+                colorsAtShiftAtBeat[i] = notes.GroupBy(n => n.semitoneShift)
+                                              .ToDictionary(
+                                                     g => g.Key,
+                                                     g => g.Select(n => instrumentMap[n.instrument]).ToList()
+                                              );
+            }
+
+            foreach(MiniGrid miniGrid in stepgrid.Children.OfType<MiniGrid>())
+            {
+                int beat = Grid.GetColumn(miniGrid);
+
+                List<Color> colorsOnThisButton;
+                if (colorsAtShiftAtBeat[beat].TryGetValue(miniGrid.semitoneShift, out colorsOnThisButton))
+                {
+                    miniGrid.SetColors(colorsOnThisButton);
+                }
+            }
         }
 
         /// <summary>
