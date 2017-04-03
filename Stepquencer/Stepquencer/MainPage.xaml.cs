@@ -226,7 +226,6 @@ namespace Stepquencer
                 }
             }
         }
-        }
 
         /// <summary>
         /// Event handler for the Play/Stop button
