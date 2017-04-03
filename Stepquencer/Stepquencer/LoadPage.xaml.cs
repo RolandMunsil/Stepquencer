@@ -28,6 +28,7 @@ namespace Stepquencer
 
         async void returnToMainPage()
         {
+            //Navigation.InsertPageBefore(mainpage, this);
             await Navigation.PopToRootAsync();
         }
 
