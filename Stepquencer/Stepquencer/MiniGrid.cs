@@ -13,7 +13,7 @@ namespace Stepquencer
         private BoxView bottomLeft;
         private BoxView bottomRight;
 
-        private int semitoneShift;
+        public int semitoneShift;
 
         //TODO: This is fairly hacky - figure out a better way to do it?
         private MainPage mainPage;
