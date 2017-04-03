@@ -158,6 +158,9 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSaveButtonClicked(object sender, EventArgs e)
         {
+            this.DisplayAlert("title", "message", "Save", "Cancel");
+
+
             String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             String savePath = Path.Combine(documentsPath, "stepsongs/");
             if (!Directory.Exists(savePath))
