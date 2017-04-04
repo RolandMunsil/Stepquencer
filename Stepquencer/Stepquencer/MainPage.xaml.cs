@@ -204,7 +204,7 @@ namespace Stepquencer
         public void SetSong(Song song)
         {
             this.song = song;
-            this.player = new SongPlayer(song);
+            this.player.Song = song;
 
             Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[song.BeatCount];
             for (int i = 0; i < song.BeatCount; i++)
