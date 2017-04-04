@@ -10,8 +10,6 @@ namespace Stepquencer
         MainPage mainpage;
         Song song;
 
-
-
         public LoadPage(MainPage mainpage, Song song)
         {
             this.mainpage = mainpage;
@@ -37,10 +35,7 @@ namespace Stepquencer
 
         private static Song LoadSongFromFile(String songName)
         {
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-
-            String filePath = Path.Combine(savePath, $"{songName}.txt");
+            String filePath = MoreOptionsPage.PathToSongFile(songName);
 
             Song loadedSong;
 
@@ -68,6 +63,11 @@ namespace Stepquencer
             }
 
             return loadedSong;
+        }
+
+        private static void DeleteSongFile(String songName)
+        {
+            File.Delete(MoreOptionsPage.PathToSongFile(songName));
         }
     }
 }

@@ -121,12 +121,7 @@ namespace Stepquencer
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-
-            String filePath = Path.Combine(savePath, $"{songName}.txt");
+            String filePath = MoreOptionsPage.PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {
