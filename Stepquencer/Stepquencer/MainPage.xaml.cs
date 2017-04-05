@@ -241,6 +241,10 @@ namespace Stepquencer
                 {
                     miniGrid.SetColors(colorsOnThisButton);
                 }
+                else
+                {
+                    miniGrid.SetColors(new List<Color>());
+                }
             }
 
         }

@@ -65,12 +65,9 @@ namespace Stepquencer
         /// <param name="path">Path.</param>
         private String GetSongNameFromFilePath(String path)
         {
-            // NOTE: TrimStart seems to get overzealous and remove first word of song when using savePath, so this janky way is necessary
-
-            String name = path.TrimStart(documentsPath.ToCharArray()).TrimStart('g', 's', '/');  // Remove all the nonsense at the beginning so it's just "name.txt"
-            name = name.TrimEnd(".txt".ToCharArray());      // Remove ".txt" at end
-
-            return name;
+            int start = path.IndexOf("stepsongs") + "stepsongs".Length + 1;
+            int end = path.LastIndexOf('.');
+            return path.Substring(start, end - start);
         }
 
 
