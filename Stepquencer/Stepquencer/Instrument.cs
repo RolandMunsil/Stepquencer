@@ -98,9 +98,10 @@ namespace Stepquencer
             //Convert to shorts
             //Note that we skip 44 bytes because that is the size of the WAV header
             short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
-            for (int i = 22; i < dataAsShorts.Length; i++)
+            for (int i = 0; i < dataAsShorts.Length; i++)
             {
-                dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
+                int srcPos = (i * 2) + 44;
+                dataAsShorts[i] = (short)(rawInstrumentData[srcPos] | (rawInstrumentData[srcPos + 1] << 8));
             }
 
             Instrument instrument = new Instrument(dataAsShorts, instrName);
