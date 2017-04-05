@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
@@ -51,7 +51,7 @@ namespace Stepquencer
             tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for tempo label should take up 1/6 of horizontal space
-            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
+            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }); // Column for slider should take up 2/3 of horizontal space
 
 
@@ -61,7 +61,7 @@ namespace Stepquencer
             {
                 Text = "Tempo: ",
                 TextColor = Color.White,
-                FontSize = 20,
+                FontSize = 24,
                 HorizontalTextAlignment = TextAlignment.Center,     //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
                 HorizontalOptions = LayoutOptions.EndAndExpand      //* 
@@ -72,12 +72,12 @@ namespace Stepquencer
 
             bpmLabel = new Label
             {
-                Text = mainpage.currentTempo + "\nBPM",
+                Text = mainpage.currentTempo + "  " + "BPM",
                 TextColor = Color.White,
                 FontSize = 20,
-                HorizontalTextAlignment = TextAlignment.Center,     //*
+                HorizontalTextAlignment = TextAlignment.End,     //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
-                HorizontalOptions = LayoutOptions.StartAndExpand    //*
+                HorizontalOptions = LayoutOptions.CenterAndExpand    //*
             };
 
 
@@ -109,7 +109,7 @@ namespace Stepquencer
 
             saveButton = new Button { Text = "SAVE", Style = buttonStyle };
             loadButton = new Button { Text = "LOAD", Style = buttonStyle };
-            clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle };
+            clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };
             undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };
 
             buttonGrid.Children.Add(saveButton, 0, 0);
@@ -145,9 +145,11 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-            int newTempo = (int)e.NewValue;         // Cast new BPM value to an int
-            bpmLabel.Text = newTempo + "\nBPM";     // Change the label to reflect the new BPM
-            mainpage.currentTempo = newTempo;       // Update the value stored by the mainpage
+
+            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
+            bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
+            mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
+
         }
 
 
