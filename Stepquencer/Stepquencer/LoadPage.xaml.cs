@@ -14,7 +14,8 @@ namespace Stepquencer
         String savePath;
         private String[] songNames;
 
-        private StackLayout songsLayout;
+        private StackLayout masterLayout;
+        private ScrollView scroller;
 
         public LoadPage(MainPage mainpage, Song song)
         {
@@ -24,56 +25,68 @@ namespace Stepquencer
             this.savePath = Path.Combine(documentsPath, "stepsongs/");                              //*
 
 
+            // Initialize masterLayout
+
+            masterLayout = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                BackgroundColor = Color.FromHex("#2C2C2C")
+            };
+
             // Get all of the song names and store them in an array of Strings
 
             songNames = Directory.GetFiles(savePath);
 
-            foreach (String name in songNames)
+            foreach (String name in songNames)          //TODO: show something if there are no saved songs
             {
-                System.Diagnostics.Debug.WriteLine(GetSongNameFromFilePath(name) + "\n");
+                SongUIElement songUI = new SongUIElement(name);     // Make a new instance of the UI element
+
+                // Add TapGestureRecognizer
+                TapGestureRecognizer tgr = new TapGestureRecognizer // Make a new TapGestureRecognizer to add to it
+                {
+                    CommandParameter = songUI.GetSong(),
+                    Command = new Command(OnSongTap)
+                };
+
+                songUI.AddGestureRecognizers(tgr);                  // Add Tapgesture recognizer to diffenent parts of UI element
+                masterLayout.Children.Add(songUI);          // Add UI element to the masterLayout
+
             }
 
-
-            // Temporary, to be moved to an OnButtonClicked method or something along those lines
-
-            Song loadedSong = LoadSongFromFile("TEST");
-            mainpage.SetSong(loadedSong);
-
-            Button test = new Button { Text = "Load TEST" };
-            test.Clicked += ReturnToMainPage;
-            Content = test;
+            Content = masterLayout;
         }
 
-        async void ReturnToMainPage(Object sender, EventArgs e)
+        /// <summary>
+        /// Asynchronus function that returns user to main page
+        /// </summary>
+        async void ReturnToMainPage()
         {
-            //Navigation.InsertPageBefore(mainpage, this);
             await Navigation.PopToRootAsync();
         }
 
 
         /// <summary>
-        /// Given a file path, returns the name of the actual song
+        /// Event handler for a SongUIElement being tapped
         /// </summary>
-        /// <returns>The song name from file path.</returns>
-        /// <param name="path">Path.</param>
-        private String GetSongNameFromFilePath(String path)
+        /// <param name="song">Song.</param>
+        void OnSongTap(Object song)
         {
-            // NOTE: TrimStart seems to get overzealous and remove first word of song when using savePath, so this janky way is necessary
-            String name = path.TrimStart(documentsPath.ToCharArray()).TrimStart('g', 's', '/');  // Remove all the nonsense at the beginning so it's just "name.txt"
-            name = name.TrimEnd(".txt".ToCharArray());      // Remove ".txt" at end
-
-            return name;
+            Song loadedSong = (Song)song;
+            mainpage.SetSong(loadedSong);
+            ReturnToMainPage();
         }
+
+
+
 
         /// <summary>
         /// Loads a song given its name
         /// </summary>
         /// <returns>The song from file.</returns>
         /// <param name="songName">Song name.</param>
-        private static Song LoadSongFromFile(String songName)
+        public static Song LoadSongFromFile(String path)
         {
-            String filePath = MoreOptionsPage.PathToSongFile(songName);
-
+            String filePath = path;
             Song loadedSong;
 
             using (StreamReader file = File.OpenText(filePath))
