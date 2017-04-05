@@ -7,13 +7,31 @@ namespace Stepquencer
 {
     public partial class LoadPage : ContentPage
     {
-        MainPage mainpage;
-        Song song;
+        private MainPage mainpage;
+        private Song song;
+
+        String documentsPath;
+        String savePath;
+        private String[] songNames;
+
+        private StackLayout songsLayout;
 
         public LoadPage(MainPage mainpage, Song song)
         {
             this.mainpage = mainpage;
             this.song = song;
+            this.documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);     //* Get path to saved songs on this device
+            this.savePath = Path.Combine(documentsPath, "stepsongs/");                              //*
+
+
+            // Get all of the song names and store them in an array of Strings
+
+            songNames = Directory.GetFiles(savePath);
+
+            foreach (String name in songNames)
+            {
+                System.Diagnostics.Debug.WriteLine(GetSongNameFromFilePath(name) + "\n");
+            }
 
 
             // Temporary, to be moved to an OnButtonClicked method or something along those lines
@@ -22,17 +40,36 @@ namespace Stepquencer
             mainpage.SetSong(loadedSong);
 
             Button test = new Button { Text = "Load TEST" };
-            test.Clicked += returnToMainPage;
+            test.Clicked += ReturnToMainPage;
             Content = test;
         }
 
-        async void returnToMainPage(Object sender, EventArgs e)
+        async void ReturnToMainPage(Object sender, EventArgs e)
         {
             //Navigation.InsertPageBefore(mainpage, this);
             await Navigation.PopToRootAsync();
         }
 
 
+        /// <summary>
+        /// Given a file path, returns the name of the actual song
+        /// </summary>
+        /// <returns>The song name from file path.</returns>
+        /// <param name="path">Path.</param>
+        private String GetSongNameFromFilePath(String path)
+        {
+            // NOTE: TrimStart seems to get overzealous and remove first word of song when using savePath, so this janky way is necessary
+            String name = path.TrimStart(documentsPath.ToCharArray()).TrimStart('g', 's', '/');  // Remove all the nonsense at the beginning so it's just "name.txt"
+            name = name.TrimEnd(".txt".ToCharArray());      // Remove ".txt" at end
+
+            return name;
+        }
+
+        /// <summary>
+        /// Loads a song given its name
+        /// </summary>
+        /// <returns>The song from file.</returns>
+        /// <param name="songName">Song name.</param>
         private static Song LoadSongFromFile(String songName)
         {
             String filePath = MoreOptionsPage.PathToSongFile(songName);
