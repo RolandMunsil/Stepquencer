@@ -8,7 +8,6 @@ namespace Stepquencer
     public partial class LoadPage : ContentPage
     {
         private MainPage mainpage;
-        private Song song;
 
         String documentsPath;
         String savePath;
@@ -17,12 +16,16 @@ namespace Stepquencer
         private StackLayout masterLayout;
         private ScrollView scroller;
 
-        public LoadPage(MainPage mainpage, Song song)
+        public LoadPage(MainPage mainpage)
         {
             this.mainpage = mainpage;
-            this.song = song;
             this.documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);     //* Get path to saved songs on this device
             this.savePath = Path.Combine(documentsPath, "stepsongs/");                              //*
+
+
+            // Initialize scrollview
+
+            scroller = new ScrollView();
 
 
             // Initialize masterLayout
@@ -53,7 +56,9 @@ namespace Stepquencer
 
             }
 
-            Content = masterLayout;
+            scroller.Content = masterLayout;
+
+            Content = scroller;
         }
 
         /// <summary>
@@ -105,6 +110,7 @@ namespace Stepquencer
                         String[] noteStringParts = file.ReadLine().Split(':');
                         String instrName = noteStringParts[0];
                         int semitoneShift = int.Parse(noteStringParts[1]);
+
 
                         Instrument.Note note = Instrument.loadedInstruments[instrName].AtPitch(semitoneShift);
                         loadedSong.AddNote(note, i);
