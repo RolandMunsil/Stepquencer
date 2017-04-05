@@ -205,7 +205,8 @@ namespace Stepquencer
                             FontSize = 17,
                             FontAttributes = FontAttributes.Bold,
                             TextColor = new Color(0.18),
-                            Margin = new Thickness(4, 3, 0, 0)
+                            Margin = new Thickness(4, 3, 0, 0),
+                            InputTransparent = true
                         };
                         tempGrid.Children.Add(noteLabel, j, i);
                     }
