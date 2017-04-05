@@ -47,7 +47,7 @@ namespace Stepquencer
                 // Add TapGestureRecognizer
                 TapGestureRecognizer tgr = new TapGestureRecognizer // Make a new TapGestureRecognizer to add to it
                 {
-                    CommandParameter = songUI.GetSong(),
+                    CommandParameter = songUI,
                     Command = new Command(OnSongTap)
                 };
 
@@ -73,11 +73,11 @@ namespace Stepquencer
         /// <summary>
         /// Event handler for a SongUIElement being tapped
         /// </summary>
-        /// <param name="song">Song.</param>
-        void OnSongTap(Object song)
+        /// <param name="songUI">Song user interface.</param>
+        void OnSongTap(Object songUI)
         {
-            Song loadedSong = (Song)song;
-            mainpage.SetSong(loadedSong);
+            SongUIElement uiElement = (SongUIElement)songUI;
+            mainpage.SetSong(uiElement.GetSong());
             ReturnToMainPage();
         }
 
