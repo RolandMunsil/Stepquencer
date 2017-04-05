@@ -60,6 +60,17 @@ namespace Stepquencer
             }
         }
 
+        public Song Song
+        {
+            set
+            {
+                if (!IsPlaying)
+                    song = value;
+                else
+                    throw new InvalidOperationException("Cannot change the song while it is being played!");
+            }
+        }
+
         public SongPlayer(Song song)
         {
             this.song = song;

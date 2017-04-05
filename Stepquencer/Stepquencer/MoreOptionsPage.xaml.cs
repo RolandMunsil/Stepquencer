@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
@@ -145,9 +145,11 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-            int newTempo = (int)e.NewValue;
-            bpmLabel.Text = newTempo + "  " + "BPM";
-            mainpage.currentTempo = newTempo;
+
+            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
+            bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
+            mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
+
         }
 
 
@@ -156,32 +158,9 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSaveButtonClicked(object sender, EventArgs e)
+        async void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            this.DisplayAlert("title", "message", "Save", "Cancel");
-
-
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-
-            String filePath = Path.Combine(savePath, "TEST.txt");
-
-            using (StreamWriter file = File.CreateText(filePath))
-            {
-                Song song = mainpage.song;
-                file.WriteLine($"{song.BeatCount} total beats");
-                for (int i = 0; i < song.BeatCount; i++)
-                {
-                    Instrument.Note[] notes = song.NotesAtBeat(i);
-                    file.WriteLine($"Beat {i}|{notes.Length}");
-                    foreach(Instrument.Note note in song.NotesAtBeat(i))
-                    {
-                        file.WriteLine($"{note.instrument.instrumentName}:{note.semitoneShift}");
-                    }
-                }
-            }
+            await Navigation.PushAsync(new SavePage(mainpage, song));   // Send to SavePage
         }
 
 
@@ -190,39 +169,9 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnLoadButtonClicked(object sender, EventArgs e)
+        async void OnLoadButtonClicked(object sender, EventArgs e)
         {
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-
-            String filePath = Path.Combine(savePath, "TEST.txt");
-
-            Song loadedSong;
-
-            using (StreamReader file = File.OpenText(filePath))
-            {
-                int totalBeats = int.Parse(file.ReadLine().Split(' ')[0]);
-                loadedSong = new Song(totalBeats);
-                for (int i = 0; i < totalBeats; i++)
-                {
-                    String header = file.ReadLine();
-                    if(!header.Contains($"Beat {i}"))
-                        throw new Exception("Invalid file or bug in file loader");
-                    int numNotes = int.Parse(header.Split('|')[1]);
-
-                    for(int n = 0; n < numNotes; n++)
-                    {
-                        String[] noteStringParts = file.ReadLine().Split(':');
-                        String instrName = noteStringParts[0];
-                        int semitoneShift = int.Parse(noteStringParts[1]);
-
-                        Instrument.Note note = Instrument.loadedInstruments[instrName].AtPitch(semitoneShift);
-                        loadedSong.AddNote(note, i);
-                    }
-                }
-            }
-
-            mainpage.SetSong(loadedSong);
+            await Navigation.PushAsync(new LoadPage(mainpage, song));   // Send to LoadPage
         }
 
 
@@ -240,6 +189,16 @@ namespace Stepquencer
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
             mainpage.mastergrid.Children.Add(mainpage.scroller, 0, 0); // Add scroller to first column of mastergrid
             mainpage.Content = mainpage.mastergrid;
+        }
+
+        public static String PathToSongFile(String songName)
+        {
+            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String savePath = Path.Combine(documentsPath, "stepsongs/");
+            if (!Directory.Exists(savePath))
+                Directory.CreateDirectory(savePath);
+
+            return Path.Combine(savePath, $"{songName}.txt");
         }
     }
 }
