@@ -28,9 +28,11 @@ namespace Stepquencer
             this.songLabel = new Label             // Make a new label initialized with the song name
             {
                 Text = songName,
+                FontSize = 20,
                 BackgroundColor = Color.Black,
                 TextColor = Color.White,
-                HorizontalOptions = LayoutOptions.CenterAndExpand
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
 
