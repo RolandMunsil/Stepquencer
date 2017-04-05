@@ -194,7 +194,21 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-                    tempGrid.Children.Add(new MiniGrid(this, (NumRows - 1) - i), j, i);
+                    int semitoneShift = (NumRows - 1) - i;
+                    tempGrid.Children.Add(new MiniGrid(this, semitoneShift), j, i);
+                    if(j % 8 == 0)
+                    {
+                        Label noteLabel = new Label
+                        {
+                            Text = Instrument.SemitoneShiftToString(semitoneShift),
+                            //VerticalTextAlignment = TextAlignment.Center,
+                            FontSize = 17,
+                            FontAttributes = FontAttributes.Bold,
+                            TextColor = new Color(0.18),
+                            Margin = new Thickness(4, 3, 0, 0)
+                        };
+                        tempGrid.Children.Add(noteLabel, j, i);
+                    }
                 }
             }
 

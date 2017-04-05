@@ -66,6 +66,8 @@ namespace Stepquencer
 
         public static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
 
+        static readonly String[] NOTE_NAMES = { "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B" };
+
         private Instrument(short[] unpitchedData, String instrumentName)
         {
             this.unpitchedData = unpitchedData;
@@ -104,6 +106,12 @@ namespace Stepquencer
             Instrument instrument = new Instrument(dataAsShorts, instrName);
             loadedInstruments.Add(instrName, instrument);
             return instrument;
+        }
+
+        public static String SemitoneShiftToString(int semitoneShift)
+        {
+            int index = (((semitoneShift % 12) + 12) % 12);
+            return NOTE_NAMES[index];
         }
 
         /// <summary>
