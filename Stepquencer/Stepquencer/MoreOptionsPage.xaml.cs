@@ -182,13 +182,8 @@ namespace Stepquencer
         /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
-            mainpage.MakeNewStepGrid();
+            mainpage.ClearStepGrid();
             song.ClearAllBeats();
-            mainpage.scroller.Content = mainpage.stepgrid;
-
-            // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-            mainpage.mastergrid.Children.Add(mainpage.scroller, 0, 0); // Add scroller to first column of mastergrid
-            mainpage.Content = mainpage.mastergrid;
         }
 
         public static String PathToSongFile(String songName)

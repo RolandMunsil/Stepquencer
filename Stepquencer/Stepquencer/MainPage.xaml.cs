@@ -83,8 +83,7 @@ namespace Stepquencer
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             // Make the stepgrid and fill it with boxes
-            MakeNewStepGrid();
-
+            MakeStepGrid();
 
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
@@ -171,22 +170,21 @@ namespace Stepquencer
         /// <summary>
         /// Method to make a fresh stepGrid
         /// </summary>
-        public void MakeNewStepGrid()
+        public void MakeStepGrid()
         {
 
             //Set up grid of note squares
-            Grid tempGrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
-
+            stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
 
             //Initialize the number of rows and columns for the tempGrid
             for (int i = 0; i < NumRows; i++)
             {
-                tempGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54, GridUnitType.Absolute) });
+                stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54, GridUnitType.Absolute) });
             }
             for (int i = 0; i < NumColumns; i++)
             {
                 //tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54, GridUnitType.Absolute) });
-                tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
 
@@ -196,7 +194,7 @@ namespace Stepquencer
                 for (int j = 0; j < NumColumns; j++)
                 {
                     int semitoneShift = (NumRows - 1) - i;
-                    tempGrid.Children.Add(new MiniGrid(this, semitoneShift), j, i);
+                    stepgrid.Children.Add(new MiniGrid(this, semitoneShift), j, i);
                     if(j % 8 == 0)
                     {
                         Label noteLabel = new Label
@@ -209,12 +207,18 @@ namespace Stepquencer
                             Margin = new Thickness(4, 3, 0, 0),
                             InputTransparent = true
                         };
-                        tempGrid.Children.Add(noteLabel, j, i);
+                        stepgrid.Children.Add(noteLabel, j, i);
                     }
                 }
             }
+        }
 
-            stepgrid = tempGrid;
+        public void ClearStepGrid()
+        {
+            foreach (MiniGrid miniGrid in stepgrid.Children.OfType<MiniGrid>())
+            {
+                miniGrid.SetColors(new List<Color>());
+            }
         }
 
         public void SetSong(Song song)
