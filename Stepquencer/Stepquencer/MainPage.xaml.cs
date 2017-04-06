@@ -181,10 +181,11 @@ namespace Stepquencer
             //Initialize the number of rows and columns for the tempGrid
             for (int i = 0; i < NumRows; i++)
             {
-                tempGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                tempGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54, GridUnitType.Absolute) });
             }
             for (int i = 0; i < NumColumns; i++)
             {
+                //tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54, GridUnitType.Absolute) });
                 tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
