@@ -171,7 +171,7 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnLoadButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new LoadPage(mainpage, song));   // Send to LoadPage
+            await Navigation.PushAsync(new LoadPage(mainpage));   // Send to LoadPage
         }
 
 

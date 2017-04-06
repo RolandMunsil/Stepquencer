@@ -10,6 +10,7 @@ namespace Stepquencer
     {
         private MainPage mainpage;                  // The MainPage this screen came from
         private Song song;                          // The user's current Song
+        private ScrollView scroller;                // TODO: put everything in a scoller so people can see the songTitleEntry box when typing
         private StackLayout masterLayout;           // Main layout object
         private StackLayout buttonLayout;           // Layout to hold buttons
         private Label saveLabel;                    // Title above text input
@@ -22,6 +23,11 @@ namespace Stepquencer
             this.song = passedSong;                             //* 
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
             NavigationPage.SetHasNavigationBar(this, false);    // Make sure navigation bar doesn't show up on this one
+
+
+            // Initialize scrollView
+
+            scroller = new ScrollView();
 
 
             // Initialize masterLayout
@@ -99,8 +105,8 @@ namespace Stepquencer
             masterLayout.Children.Add(songTitleEntry);
             masterLayout.Children.Add(buttonLayout);
 
-
-            Content = masterLayout;
+            scroller.Content = masterLayout;
+            Content = scroller;
         }
 
         async void OnButtonClicked(Object sender, EventArgs e)

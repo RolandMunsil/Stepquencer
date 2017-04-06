@@ -5,12 +5,9 @@ namespace Stepquencer
 {
     public class SongUIElement : StackLayout
     {
-        private String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-
         private String filePath;
         private String songName;
         private Song song;
-        private StackLayout songUILayout;
         private Label songLabel;
         private Button deleteButton;
         private Image folder;
