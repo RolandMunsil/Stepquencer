@@ -194,7 +194,9 @@ namespace Stepquencer
                 for (int j = 0; j < NumColumns; j++)
                 {
                     int semitoneShift = (NumRows - 1) - i;
-                    stepgrid.Children.Add(new MiniGrid(this, semitoneShift), j, i);
+                    MiniGrid miniGrid = new MiniGrid(semitoneShift);
+                    miniGrid.Tap += OnMiniGridTapped;
+                    stepgrid.Children.Add(miniGrid, j, i);
                     if(j % 8 == 0)
                     {
                         Label noteLabel = new Label
@@ -252,6 +254,23 @@ namespace Stepquencer
                 }
             }
 
+        }
+
+        void OnMiniGridTapped(MiniGrid miniGrid)
+        {
+            // Changes UI represenation and returns new set of colors on this grid
+            List<Color> colors = miniGrid.ToggleColor(sideBarColor);
+
+            // If sidebar color isn't part of button's new set of colors, remove it
+            Instrument.Note toggledNote = colorMap[sideBarColor].AtPitch(miniGrid.semitoneShift);
+            if (!colors.Contains(sideBarColor))
+            {
+                song.RemoveNote(toggledNote, Grid.GetColumn(miniGrid));
+            }
+            else
+            {
+                song.AddNote(toggledNote, Grid.GetColumn(miniGrid));
+            }
         }
 
         /// <summary>

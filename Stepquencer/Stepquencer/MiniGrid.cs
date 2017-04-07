@@ -15,12 +15,11 @@ namespace Stepquencer
 
         public int semitoneShift;
 
-        //TODO: This is fairly hacky - figure out a better way to do it?
-        private MainPage mainPage;
+        public delegate void TapDelegate(MiniGrid tappedGrid);
+        public event TapDelegate Tap;
 
-        public MiniGrid(MainPage mainPage, int semitoneShift) : base()
+        public MiniGrid(int semitoneShift) : base()
         {
-            this.mainPage = mainPage;
             this.semitoneShift = semitoneShift;
 
             //No grid spacing
@@ -52,7 +51,10 @@ namespace Stepquencer
             // Give the grid a tapGesture recognizer
             TapGestureRecognizer tgr = new TapGestureRecognizer()
             {
-                Command = new Command(OnTap)
+                Command = new Command(delegate() 
+                {
+                    Tap.Invoke(this);
+                })
             };
             this.GestureRecognizers.Add(tgr);
             topLeft.GestureRecognizers.Add(tgr);
@@ -61,33 +63,10 @@ namespace Stepquencer
             bottomRight.GestureRecognizers.Add(tgr);
         }
 
-        void OnTap()
-        {
-            //Grab the stuff we need from mainPage
-            Color sidebarColor = mainPage.sideBarColor;
-            Song song = mainPage.song;
-            Dictionary<Color, Instrument> colorMap = mainPage.colorMap;
-
-            // Changes UI represenation and returns new set of colors on this grid
-            List<Color> colors = ChangeColor(sidebarColor);      
-
-            // If sidebar color isn't part of button's new set of colors, remove it
-            if (!colors.Contains(sidebarColor))
-            {
-                Instrument.Note toRemove = colorMap[sidebarColor].AtPitch(semitoneShift);
-                song.RemoveNote(toRemove, Grid.GetColumn(this));
-            }
-            else
-            {
-                Instrument.Note toAdd = colorMap[sidebarColor].AtPitch(semitoneShift);
-                song.AddNote(toAdd, Grid.GetColumn(this));
-            }
-        }
-
         /// <summary>
         /// Adds or removes <code>sidebarColor</code> from this grid.
         /// </summary>
-        List<Color> ChangeColor(Color sidebarColor)
+        public List<Color> ToggleColor(Color sidebarColor)
         {
             List<Color> colorList = new List<Color>();		// List to store the colors to be added to the new button
 
