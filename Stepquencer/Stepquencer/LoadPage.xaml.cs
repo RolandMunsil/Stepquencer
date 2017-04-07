@@ -36,7 +36,13 @@ namespace Stepquencer
                 BackgroundColor = Color.FromHex("#2C2C2C")
             };
 
+
             // Get all of the song names and store them in an array of Strings
+
+            if (!Directory.Exists(savePath))            // First check to make sure that the stepsongs folder exists, and create it if it doesn't
+            {
+                Directory.CreateDirectory(savePath);
+            }
 
             songNames = Directory.GetFiles(savePath);
 

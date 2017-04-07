@@ -53,6 +53,8 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IOSDebugOverWiFi>false</IOSDebugOverWiFi>
+    <MtouchExtraArgs></MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
