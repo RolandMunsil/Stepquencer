@@ -3,23 +3,29 @@ using Xamarin.Forms;
 using System.IO;
 namespace Stepquencer
 {
+
+    /// <summary>
+    /// Encapsulation of a single song that a user can load or delete
+    /// </summary>
     public class SongUIElement : StackLayout
     {
         private String filePath;
+        private LoadPage loadpage;
         private String songName;
         private Song song;
         private Label songLabel;
         private Button deleteButton;
         private Image folder;
 
-        public SongUIElement(String filePath) : base()
+        public SongUIElement(String filePath, LoadPage loadpage) : base()
         {
             this.filePath = filePath;
             this.songName = GetSongNameFromFilePath(filePath);
+            this.loadpage = loadpage;
 
             this.Orientation = StackOrientation.Horizontal;
             this.BackgroundColor = Color.Black;
-
+            this.HeightRequest = 50;
 
 
             this.songLabel = new Label             // Make a new label initialized with the song name
@@ -36,14 +42,14 @@ namespace Stepquencer
             this.deleteButton = new Button      // Make a button that lets you delete a file
             {
                 Text = "DELETE",
-                TextColor = Color.Red       //TODO: replace with trashcan image
-
+                TextColor = Color.Red,       //TODO: replace with trashcan image
+                Margin = 7
             };
 
-            deleteButton.Clicked += (sender, e) =>      // Add event handler to button that will cause it to delete the current file and remove this object from LoadPage
+            deleteButton.Clicked += (sender, e) =>      // Event handler for delete buttons
             {
-                File.Delete(this.filePath);
-                //TODO: Make a way to remove this object from LoadPage
+                File.Delete(this.filePath);             // Delete song file
+                this.loadpage.loadSongUIElements();     // Refresh the page
             };
 
 
