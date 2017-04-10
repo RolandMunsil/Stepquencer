@@ -25,7 +25,7 @@ namespace Stepquencer
         Grid sidebar;						                 // Grid for sidebar
 
         public ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        public int currentTempo;
+        public int currentTempo = 240;
 
         public Song song;                                    // Array of HashSets of Songplayer notes
 
@@ -48,10 +48,6 @@ namespace Stepquencer
             BackgroundColor = Color.FromHex("#000000");     // Make background color black
             NavigationPage.SetHasNavigationBar(this, false);    // Make sure navigation bar doesn't show up on this screen
 
-            if (currentTempo == 0)          
-            {
-                currentTempo = 240;                   // If the tempo hasn't been changed, initialize it to 240
-            }
 
             // Initialize the highlight box
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
