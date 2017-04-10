@@ -229,9 +229,8 @@ namespace Stepquencer
 
 
         /// <summary>
-        /// Creates song by compiling the sounds held by each miniGrid on mastergrid.
+        /// Sets the current song (and grid represntation) to be the given song.
         /// </summary>
-        /// <param name="song">Song.</param>
         public void SetSong(Song song)
         {
             this.song = song;
