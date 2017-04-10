@@ -64,4 +64,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass Low.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Soft Brass.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
+  </ItemGroup>
 </Project>
