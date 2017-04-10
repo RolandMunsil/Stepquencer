@@ -133,7 +133,7 @@ namespace Stepquencer
             {
                 BackgroundColor = Color.Black,
                 Font = Font.SystemFontOfSize(40),
-                Text = "\u2699",
+                Image = "settings.png",
                 TextColor = Color.White
             };
             sidebar.Children.Add(moreOptionsButton, 0, 0);
@@ -147,7 +147,7 @@ namespace Stepquencer
                 TextColor = Color.White,
                 BorderRadius = 0,
             };
-            playStopButton.Text = "\u25BA";
+            playStopButton.Image = "play.png";
             sidebar.Children.Add(playStopButton, 0, 5);
             playStopButton.Clicked += OnPlayStopClicked;
 
@@ -283,7 +283,7 @@ namespace Stepquencer
             if(player.IsPlaying)
             {
                 player.StopPlaying();
-                ((Button)sender).Text = "\u25BA";
+                ((Button)sender).Image = "play.png";
 
                 stepgrid.Children.Remove(highlight);
             }
@@ -292,7 +292,7 @@ namespace Stepquencer
                 stepgrid.Children.Add(highlight, 0, 0);
                 Grid.SetRowSpan(highlight, NumRows);
                 player.BeginPlaying(currentTempo);
-                ((Button)sender).Text = "■";
+                ((Button)sender).Image = "stop.png";
             }
         }
 
