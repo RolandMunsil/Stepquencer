@@ -283,11 +283,16 @@ namespace Stepquencer
             {
                 song.RemoveNote(toggledNote, Grid.GetColumn(miniGrid));
             }
-            //If sidebar button color != clicked button color AND song is not playing
-            else if (colors.Contains(sideBarColor) && !player.IsPlaying) 
+            //If sidebar button color != clicked button color add the note
+            else if (colors.Contains(sideBarColor)) 
             {
                 song.AddNote(toggledNote, Grid.GetColumn(miniGrid));
-                SongPlayer.PlayNote(colorMap[sideBarColor].AtPitch(miniGrid.semitoneShift));
+
+                // If not currently playing, also play the newly added note
+                if (!player.IsPlaying)
+                {
+                    SongPlayer.PlayNote(colorMap[sideBarColor].AtPitch(miniGrid.semitoneShift));
+                }
             }
         }
 
