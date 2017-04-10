@@ -128,6 +128,9 @@
     <BundleResource Include="Resources\editedpiano.png" />
     <BundleResource Include="Resources\editedsnaree.png" />
     <BundleResource Include="Resources\editedbasss.png" />
+    <BundleResource Include="Resources\settings.png" />
+    <BundleResource Include="Resources\play.png" />
+    <BundleResource Include="Resources\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
