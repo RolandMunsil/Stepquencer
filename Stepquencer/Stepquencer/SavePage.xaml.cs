@@ -125,6 +125,10 @@ namespace Stepquencer
         }
 
 
+        //TODO: Add method
+        //If song file name already exists, warn user
+
+
         private void SaveSongToFile(Song songToSave, String songName)
         {
             String filePath = MoreOptionsPage.PathToSongFile(songName);

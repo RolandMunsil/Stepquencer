@@ -11,15 +11,17 @@ namespace Stepquencer
         const double maxBPM = 480;          // Maximum BPM user can go to
 
 
-        private StackLayout masterLayout;   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
-        private Grid tempoGrid;             // Layout to hold tempo label and slider
-        private Grid buttonGrid;            // Grid to hold save, load, clear, and other button
-        private Label tempoLabel, bpmLabel; // Labels to show the current BPM
-        private Slider tempoSlider;         // Slider that user can interact with to change BPM
-        private Button saveButton, loadButton, clearAllButton, undoClearButton;     // Buttons to save, load, clear, etc
-        private Style buttonStyle;          // Style for the buttons on this page
-        private MainPage mainpage;          // The MainPage this screen came from
-        private Song song;                  // The user's current Song
+        private StackLayout masterLayout;                   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
+        private Grid tempoGrid;                             // Layout to hold tempo label and slider
+        private Grid buttonGrid;                            // Grid to hold save, load, clear, and other button
+        private Label tempoLabel, bpmLabel;                 // Labels to show the current BPM
+        private Slider tempoSlider;                         // Slider that user can interact with to change BPM
+        private Button saveButton, loadButton;              // Takes user to saving and loading pages respectively
+        private Button clearAllButton, undoClearButton;     // Buttons to clear and undo clear
+        private Button changeInstrumentsButton;             // Takes user to changeInstruments page
+        private Style buttonStyle;                          // Style for the buttons on this page
+        private MainPage mainpage;                          // The MainPage this screen came from
+        private Song song;                                  // The user's current Song
 
 
         public MoreOptionsPage(MainPage passedpage, Song passedSong)
@@ -101,6 +103,7 @@ namespace Stepquencer
 
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
@@ -111,11 +114,15 @@ namespace Stepquencer
             loadButton = new Button { Text = "LOAD", Style = buttonStyle };
             clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };
             undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };
+            changeInstrumentsButton = new Button { Text = "CHANGE INSTRUMENTS", Style = buttonStyle, BackgroundColor = Color.Blue};
 
             buttonGrid.Children.Add(saveButton, 0, 0);
             buttonGrid.Children.Add(loadButton, 0, 1);
             buttonGrid.Children.Add(clearAllButton, 1, 0);
-            buttonGrid.Children.Add(undoClearButton, 1, 1);
+            buttonGrid.Children.Add(undoClearButton, 2, 0);
+            buttonGrid.Children.Add(changeInstrumentsButton, 1, 1);
+
+            Grid.SetColumnSpan(changeInstrumentsButton, 2);
 
 
             // Add grids to masterLayout
@@ -127,10 +134,12 @@ namespace Stepquencer
 
             // Add event listeners
 
-            tempoSlider.ValueChanged += OnSliderChanged;        // Event listener for slider
-            saveButton.Clicked += OnSaveButtonClicked;          // Event listener for save button
-            loadButton.Clicked += OnLoadButtonClicked;          // Event listener for load button
-            clearAllButton.Clicked += OnClearAllClicked;        // Event listener for clear all button
+            tempoSlider.ValueChanged += OnSliderChanged;                     // Event listener for slider
+            saveButton.Clicked += OnSaveButtonClicked;                       // Event listener for save button
+            loadButton.Clicked += OnLoadButtonClicked;                       // Event listener for load button
+            clearAllButton.Clicked += OnClearAllClicked;                     // Event listener for clear all button
+            undoClearButton.Clicked += OnUndoClearClicked;                   // Event listener for undo clear button
+            changeInstrumentsButton.Clicked += OnChangeInstrumentsClicked;   // Event listener for change instruments button
 
 
             Content = masterLayout;             // Put masterLayout on page
@@ -185,6 +194,25 @@ namespace Stepquencer
             mainpage.ClearStepGrid();
             song.ClearAllBeats();
         }
+
+
+        /// <summary>
+        /// Event listener for undo clear button
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void OnUndoClearClicked(object sender, EventArgs e)
+        {
+            // TODO: Implement this
+        }
+
+
+
+        async void OnChangeInstrumentsClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ChangeInstrumentsPage());
+        }
+
 
         public static String PathToSongFile(String songName)
         {

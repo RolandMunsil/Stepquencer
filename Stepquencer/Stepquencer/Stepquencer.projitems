@@ -29,6 +29,9 @@
       <DependentUpon>LoadPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SongUIElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml.cs">
+      <DependentUpon>ChangeInstrumentsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
@@ -48,6 +51,9 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)LoadPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
@@ -63,5 +69,8 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass High.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass Low.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Soft Brass.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
   </ItemGroup>
 </Project>
