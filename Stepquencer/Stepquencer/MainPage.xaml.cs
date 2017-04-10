@@ -39,6 +39,8 @@ namespace Stepquencer
 
         SongPlayer player;
 
+        Button playStopButton;
+
 
         public MainPage()
         {
@@ -140,7 +142,7 @@ namespace Stepquencer
 
 
             // Play/stop button
-            Button playStopButton = new Button
+            playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
                 Font = Font.SystemFontOfSize(40),
@@ -305,20 +307,28 @@ namespace Stepquencer
         {
             if(player.IsPlaying)
             {
-                player.StopPlaying();
-                ((Button)sender).Image = "play.png";
-
-                stepgrid.Children.Remove(highlight);
+                StopPlayingSong();
             }
             else
             {
-                stepgrid.Children.Add(highlight, 0, 0);
-                Grid.SetRowSpan(highlight, NumRows);
-                player.BeginPlaying(currentTempo);
-                ((Button)sender).Image = "stop.png";
+                StartPlayingSong();
             }
         }
 
+        private void StartPlayingSong()
+        {
+            stepgrid.Children.Add(highlight, 0, 0);
+            Grid.SetRowSpan(highlight, NumRows);
+            player.BeginPlaying(currentTempo);
+            playStopButton.Image = "stop.png";
+        }
+
+        private void StopPlayingSong()
+        {
+            player.StopPlaying();
+            playStopButton.Image = "play.png";
+            stepgrid.Children.Remove(highlight);
+        }
 
         /// <summary>
         /// Event handler for the more options button. Sends user to more options page.
@@ -329,10 +339,7 @@ namespace Stepquencer
         {
             if (player.IsPlaying)
             {
-                player.StopPlaying();
-                Button PlayButton = (Button)sidebar.Children.ElementAt(5);     // Stop the song, adjust play button appropriately
-                PlayButton.Text = "\u25BA";
-                stepgrid.Children.Remove(highlight);
+                StopPlayingSong();
             }
 
             await Navigation.PushAsync(new MoreOptionsPage(this, song));
@@ -349,7 +356,6 @@ namespace Stepquencer
         {
             Button button = (Button)sender;
             sideBarColor = button.BackgroundColor;
-
 
             if (!player.IsPlaying)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
