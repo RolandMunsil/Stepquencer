@@ -9,7 +9,7 @@ namespace Stepquencer
 {
     public partial class MainPage : ContentPage
     {
-        const int NumRows = 12;
+        const int NumRows = 13;
         const int NumColumns = 8;
         const int NumInstruments = 4;
         const double brightnessIncrease = 0.25;						// Amount to increase the red, green, and blue values of each button when it's highlighted
