@@ -76,7 +76,6 @@ namespace Stepquencer
             }
 
 
-
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2};
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
@@ -96,7 +95,7 @@ namespace Stepquencer
 
 
 
-            // Fill sidebar it with buttons
+            // Fill sidebar with buttons
             Color[] colors = new Color[] { Red, Blue, Green, Yellow };      // Array of colors
             for (int i = 1; i <= colors.Length; i++)
             {
@@ -120,13 +119,13 @@ namespace Stepquencer
                 {
                     button.Image = "editedhihat.png";
                 }
-
                 if (button.BackgroundColor.Equals(Color.Red))       // Initialize red sidebar button to be highlighted
                 {
                     button.BorderColor = Color.White;
                     selectedInstrButton = button;                         //Button now in use
                 }
             }
+
 
             // More options button
             Button moreOptionsButton = new Button
@@ -138,6 +137,7 @@ namespace Stepquencer
             };
             sidebar.Children.Add(moreOptionsButton, 0, 0);
             moreOptionsButton.Clicked += OnMoreOptionsClicked;
+
 
             // Play/stop button
             Button playStopButton = new Button
@@ -215,6 +215,10 @@ namespace Stepquencer
             }
         }
 
+
+        /// <summary>
+        /// Clears all colors/sounds from mastergrid. 
+        /// </summary>
         public void ClearStepGrid()
         {
             foreach (MiniGrid miniGrid in stepgrid.Children.OfType<MiniGrid>())
@@ -223,6 +227,11 @@ namespace Stepquencer
             }
         }
 
+
+        /// <summary>
+        /// Creates song by compiling the sounds held by each miniGrid on mastergrid.
+        /// </summary>
+        /// <param name="song">Song.</param>
         public void SetSong(Song song)
         {
             this.song = song;
@@ -256,6 +265,11 @@ namespace Stepquencer
 
         }
 
+
+        /// <summary>
+        /// Event handler for individual miniGrid (holding 1-4 sounds) in mastergrid
+        /// </summary>
+        /// <param name="miniGrid">miniGrid.</param>
         void OnMiniGridTapped(MiniGrid miniGrid)
         {
             // Changes UI represenation and returns new set of colors on this grid
@@ -263,15 +277,20 @@ namespace Stepquencer
 
             // If sidebar color isn't part of button's new set of colors, remove it
             Instrument.Note toggledNote = colorMap[sideBarColor].AtPitch(miniGrid.semitoneShift);
+
+            //If sidebar button color = clicked button color
             if (!colors.Contains(sideBarColor))
             {
                 song.RemoveNote(toggledNote, Grid.GetColumn(miniGrid));
             }
-            else
+            //If sidebar button color != clicked button color AND song is not playing
+            else if (colors.Contains(sideBarColor) && !player.IsPlaying) 
             {
                 song.AddNote(toggledNote, Grid.GetColumn(miniGrid));
+                SongPlayer.PlayNote(colorMap[sideBarColor].AtPitch(miniGrid.semitoneShift));
             }
         }
+
 
         /// <summary>
         /// Event handler for the Play/Stop button
@@ -325,7 +344,6 @@ namespace Stepquencer
         void OnSidebarClicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-
             sideBarColor = button.BackgroundColor;
 
 
@@ -333,7 +351,6 @@ namespace Stepquencer
             {
                 SongPlayer.PlayNote(colorMap[sideBarColor].AtPitch(3));
             }
-
             if (button.BorderColor == Color.Black)
             {
                 //Remove border fom previously selected instrument
@@ -341,13 +358,11 @@ namespace Stepquencer
                 {
                     selectedInstrButton.BorderColor = Color.Black;
                 }
-
                 button.BorderColor = Color.White;   //Change border highlight to yellow
-                selectedInstrButton = button;				     //Set this button to be the currently selected button
-
+                selectedInstrButton = button;		//Set this button to be the currently selected button
             }
-
         }            
+
 
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played

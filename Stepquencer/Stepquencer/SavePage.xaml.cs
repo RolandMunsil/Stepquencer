@@ -39,7 +39,7 @@ namespace Stepquencer
 
             saveLabel = new Label
             {
-                Text = "Save your song",
+                Text = "Song Title",
                 TextColor = Color.White,
                 BackgroundColor = Color.FromHex("#2C2C2C"),
                 FontSize = 40,
@@ -53,7 +53,7 @@ namespace Stepquencer
 
             songTitleEntry = new Entry 
             { 
-                Placeholder = "Enter your song's name",
+                Placeholder = "Enter song title",
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
