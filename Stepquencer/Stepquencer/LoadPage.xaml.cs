@@ -7,19 +7,17 @@ namespace Stepquencer
 {
     public partial class LoadPage : ContentPage
     {
-        private MainPage mainpage;
-
-        String documentsPath;
+        private MainPage mainpage;              // Reference to mainpage so it can be changed
         String savePath;
         private String[] songNames;
 
-        private StackLayout masterLayout;
-        private ScrollView scroller;
+        private StackLayout masterLayout;       // Layout that holds all UI elements
+        private ScrollView scroller;            // Scrollview to accomodate more songs than the screen can handle
 
         public LoadPage(MainPage mainpage)
         {
             this.mainpage = mainpage;
-            this.documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);     //* Get path to saved songs on this device
+            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);     //* Get path to saved songs on this device
             this.savePath = Path.Combine(documentsPath, "stepsongs/");                              //*
 
             this.BackgroundColor = Color.FromHex("#2C2C2C");

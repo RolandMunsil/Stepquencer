@@ -7,19 +7,12 @@ namespace Stepquencer
 {
     public partial class MoreOptionsPage : ContentPage
     {
-        const double minBPM = 100;          // Minimum BPM user can change to
-        const double maxBPM = 480;          // Maximum BPM user can go to
+        const double MIN_BPM = 100;          // Minimum BPM user can change to
+        const double MAX_BPM = 480;          // Maximum BPM user can go to
 
 
-        private StackLayout masterLayout;                   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
-        private Grid tempoGrid;                             // Layout to hold tempo label and slider
-        private Grid buttonGrid;                            // Grid to hold save, load, clear, and other button
-        private Label tempoLabel, bpmLabel;                 // Labels to show the current BPM
+        private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
-        private Button saveButton, loadButton;              // Takes user to saving and loading pages respectively
-        private Button clearAllButton, undoClearButton;     // Buttons to clear and undo clear
-        private Button changeInstrumentsButton;             // Takes user to changeInstruments page
-        private Style buttonStyle;                          // Style for the buttons on this page
         private MainPage mainpage;                          // The MainPage this screen came from
         private Song song;                                  // The user's current Song
 
@@ -37,7 +30,7 @@ namespace Stepquencer
 
             // Initialize style for buttons on this page
 
-            buttonStyle = new Style(typeof(Button))
+            Style buttonStyle = new Style(typeof(Button))
             {
                 Setters = 
                 {
@@ -48,9 +41,9 @@ namespace Stepquencer
             };
 
 
-            // Initialize tempoGrid to hold tempo and slider
+            // Initialize grid to hold tempo and slider
 
-            tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+            Grid tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for tempo label should take up 1/6 of horizontal space
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
@@ -59,7 +52,7 @@ namespace Stepquencer
 
             // Initialize tempo label
 
-            tempoLabel = new Label
+            Label tempoLabel = new Label
             {
                 Text = "Tempo: ",
                 TextColor = Color.White,
@@ -85,9 +78,10 @@ namespace Stepquencer
 
             // Initialize tempo slider
 
-            tempoSlider = new Slider(minBPM, maxBPM, mainpage.currentTempo);    //*
+            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.currentTempo);  //*
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;        //* Spacing/Alignment options
             tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;          //*
+            tempoSlider.Margin = 7;                                             //*
 
 
             // Add tempo label, BPM label and slider to tempoGrid
@@ -97,9 +91,9 @@ namespace Stepquencer
             tempoGrid.Children.Add(tempoSlider, 2, 0);
 
 
-            // Initialize buttonGrid to hold buttons (2 rows and 2 columns)
+            // Initialize buttonGrid to hold all buttons 
 
-            buttonGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand};
+            Grid buttonGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand};
 
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -110,11 +104,11 @@ namespace Stepquencer
 
             // Initialize buttons and add them to buttonGrid
 
-            saveButton = new Button { Text = "SAVE", Style = buttonStyle };
-            loadButton = new Button { Text = "LOAD", Style = buttonStyle };
-            clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };
-            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };
-            changeInstrumentsButton = new Button { Text = "CHANGE INSTRUMENTS", Style = buttonStyle, BackgroundColor = Color.Blue};
+            Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                                         // Takes user to SavePage
+            Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                                         // Takes user to LoadPage
+            Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };                   // Clears notes and resets UI on main screen
+            Button undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                                              // Undos a recent clear
+            Button changeInstrumentsButton = new Button { Text = "CHANGE INSTRUMENTS", Style = buttonStyle, BackgroundColor = Color.Blue}; // Takes user to ChangeInstrumentsPage
 
             buttonGrid.Children.Add(saveButton, 0, 0);
             buttonGrid.Children.Add(loadButton, 0, 1);
@@ -127,7 +121,7 @@ namespace Stepquencer
 
             // Add grids to masterLayout
 
-            masterLayout = new StackLayout();
+            StackLayout masterLayout = new StackLayout();       // Overall layout (stacks tempo stuff on top of grid holding the buttons)
             masterLayout.Children.Add(tempoGrid);           
             masterLayout.Children.Add(buttonGrid);
 
@@ -169,7 +163,7 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SavePage(mainpage, song));   // Send to SavePage
+            await Navigation.PushAsync(new SavePage(mainpage));   // Send to SavePage
         }
 
 
@@ -210,7 +204,7 @@ namespace Stepquencer
 
         async void OnChangeInstrumentsClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new ChangeInstrumentsPage());
+            await Navigation.PushAsync(new ChangeInstrumentsPage(this.mainpage));
         }
 
 

@@ -9,35 +9,29 @@ namespace Stepquencer
     public partial class SavePage : ContentPage
     {
         private MainPage mainpage;                  // The MainPage this screen came from
-        private Song song;                          // The user's current Song
-        private ScrollView scroller;                // TODO: put everything in a scoller so people can see the songTitleEntry box when typing
-        private StackLayout masterLayout;           // Main layout object
-        private StackLayout buttonLayout;           // Layout to hold buttons
-        private Label saveLabel;                    // Title above text input
         private Entry songTitleEntry;               // Input Box for name of user's song
-        private Button saveButton, cancelButton;    // Buttons to save and cancel
+        private Button saveButton, cancelButton;    // Buttons to let user save or go back
 
-        public SavePage(MainPage mainpage, Song passedSong)
+        public SavePage(MainPage mainpage)
         {
-            this.mainpage = mainpage;                           //* Need to pass in main page and song in order to change them on this page
-            this.song = passedSong;                             //* 
+            this.mainpage = mainpage;                           // Need to pass in main page in order to change it on this page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
             NavigationPage.SetHasNavigationBar(this, false);    // Make sure navigation bar doesn't show up on this one
 
 
             // Initialize scrollView
 
-            scroller = new ScrollView();
+            ScrollView scroller = new ScrollView();
 
 
             // Initialize masterLayout
 
-            masterLayout = new StackLayout { Spacing = 30};
+            StackLayout masterLayout = new StackLayout { Spacing = 30};
 
 
             // Initialize saveLabel
 
-            saveLabel = new Label
+            Label saveLabel = new Label
             {
                 Text = "Song Title",
                 TextColor = Color.White,
@@ -61,7 +55,7 @@ namespace Stepquencer
 
             // Initialize buttonLayout
 
-            buttonLayout = new StackLayout();
+            StackLayout buttonLayout = new StackLayout();
             buttonLayout.Orientation = StackOrientation.Horizontal;
             buttonLayout.VerticalOptions = LayoutOptions.CenterAndExpand;
 
@@ -113,7 +107,7 @@ namespace Stepquencer
         {
             Button buttonPressed = (Button)sender;
 
-            if (buttonPressed.Equals(this.cancelButton))
+            if (buttonPressed.Equals(cancelButton))
             {                                                                       // If the cancel button was pushed, send user
                 await Navigation.PopToRootAsync();    // back to MoreOptionsPage.
             }
