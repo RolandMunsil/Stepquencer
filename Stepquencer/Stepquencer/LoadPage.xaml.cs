@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -154,6 +155,11 @@ namespace Stepquencer
                         String instrName = noteStringParts[0];
                         int semitoneShift = int.Parse(noteStringParts[1]);
 
+                        //To allow loading of songs saved before a lot of instrument names were changed
+                        if (instrName.Contains(' ') || instrName.Contains('-'))
+                        {
+                            instrName = instrName.Replace(" ", "").Replace("-", "");
+                        }
 
                         Instrument.Note note = Instrument.GetByName(instrName).AtPitch(semitoneShift);
                         loadedSong.AddNote(note, i);
