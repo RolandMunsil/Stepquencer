@@ -7,16 +7,17 @@ namespace Stepquencer
 {
     class InstrumentButton : Button
     {
-        public Instrument instrument;
+        private Instrument instrument;
 
-        public InstrumentButton(Instrument instrument) : base()
+        public Instrument Instrument
         {
-            this.instrument = instrument;
-            this.Image = $"{instrument.name}.png";
-            this.BackgroundColor = instrument.color;
-
-            this.BorderWidth = 3;
-            this.Selected = false;
+            get { return instrument; }
+            set
+            {
+                this.instrument = value;
+                this.Image = $"{instrument.name}.png";
+                this.BackgroundColor = instrument.color;
+            }
         }
 
         public bool Selected
@@ -25,6 +26,14 @@ namespace Stepquencer
             {
                 this.BorderColor = value ? Color.White : Color.Black;
             }
+        }
+
+        public InstrumentButton(Instrument instrument) : base()
+        {
+            this.Instrument = instrument;
+
+            this.BorderWidth = 3;
+            this.Selected = false;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Stepquencer
             player = new SongPlayer(song);
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
-            mastergrid = new Grid { ColumnSpacing = 2};
+            mastergrid = new Grid { ColumnSpacing = 2 };
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
@@ -103,7 +103,8 @@ namespace Stepquencer
             playStopButton.Clicked += OnPlayStopClicked;
 
             // Set up scroll view and put grid inside it
-            scroller = new ScrollView {
+            scroller = new ScrollView
+            {
                 Orientation = ScrollOrientation.Vertical  //Both vertical and horizontal orientation
             };
             scroller.Content = stepgrid;
@@ -115,6 +116,15 @@ namespace Stepquencer
 
             Content = mastergrid;
             player.BeatStarted += HighlightColumns;
+        }
+
+        public void SetSidebarInstruments(Instrument[] instruments)
+        {
+            int i = 0;
+            foreach (InstrumentButton instrButton in sidebar.Children.OfType<InstrumentButton>())
+            {
+                instrButton.Instrument = instruments[i++];
+            }
         }
 
         /// <summary>
@@ -217,7 +227,7 @@ namespace Stepquencer
         /// <param name="miniGrid">miniGrid.</param>
         void OnMiniGridTapped(MiniGrid miniGrid)
         {
-            Instrument selectedInstrument = selectedInstrButton.instrument;
+            Instrument selectedInstrument = selectedInstrButton.Instrument;
 
             // Changes UI represenation and returns new set of colors on this grid
             List<Color> colors = miniGrid.ToggleColor(selectedInstrument.color);
@@ -301,7 +311,7 @@ namespace Stepquencer
 
             if (!player.IsPlaying)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
-                SongPlayer.PlayNote(button.instrument.AtPitch(3));
+                SongPlayer.PlayNote(button.Instrument.AtPitch(3));
             }
             if (button != selectedInstrButton)
             {
