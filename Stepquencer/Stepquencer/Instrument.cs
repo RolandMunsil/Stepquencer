@@ -104,17 +104,18 @@ namespace Stepquencer
         }
 
         /// <summary>
-        /// Creates an instrument based on the file Instruments/<code>instrName</code>.wav
+        /// Loads or gets an instrument based on the file Instruments/<code>instrName</code>.wav
         /// </summary>
         /// <param name="instrName">The name of the wav file the created instrument will be based on</param>
         /// <returns>An instrument</returns>
-        public static Instrument LoadByName(String instrName)
+        public static Instrument GetByName(String instrName)
         {
             if(colorMap == null)
             {
                 LoadColorMap();
             }
 
+            //If the instument has already been loaded, return it.
             Instrument dictInstr;
             if(loadedInstruments.TryGetValue(instrName, out dictInstr))
             {

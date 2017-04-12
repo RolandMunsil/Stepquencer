@@ -69,7 +69,7 @@ namespace Stepquencer
             // Fill sidebar with buttons
             for (int i = 0; i < INITIAL_INSTRUMENTS.Length; i++)
             {
-                InstrumentButton button = new InstrumentButton(Instrument.LoadByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
+                InstrumentButton button = new InstrumentButton(Instrument.GetByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
 
                 if (i == 0)       // Initialize first sidebar button to be highlighted
                 {
