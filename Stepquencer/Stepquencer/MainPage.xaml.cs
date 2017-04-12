@@ -16,8 +16,6 @@ namespace Stepquencer
 
         readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
 
-        public readonly static Color Grey = Color.FromHex("#606060");
-
         public Grid mastergrid;
         public Grid stepgrid;                                       // Grid for whole screen
         Grid sidebar;						                 // Grid for sidebar

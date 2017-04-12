@@ -8,6 +8,8 @@ namespace Stepquencer
 {
     class MiniGrid : Grid
     {
+        private readonly static Color Grey = Color.FromHex("#606060");
+
         private BoxView topLeft;
         private BoxView topRight;
         private BoxView bottomLeft;
@@ -33,10 +35,10 @@ namespace Stepquencer
             this.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });  // Add in row definitions
 
             // Add in boxviews
-            topLeft = new BoxView { BackgroundColor = MainPage.Grey };
-            topRight = new BoxView { BackgroundColor = MainPage.Grey, };
-            bottomLeft = new BoxView { BackgroundColor = MainPage.Grey, };
-            bottomRight = new BoxView { BackgroundColor = MainPage.Grey, };
+            topLeft = new BoxView { BackgroundColor = Grey };
+            topRight = new BoxView { BackgroundColor = Grey, };
+            bottomLeft = new BoxView { BackgroundColor = Grey, };
+            bottomRight = new BoxView { BackgroundColor = Grey, };
 
             this.Children.Add(topLeft, 0, 0);
             this.Children.Add(topRight, 1, 0);
@@ -73,7 +75,7 @@ namespace Stepquencer
             //Figure out what colors are already on this grid
             foreach (BoxView box in this.Children)
             {
-                if (box.BackgroundColor != MainPage.Grey)
+                if (box.BackgroundColor != Grey)
                 {
                     colorList.Add(box.BackgroundColor);	// Add the box's color to the array       
                 }
@@ -103,9 +105,9 @@ namespace Stepquencer
             //Reset all of the boxes
             foreach (BoxView box in this.Children)
             {
-                if (box.BackgroundColor != MainPage.Grey)
+                if (box.BackgroundColor != Grey)
                 {
-                    box.BackgroundColor = MainPage.Grey;             // Default the box's color to grey   
+                    box.BackgroundColor = Grey;             // Default the box's color to grey   
                     Grid.SetRowSpan(box, 1);                // Default the box to span one row
                     Grid.SetColumnSpan(box, 1);             // Default the box to span one column               
                 }
