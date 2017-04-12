@@ -13,6 +13,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Instrument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InstrumentButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -58,19 +59,22 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Bass Drum.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Hi-Hat.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1x Atmosphere.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Distorted Guitar.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass High.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass Low.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Soft Brass.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\DistortedGuitar.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassHigh.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassLow.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SoftBrass.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\_colors.txt" />
   </ItemGroup>
 </Project>

@@ -18,9 +18,8 @@ namespace Stepquencer
             this.Title = "Pick your instruments";           //* Set up basic page attributes
             NavigationPage.SetHasBackButton(this, false);   //*
 
-
             // Put the currently selected colors at the top of the screen
-            foreach (Color color in mainpage.colorMap.Keys)
+            foreach (KeyValuePair<String, Color> nameAndColor in Instrument.colorMap)
             {
                 // TODO:
 

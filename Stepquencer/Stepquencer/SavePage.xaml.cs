@@ -136,7 +136,7 @@ namespace Stepquencer
                     file.WriteLine($"Beat {i}|{notes.Length}");
                     foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
                     {
-                        file.WriteLine($"{note.instrument.instrumentName}:{note.semitoneShift}");
+                        file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
                     }
                 }
             }

@@ -155,7 +155,7 @@ namespace Stepquencer
                         int semitoneShift = int.Parse(noteStringParts[1]);
 
 
-                        Instrument.Note note = Instrument.loadedInstruments[instrName].AtPitch(semitoneShift);
+                        Instrument.Note note = Instrument.LoadByName(instrName).AtPitch(semitoneShift);
                         loadedSong.AddNote(note, i);
                     }
                 }
