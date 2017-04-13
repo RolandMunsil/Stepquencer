@@ -14,22 +14,21 @@ namespace Stepquencer
         private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
         private MainPage mainpage;                          // The MainPage this screen came from
-        private Song song;                                  // The user's current Song
+
+        public static Song clearedSong;
+
+        Button undoClearButton;
 
 
-        public MoreOptionsPage(MainPage passedpage, Song passedSong)
+        public MoreOptionsPage(MainPage passedpage)
         {
-
             this.mainpage = passedpage;         // Need to pass in main page and song in order to change them on this page
-            this.song = passedSong;             //
 
             NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
 
-
             // Initialize style for buttons on this page
-
             Style buttonStyle = new Style(typeof(Button))
             {
                 Setters = 
@@ -107,8 +106,13 @@ namespace Stepquencer
             Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                                         // Takes user to SavePage
             Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                                         // Takes user to LoadPage
             Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };                   // Clears notes and resets UI on main screen
-            Button undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                                              // Undos a recent clear
+            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                                              // Undos a recent clear
             Button changeInstrumentsButton = new Button { Text = "CHANGE INSTRUMENTS", Style = buttonStyle, BackgroundColor = Color.Blue}; // Takes user to ChangeInstrumentsPage
+
+            if (clearedSong == null)
+            {
+                undoClearButton.TextColor = Color.Gray;
+            }
 
             buttonGrid.Children.Add(saveButton, 0, 0);
             buttonGrid.Children.Add(loadButton, 0, 1);
@@ -185,8 +189,10 @@ namespace Stepquencer
         /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
+            clearedSong = mainpage.song;
+            undoClearButton.TextColor = Color.White;
             mainpage.ClearStepGrid();
-            song.ClearAllBeats();
+            mainpage.song = new Song(mainpage.song.BeatCount);
         }
 
 
@@ -197,7 +203,12 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnUndoClearClicked(object sender, EventArgs e)
         {
-            // TODO: Implement this
+            if (clearedSong != null)
+            {
+                mainpage.SetSong(clearedSong);
+                clearedSong = null;
+                undoClearButton.TextColor = Color.Gray;
+            }
         }
 
 

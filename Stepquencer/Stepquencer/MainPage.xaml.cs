@@ -251,6 +251,9 @@ namespace Stepquencer
                     SongPlayer.PlayNote(selectedInstrument.AtPitch(miniGrid.semitoneShift));   // Play note so long as not already playing a song
                 }
             }
+
+            //Undo clear stops woking when user adds stuff to grid so they don't accidentally undo clear
+            MoreOptionsPage.clearedSong = null;
         }
 
         /// <summary>
@@ -297,7 +300,7 @@ namespace Stepquencer
                 StopPlayingSong();
             }
 
-            await Navigation.PushAsync(new MoreOptionsPage(this, song));
+            await Navigation.PushAsync(new MoreOptionsPage(this));
         }
 
         /// <summary>

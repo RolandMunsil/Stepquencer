@@ -56,19 +56,6 @@ namespace Stepquencer
                 beats[beat].Remove(note);
             }
         }
-
-
-
-        public void ClearAllBeats()
-        {
-            lock (beats)
-            {
-                foreach (HashSet<Instrument.Note> hashset in beats)
-                {
-                    hashset.Clear();
-                }
-            }
-        }
         
         /// <summary>
         /// Returns an array containing the notes at the given beat
