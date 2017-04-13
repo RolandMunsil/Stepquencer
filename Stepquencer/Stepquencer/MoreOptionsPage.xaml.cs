@@ -192,7 +192,7 @@ namespace Stepquencer
             clearedSong = mainpage.song;
             undoClearButton.TextColor = Color.White;
             mainpage.ClearStepGrid();
-            mainpage.song = new Song(mainpage.song.BeatCount);
+            mainpage.SetSong(new Song(mainpage.song.BeatCount));
         }
 
 
