@@ -122,15 +122,13 @@
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\Icon-Small%403x.png" />
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
-    <BundleResource Include="Resources\editedbass.png" />
-    <BundleResource Include="Resources\editedhihat.png" />
-    <BundleResource Include="Resources\editedinst.png" />
-    <BundleResource Include="Resources\editedpiano.png" />
-    <BundleResource Include="Resources\editedsnaree.png" />
-    <BundleResource Include="Resources\editedbasss.png" />
     <BundleResource Include="Resources\settings.png" />
     <BundleResource Include="Resources\play.png" />
     <BundleResource Include="Resources\stop.png" />
+    <BundleResource Include="Resources\HiHat.png" />
+    <BundleResource Include="Resources\SlapBassLow.png" />
+    <BundleResource Include="Resources\Snare.png" />
+    <BundleResource Include="Resources\YRM1xAtmosphere.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -153,12 +151,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.iOS" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\editedbass.png" />
-    <AndroidResource Include="Resources\editedhihat.png" />
-    <AndroidResource Include="Resources\editedinst.png" />
-    <AndroidResource Include="Resources\editedpiano.png" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
