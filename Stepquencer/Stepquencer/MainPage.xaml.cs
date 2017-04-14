@@ -14,7 +14,7 @@ namespace Stepquencer
         const int NumInstruments = 4;
         const double brightnessIncrease = 0.25;						// Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
+        public static readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
 
         public Grid mastergrid;
         public Grid stepgrid;                                       // Grid for whole screen
@@ -25,6 +25,7 @@ namespace Stepquencer
 
         public Song song;                                    // Array of HashSets of Songplayer notes
 
+        public InstrumentButton[] instrumentButtons;
         InstrumentButton selectedInstrButton;
 
         BoxView highlight;
@@ -32,6 +33,8 @@ namespace Stepquencer
         SongPlayer player;
 
         Button playStopButton;
+
+        
 
         public MainPage()
         {
@@ -65,6 +68,7 @@ namespace Stepquencer
             sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             // Fill sidebar with buttons
+            instrumentButtons = new InstrumentButton[INITIAL_INSTRUMENTS.Length];
             for (int i = 0; i < INITIAL_INSTRUMENTS.Length; i++)
             {
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
@@ -76,7 +80,8 @@ namespace Stepquencer
                 }
                 button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler  
 
-                sidebar.Children.Add(button, 0, i+1);                                 // Add it to the sidebar                      
+                sidebar.Children.Add(button, 0, i+1);                                 // Add it to the sidebar
+                instrumentButtons[i] = button;
             }
 
             // More options button
@@ -120,10 +125,9 @@ namespace Stepquencer
 
         public void SetSidebarInstruments(Instrument[] instruments)
         {
-            int i = 0;
-            foreach (InstrumentButton instrButton in sidebar.Children.OfType<InstrumentButton>())
+            for (int i = 0; i < instrumentButtons.Length; i++)
             {
-                instrButton.Instrument = instruments[i++];
+                instrumentButtons[i].Instrument = instruments[i];
             }
         }
 

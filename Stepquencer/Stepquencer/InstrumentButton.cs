@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
-    class InstrumentButton : Button
+    public class InstrumentButton : Button
     {
         private Instrument instrument;
 

@@ -9,7 +9,7 @@ namespace Stepquencer
     /// </summary>
     public class SongUIElement : StackLayout
     {
-        private String filePath;
+        public String filePath;
         private LoadPage loadpage;
         private String songName;
         private Song song;
@@ -55,12 +55,6 @@ namespace Stepquencer
 
             this.Children.Add(songLabel);
             this.Children.Add(deleteButton);
-
-
-            // Generate songObject
-
-            this.song = LoadPage.LoadSongFromFile(filePath);
-
         }
 
         /// <summary>
@@ -74,17 +68,6 @@ namespace Stepquencer
             int end = path.LastIndexOf('.');
             return path.Substring(start, end - start);
         }
-
-
-        /// <summary>
-        /// Getter for this object's Song
-        /// </summary>
-        /// <returns>The song.</returns>
-        public Song GetSong()
-        {
-            return this.song;
-        }
-
 
         /// <summary>
         /// Adds a gesture recognizer to the label and layout

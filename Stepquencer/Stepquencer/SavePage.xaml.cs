@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -129,7 +129,9 @@ namespace Stepquencer
 
             using (StreamWriter file = File.CreateText(filePath))
             {
-                file.WriteLine($"{songToSave.BeatCount} total beats");
+                String instruments = String.Join("|", mainpage.instrumentButtons.Select(btn => btn.Instrument.name));
+                file.WriteLine($"{songToSave.BeatCount} total beats|{instruments}");
+
                 for (int i = 0; i < songToSave.BeatCount; i++)
                 {
                     Instrument.Note[] notes = songToSave.NotesAtBeat(i);
