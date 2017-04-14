@@ -125,10 +125,10 @@
     <BundleResource Include="Resources\settings.png" />
     <BundleResource Include="Resources\play.png" />
     <BundleResource Include="Resources\stop.png" />
-    <BundleResource Include="Resources\HiHat.png" />
-    <BundleResource Include="Resources\SlapBassLow.png" />
     <BundleResource Include="Resources\Snare.png" />
     <BundleResource Include="Resources\YRM1xAtmosphere.png" />
+    <BundleResource Include="Resources\SlapBassLow.png" />
+    <BundleResource Include="Resources\HiHat.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

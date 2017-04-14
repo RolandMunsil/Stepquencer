@@ -118,10 +118,10 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\Icon.png" />
-    <AndroidResource Include="Resources\Drawable\YRM1xAtmosphere.png" />
-    <AndroidResource Include="Resources\Drawable\HiHat.png" />
     <AndroidResource Include="Resources\Drawable\Snare.png" />
+    <AndroidResource Include="Resources\Drawable\YRM1xAtmosphere.png" />
     <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
+    <AndroidResource Include="Resources\Drawable\HiHat.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
