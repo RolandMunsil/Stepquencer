@@ -13,7 +13,6 @@ namespace Stepquencer
         private HashSet<Color> selectedColors;
         private Grid allInstruments;
         InstrumentButton selectedSlot;
-        private int numColorsSelected = 4;              // Colors user has currently selected
 
         public ChangeInstrumentsPage(MainPage mainpage)
         {
@@ -44,7 +43,7 @@ namespace Stepquencer
             };
 
             int j = 0;      // Used to ensure first item is selected
-            foreach (InstrumentButton sideButton in mainpage.sideBarButtons)
+            foreach (InstrumentButton sideButton in mainpage.instrumentButtons)
             {
                 InstrumentButton button = new InstrumentButton(sideButton.Instrument);
 
@@ -202,48 +201,6 @@ namespace Stepquencer
 
                 selectedColors.Add(selectedSlot.BackgroundColor);
             }
-
-            /*
-            if (clickedButton.BorderColor.Equals(Color.White))     // If button has already been selected
-            {
-                foreach (Button button in instrumentSlotLayout.Children)             // Look through selected instruments
-                {
-                    if (button.BackgroundColor.Equals(clickedButton.BackgroundColor))   // If one matches, reset it
-                    {
-                        selectedColors.Remove(clickedButton.BackgroundColor);
-                        button.BackgroundColor = Color.FromHex("#606060");
-                        button.Image = null;
-                        button.IsVisible = false;
-
-                        clickedButton.Selected = false;
-                        numColorsSelected--;
-                    }
-                }
-
-                clickedButton.Selected = false;         // Also make sure the originally clicked button is no longer selected
-            }
-            else
-            {
-                if (numColorsSelected < 4)    // So long as the user hasn't already selected all 4 instruments
-                {
-                    clickedButton.Selected = true;
-
-                    foreach (Button nextButton in instrumentSlotLayout.Children)                 // Loop through available buttons 
-                    {
-                        if (nextButton.BackgroundColor.Equals(Color.FromHex("#606060")))    // For the first grey button we find:    
-                        {
-                            nextButton.BackgroundColor = clickedButton.BackgroundColor;     // Load it up with the correct image 
-                            nextButton.Image = clickedButton.Image;                         // and background color
-                            nextButton.IsVisible = true;
-
-                            numColorsSelected++;
-                            selectedColors.Add(clickedButton.BackgroundColor);
-                            break;
-                        }
-                    }
-                }
-            }
-            */
         }
 
 

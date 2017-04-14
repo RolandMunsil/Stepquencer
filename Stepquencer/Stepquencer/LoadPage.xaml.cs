@@ -117,7 +117,10 @@ namespace Stepquencer
         void OnSongTap(Object songUI)
         {
             SongUIElement uiElement = (SongUIElement)songUI;
-            mainpage.SetSong(uiElement.GetSong());
+
+            Instrument[] songInstruments;
+            mainpage.SetSong(LoadSongFromFile(uiElement.filePath, out songInstruments));
+            mainpage.SetSidebarInstruments(songInstruments);
             ReturnToMainPage();
         }
 
@@ -128,15 +131,32 @@ namespace Stepquencer
         /// </summary>
         /// <returns>The song from file.</returns>
         /// <param name="songName">Song name.</param>
-        public static Song LoadSongFromFile(String path)
+        public static Song LoadSongFromFile(String path, out Instrument[] songInstruments)
         {
             String filePath = path;
             Song loadedSong;
 
             using (StreamReader file = File.OpenText(filePath))
             {
-                int totalBeats = int.Parse(file.ReadLine().Split(' ')[0]);
+                String[] firstLineParts = file.ReadLine().Split('|');
+                int totalBeats = int.Parse(firstLineParts[0].Split(' ')[0]);
                 loadedSong = new Song(totalBeats);
+
+                //Load instruments
+                if (firstLineParts.Length > 1)
+                {                  
+                    songInstruments = new Instrument[firstLineParts.Length - 1];
+                    for (int i = 1; i < firstLineParts.Length; i++)
+                    {
+                        songInstruments[i - 1] = Instrument.GetByName(firstLineParts[i]);
+                    }
+                }
+                else
+                {
+                    //If no instruments, use default instruments (for backwards compatability)
+                    songInstruments = MainPage.INITIAL_INSTRUMENTS.Select(str => Instrument.GetByName(str)).ToArray();
+                }             
+
                 for (int i = 0; i < totalBeats; i++)
                 {
                     String header = file.ReadLine();
