@@ -60,20 +60,8 @@ namespace Stepquencer
             }
         }
 
-        public Song Song
+        public SongPlayer()
         {
-            set
-            {
-                if (!IsPlaying)
-                    song = value;
-                else
-                    throw new InvalidOperationException("Cannot change the song while it is being played!");
-            }
-        }
-
-        public SongPlayer(Song song)
-        {
-            this.song = song;
 #if __IOS__
             streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  // Might need to check if little or big endian
 #endif
@@ -82,8 +70,9 @@ namespace Stepquencer
         /// <summary>
         /// Begins playing at the specified BPM
         /// </summary>
-        public void BeginPlaying(int bpm)
+        public void BeginPlaying(Song song, int bpm)
         {
+            this.song = song;
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
             {
                 if (IsPlaying)

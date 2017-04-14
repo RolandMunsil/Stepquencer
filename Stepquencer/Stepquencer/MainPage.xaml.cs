@@ -45,7 +45,7 @@ namespace Stepquencer
 
             // Initializing the song player and noteArray
             song = new Song(NumColumns);
-            player = new SongPlayer(song);
+            player = new SongPlayer();
 
             //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
             mastergrid = new Grid { ColumnSpacing = 2 };
@@ -176,12 +176,13 @@ namespace Stepquencer
         /// <summary>
         /// Clears all colors/sounds from mastergrid. 
         /// </summary>
-        public void ClearStepGrid()
+        public void ClearStepGridAndSong()
         {
             foreach (MiniGrid miniGrid in stepgrid.Children.OfType<MiniGrid>())
             {
                 miniGrid.SetColors(new List<Color>());
             }
+            this.song = new Song(song.BeatCount);
         }
 
 
@@ -191,7 +192,6 @@ namespace Stepquencer
         public void SetSong(Song song)
         {
             this.song = song;
-            this.player.Song = song;
 
             Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[song.BeatCount];
             for (int i = 0; i < song.BeatCount; i++)
@@ -277,7 +277,7 @@ namespace Stepquencer
         {
             stepgrid.Children.Add(highlight, 0, 0);
             Grid.SetRowSpan(highlight, NumRows);
-            player.BeginPlaying(currentTempo);
+            player.BeginPlaying(song, currentTempo);
             playStopButton.Image = "stop.png";
         }
 
