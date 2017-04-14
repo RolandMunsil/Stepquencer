@@ -9,7 +9,6 @@ namespace Stepquencer
     public partial class LoadPage : ContentPage
     {
         private MainPage mainpage;              // Reference to mainpage so it can be changed
-        private String[] songNames;
 
         private StackLayout masterLayout;       // Layout that holds all UI elements
         private ScrollView scroller;            // Scrollview to accomodate more songs than the screen can handle
@@ -19,14 +18,10 @@ namespace Stepquencer
             this.mainpage = mainpage;
             this.BackgroundColor = Color.FromHex("#2C2C2C");
 
-
             // Initialize scrollview
-
             scroller = new ScrollView();
 
-
             // Initialize masterLayout
-
             masterLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
@@ -34,18 +29,14 @@ namespace Stepquencer
                 Margin = 7
             };
 
-
             // Check to make sure that the stepsongs folder exists, and create it if it doesn't
-
             if (!Directory.Exists(SongFileUtilities.PathToSongDirectory))           
             {
                 Directory.CreateDirectory(SongFileUtilities.PathToSongDirectory);
             }
 
-
             // Load in all of the songUIElements
-
-            loadSongUIElements();
+            LoadSongUIElements();
         }
 
 
@@ -53,12 +44,9 @@ namespace Stepquencer
         /// <summary>
         /// Method to load in/refresh UI based on which songs are saved
         /// </summary>
-        public void loadSongUIElements()
+        public void LoadSongUIElements()
         {
-
-            masterLayout.Children.Clear();                 // Clear out all the songUI elements currently shown
-
-            songNames = Directory.GetFiles(SongFileUtilities.PathToSongDirectory);           // Get all the remaining files
+            String[] songNames = Directory.GetFiles(SongFileUtilities.PathToSongDirectory);           // Get all the remaining files
 
             if (songNames.Length == 0)      // If there are no saved songs, 
             {
@@ -80,16 +68,15 @@ namespace Stepquencer
             {
                 foreach (String name in songNames)
                 {
-                    SongUIElement songUI = new SongUIElement(name, this);     // Make a new instance of the UI element
+                    SongUIElement songUI = new SongUIElement(name);     // Make a new instance of the UI element
 
-                    // Add TapGestureRecognizer
-                    TapGestureRecognizer tgr = new TapGestureRecognizer // Make a new TapGestureRecognizer to add to it
+                    songUI.Tap += OnSongTap;
+                    songUI.DeleteClicked += delegate(SongUIElement elem)          
                     {
-                        CommandParameter = songUI,
-                        Command = new Command(OnSongTap)
+                        File.Delete(elem.filePath);             // Delete song file
+                        masterLayout.Children.Remove(elem);     // Refresh the page
                     };
 
-                    songUI.AddGestureRecognizers(tgr);          // Add Tapgesture recognizer to diffenent parts of UI element
                     masterLayout.Children.Add(songUI);          // Add UI element to the masterLayout
 
                 }
@@ -114,17 +101,13 @@ namespace Stepquencer
         /// Event handler for a SongUIElement being tapped
         /// </summary>
         /// <param name="songUI">Song user interface.</param>
-        void OnSongTap(Object songUI)
+        void OnSongTap(SongUIElement uiElement)
         {
-            SongUIElement uiElement = (SongUIElement)songUI;
-
             Instrument[] songInstruments;
             mainpage.SetSong(LoadSongFromFile(uiElement.filePath, out songInstruments));
             mainpage.SetSidebarInstruments(songInstruments);
             ReturnToMainPage();
         }
-
-
 
         /// <summary>
         /// Loads a song given its name
