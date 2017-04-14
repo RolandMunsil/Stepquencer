@@ -125,7 +125,7 @@ namespace Stepquencer
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
-            String filePath = MoreOptionsPage.PathToSongFile(songName);
+            String filePath = SongFileUtilities.PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {

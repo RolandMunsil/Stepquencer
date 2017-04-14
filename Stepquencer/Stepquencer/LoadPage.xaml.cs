@@ -9,7 +9,6 @@ namespace Stepquencer
     public partial class LoadPage : ContentPage
     {
         private MainPage mainpage;              // Reference to mainpage so it can be changed
-        String savePath;
         private String[] songNames;
 
         private StackLayout masterLayout;       // Layout that holds all UI elements
@@ -18,9 +17,6 @@ namespace Stepquencer
         public LoadPage(MainPage mainpage)
         {
             this.mainpage = mainpage;
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);     //* Get path to saved songs on this device
-            this.savePath = Path.Combine(documentsPath, "stepsongs/");                              //*
-
             this.BackgroundColor = Color.FromHex("#2C2C2C");
 
 
@@ -41,9 +37,9 @@ namespace Stepquencer
 
             // Check to make sure that the stepsongs folder exists, and create it if it doesn't
 
-            if (!Directory.Exists(savePath))           
+            if (!Directory.Exists(SongFileUtilities.PathToSongDirectory))           
             {
-                Directory.CreateDirectory(savePath);
+                Directory.CreateDirectory(SongFileUtilities.PathToSongDirectory);
             }
 
 
@@ -62,8 +58,7 @@ namespace Stepquencer
 
             masterLayout.Children.Clear();                 // Clear out all the songUI elements currently shown
 
-            songNames = Directory.GetFiles(savePath);           // Get all the remaining files
-
+            songNames = Directory.GetFiles(SongFileUtilities.PathToSongDirectory);           // Get all the remaining files
 
             if (songNames.Length == 0)      // If there are no saved songs, 
             {
@@ -177,7 +172,7 @@ namespace Stepquencer
         /// <param name="songName">Song name.</param>
         private static void DeleteSongFile(String songName)
         {
-            File.Delete(MoreOptionsPage.PathToSongFile(songName));
+            File.Delete(SongFileUtilities.PathToSongFile(songName));
         }
     }
 }
