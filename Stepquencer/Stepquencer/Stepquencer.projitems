@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SongFileUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Instrument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InstrumentButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
