@@ -321,7 +321,7 @@ namespace Stepquencer
 
             if (!player.IsPlaying)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
-                SongPlayer.PlayNote(button.Instrument.AtPitch(3));
+                SongPlayer.PlayNote(button.Instrument.AtPitch(0));
             }
             if (button != selectedInstrButton)
             {

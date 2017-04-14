@@ -169,7 +169,7 @@ namespace Stepquencer
         public void OnSlotClicked(Object sender, EventArgs e)
         {
             InstrumentButton slotClicked = (InstrumentButton)sender;
-            SongPlayer.PlayNote(slotClicked.Instrument.AtPitch(3));
+            SongPlayer.PlayNote(slotClicked.Instrument.AtPitch(0));
 
             if (!slotClicked.BorderColor.Equals(Color.White))
             {
@@ -189,7 +189,7 @@ namespace Stepquencer
         public void OnInstrumentClicked(Object sender, EventArgs e)
         {
             InstrumentButton clickedButton = (InstrumentButton)sender;
-            SongPlayer.PlayNote(clickedButton.Instrument.AtPitch(3));
+            SongPlayer.PlayNote(clickedButton.Instrument.AtPitch(0));
 
             if (!selectedColors.Contains(clickedButton.BackgroundColor))
             {
