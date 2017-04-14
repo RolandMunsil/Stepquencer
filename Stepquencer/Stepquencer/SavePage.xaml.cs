@@ -45,11 +45,13 @@ namespace Stepquencer
 
             // Initialize songTitleEntry
 
-            songTitleEntry = new Entry 
-            { 
+            songTitleEntry = new Entry
+            {
                 Placeholder = "Enter song title",
+                HorizontalTextAlignment = TextAlignment.Center,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                WidthRequest = 300
             };
 
 

@@ -26,6 +26,7 @@ namespace Stepquencer
         public Song song;                                    // Array of HashSets of Songplayer notes
 
         InstrumentButton selectedInstrButton;
+        public List<InstrumentButton> sideBarButtons;       // Holds current instruments in sidebar
 
         BoxView highlight;
 
@@ -55,6 +56,9 @@ namespace Stepquencer
             // Make the stepgrid and fill it with boxes
             MakeStepGrid();
 
+            // Initialize list of sidebar buttons
+            sideBarButtons = new List<InstrumentButton>();
+
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
@@ -76,7 +80,8 @@ namespace Stepquencer
                 }
                 button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler  
 
-                sidebar.Children.Add(button, 0, i+1);                                 // Add it to the sidebar                      
+                sidebar.Children.Add(button, 0, i+1);                                 // Add it to the sidebar      
+                sideBarButtons.Add(button);
             }
 
             // More options button
