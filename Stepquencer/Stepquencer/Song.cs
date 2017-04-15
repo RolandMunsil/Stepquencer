@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Stepquencer
@@ -73,6 +74,34 @@ namespace Stepquencer
                 beats[beat].CopyTo(notes);
             }
             return notes;
+        }
+
+        public void ReplaceInstruments(IList<Instrument> oldInstruments, IList<Instrument> newInstrument)
+        {
+            lock(beats)
+            {
+                foreach(HashSet<Instrument.Note> beat in beats)
+                {
+                    List<Instrument.Note> oldNotes = beat.ToList();
+                    beat.Clear();
+
+                    foreach(Instrument.Note oldNote in oldNotes)
+                    {
+                        int index = oldInstruments.IndexOf(oldNote.instrument);
+                        if(index < 0)
+                        {
+                            //Not supposed to be replaced, so just readd it.
+                            beat.Add(oldNote);
+                        }
+                        else
+                        {
+                            //Replace with new note
+                            Instrument.Note newNote = newInstrument[index].AtPitch(oldNote.semitoneShift);
+                            beat.Add(newNote);
+                        }
+                    }
+                }
+            }
         }
     }
 }
