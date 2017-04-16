@@ -136,8 +136,9 @@ namespace Stepquencer
                 }
                 else
                 {
+                    String[] oldDefaultInstruments = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
                     //If no instruments, use default instruments (for backwards compatability)
-                    songInstruments = MainPage.INITIAL_INSTRUMENTS.Select(str => Instrument.GetByName(str)).ToArray();
+                    songInstruments = oldDefaultInstruments.Select(str => Instrument.GetByName(str)).ToArray();
                 }             
 
                 for (int i = 0; i < totalBeats; i++)
