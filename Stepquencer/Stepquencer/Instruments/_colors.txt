@@ -1,9 +1,9 @@
 ﻿BassDrum|ff00ff
 Clap|7e57c2
-DistortedGuitar|03fef6
+DistortedGuitar|fe9303
 HiHat|ffff00
-SlapBassHigh|03fedf
+SlapBassHigh|03fef6
 SlapBassLow|33ff33
 Snare|ff0000
-SoftBrass|fe9303
+SoftBrass|00ffa6
 YRM1xAtmosphere|3333ff
