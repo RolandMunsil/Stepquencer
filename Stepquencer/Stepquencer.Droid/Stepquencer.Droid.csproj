@@ -148,7 +148,19 @@
     <AndroidResource Include="Resources\Drawable\Clap.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\DistortedGuitar.png" />
+    <AndroidResource Include="Resources\Drawable\RecordScratch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Cabasa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\CrashCymbal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Organ.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Piano.png" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

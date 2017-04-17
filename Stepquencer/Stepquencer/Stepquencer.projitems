@@ -67,7 +67,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\DistortedGuitar.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassHigh.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassLow.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SoftBrass.wav" />
@@ -77,5 +76,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\_colors.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Cabasa.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\CrashCymbal.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Organ.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Piano.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\RecordScratch.wav" />
   </ItemGroup>
 </Project>
