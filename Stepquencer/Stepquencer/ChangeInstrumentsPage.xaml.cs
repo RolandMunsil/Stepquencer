@@ -105,8 +105,6 @@ namespace Stepquencer
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));
                 button.Clicked += OnInstrumentClicked;
 
-                //if (selectedColors.Contains(button.BackgroundColor)) { button.BorderColor = Color.White; }
-
                 allInstruments.Children.Add(button, columnIndex, rowIndex);
                 columnIndex++;
             }
@@ -150,7 +148,7 @@ namespace Stepquencer
             };
 
             cancelButton.Clicked += OnCancelClicked;            // Add event listeners
-            saveButton.Clicked += OnSaveClicked;                //
+            saveButton.Clicked += OnDoneClicked;                //
 
             userButtons.Children.Add(cancelButton);             // Add buttons to layout
             userButtons.Children.Add(saveButton);               //
@@ -171,7 +169,7 @@ namespace Stepquencer
             InstrumentButton slotClicked = (InstrumentButton)sender;
             SongPlayer.PlayNote(slotClicked.Instrument.AtPitch(0));
 
-            if (!slotClicked.BorderColor.Equals(Color.White))
+            if (slotClicked.Selected == false)
             {
                 slotClicked.Selected = true;        // Slot we just clicked is highlighted
                 selectedSlot.Selected = false;      // Previously highlighted slot is de-highlighted
@@ -193,7 +191,7 @@ namespace Stepquencer
 
             if (!selectedInstruments.Contains(clickedButton.Instrument))
             {
-                selectedInstruments.Remove(selectedSlot.Instrument);        // Remove current color from list of colors selected
+                selectedInstruments.Remove(selectedSlot.Instrument);        // Remove current instrument from list of instruments selected
                 selectedSlot.Instrument = clickedButton.Instrument;         // Set slot to hold the new instrument
                 selectedInstruments.Add(selectedSlot.Instrument);           // Update the list of colors selected
             }
@@ -216,7 +214,7 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        public void OnSaveClicked(Object sender, EventArgs e)
+        public void OnDoneClicked(Object sender, EventArgs e)
         {
             // TODO: Warn the user about how things will change
             if (selectedInstruments.Count < 4)
