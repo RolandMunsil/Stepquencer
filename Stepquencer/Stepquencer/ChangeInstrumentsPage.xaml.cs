@@ -96,9 +96,9 @@ namespace Stepquencer
 
             foreach (KeyValuePair<String, Color> nameAndColor in Instrument.colorMap)
             {
-                if (columnIndex > 3) 
+                if (columnIndex > 4) 
                 { 
-                    columnIndex = columnIndex % 4;
+                    columnIndex = columnIndex % 5;
                     rowIndex++;
                 }
 
@@ -136,15 +136,15 @@ namespace Stepquencer
             {
                 Text = "CANCEL",
                 TextColor = Color.White,
-                BackgroundColor = Color.Black,
+                BackgroundColor = Color.FromHex("#252525"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
             Button saveButton = new Button
             {
-                Text = "SAVE",
+                Text = "DONE",
                 TextColor = Color.White,
-                BackgroundColor = Color.Black,
+                BackgroundColor = Color.FromHex("#252525"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
