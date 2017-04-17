@@ -115,8 +115,18 @@ namespace Stepquencer
             }
             else
             {
-                SaveSongToFile(mainpage.song, songTitleEntry.Text);
-                await Navigation.PopToRootAsync();
+                char[] invalidChars = Path.GetInvalidFileNameChars();
+                if (songTitleEntry.Text.IndexOfAny(invalidChars) >= 0)
+                {                    
+                    await DisplayAlert("Invalid filename!", 
+                        $"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}" , 
+                         "OK");
+                }
+                else
+                {
+                    SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                    await Navigation.PopToRootAsync();
+                }
             }
         }
 
