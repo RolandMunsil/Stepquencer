@@ -28,7 +28,7 @@ namespace Stepquencer
             Grid masterGrid = new Grid();
 
             masterGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            masterGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            masterGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
             masterGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4, GridUnitType.Star) });
             masterGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
@@ -39,6 +39,8 @@ namespace Stepquencer
             { 
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Start,
+                Margin = 10,
                 Spacing = 10
             };
 
@@ -48,7 +50,7 @@ namespace Stepquencer
                 InstrumentButton button = new InstrumentButton(sideButton.Instrument);
 
                 button.WidthRequest = 60;           //*
-                button.HeightRequest = 40;          //* Style choices
+                button.HeightRequest = 60;          //* Style choices
 
                 button.Clicked += OnSlotClicked;
 
@@ -103,6 +105,7 @@ namespace Stepquencer
                 }
 
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));
+                button.HeightRequest = 60;
                 button.Clicked += OnInstrumentClicked;
 
                 allInstruments.Children.Add(button, columnIndex, rowIndex);
@@ -217,46 +220,42 @@ namespace Stepquencer
         public void OnDoneClicked(Object sender, EventArgs e)
         {
             // TODO: Warn the user about how things will change
-            if (selectedInstruments.Count < 4)
-            {
-                DisplayAlert("Not Enough Instruments!", "You need to select at least 4 instruments", "Dismiss");
-            }
-            else
-            {
+
+            //DisplayAlert("Not Enough Instruments!", "You need to select at least 4 instruments", "Dismiss");
+
 
                 // Switch the instruments being used by the main page
 
-                Instrument[] instruments = new Instrument[4];
-                int index = 0;
-                foreach (InstrumentButton button in instrumentSlotLayout.Children)
-                {
-                    instruments[index] = button.Instrument;
-                    index++;
-                }
-
-                //Figure out which instruments have changed
-                List<Instrument> oldInstruments = new List<Instrument>();
-                List<Instrument> newInstruments = new List<Instrument>();
-                for(int i = 0; i < instruments.Length; i++)
-                {
-                    Instrument oldInstr = mainpage.instrumentButtons[i].Instrument;
-                    Instrument newInstr = instruments[i];
-                    if (oldInstr != newInstr)
-                    {
-                        oldInstruments.Add(oldInstr);
-                        newInstruments.Add(newInstr);
-                    }
-                }
-
-                Device.BeginInvokeOnMainThread( delegate 
-                {
-                    this.mainpage.SetSidebarInstruments(instruments);
-                    mainpage.song.ReplaceInstruments(oldInstruments, newInstruments);
-                    mainpage.SetSong(mainpage.song);
-                });
-
-                returnToMainPage();                             // Send user back to main page
+            Instrument[] instruments = new Instrument[4];
+            int index = 0;
+            foreach (InstrumentButton button in instrumentSlotLayout.Children)
+            {                    
+                instruments[index] = button.Instrument;
+                index++;
             }
+
+            //Figure out which instruments have changed
+            List<Instrument> oldInstruments = new List<Instrument>();
+            List<Instrument> newInstruments = new List<Instrument>();
+            for(int i = 0; i < instruments.Length; i++)
+            {
+                Instrument oldInstr = mainpage.instrumentButtons[i].Instrument;
+                Instrument newInstr = instruments[i];
+                if (oldInstr != newInstr)
+                {
+                    oldInstruments.Add(oldInstr);
+                    newInstruments.Add(newInstr);
+                }
+            }
+
+            Device.BeginInvokeOnMainThread( delegate 
+            {
+                this.mainpage.SetSidebarInstruments(instruments);
+                mainpage.song.ReplaceInstruments(oldInstruments, newInstruments);
+                mainpage.SetSong(mainpage.song);
+            });
+
+            returnToMainPage();                             // Send user back to main page
         }
 
 
