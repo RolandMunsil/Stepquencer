@@ -114,21 +114,23 @@ namespace Stepquencer
                 await Navigation.PopToRootAsync();    // back to MoreOptionsPage.
             }
 
- 
             //This works, but is probably temporary
-            else {
-                await DisplayAlert("Overwrite Warning", "If a song file with this title already exists in Load folder, the original file will be replaced", "OK", "Cancel");
-                if (buttonPressed.Equals("Cancel"))
+            else if (buttonPressed.Equals(saveButton) && File.Exists(SongFileUtilities.PathToSongFile(songTitleEntry.Text)))
+            {
+                await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK");
+                if (buttonPressed.Equals("OK"))
                 {
                     await Navigation.PopToRootAsync();
                 }
-                if (buttonPressed.Equals("OK"))
+            }
+
+            else
                 {
                     SaveSongToFile(mainpage.song, songTitleEntry.Text);
                     await Navigation.PopToRootAsync();
                 }
-            }
         }
+
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
