@@ -62,6 +62,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
+    <None Include="$(MSBuildThisFileDirectory)Instruments\conga.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />

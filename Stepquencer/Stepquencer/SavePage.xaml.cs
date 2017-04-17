@@ -110,20 +110,25 @@ namespace Stepquencer
             Button buttonPressed = (Button)sender;
 
             if (buttonPressed.Equals(cancelButton))
-            {                                                                       // If the cancel button was pushed, send user
+            {                                         // If the cancel button was pushed, send user
                 await Navigation.PopToRootAsync();    // back to MoreOptionsPage.
             }
-            else
-            {
-                SaveSongToFile(mainpage.song, songTitleEntry.Text);
-                await Navigation.PopToRootAsync();
+
+ 
+            //This works, but is probably temporary
+            else {
+                await DisplayAlert("Overwrite Warning", "If a song file with this title already exists in Load folder, the original file will be replaced", "OK", "Cancel");
+                if (buttonPressed.Equals("Cancel"))
+                {
+                    await Navigation.PopToRootAsync();
+                }
+                if (buttonPressed.Equals("OK"))
+                {
+                    SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                    await Navigation.PopToRootAsync();
+                }
             }
         }
-
-
-        //TODO: Add method
-        //If song file name already exists, warn user
-
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
