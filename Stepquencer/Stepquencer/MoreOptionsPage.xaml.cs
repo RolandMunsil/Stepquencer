@@ -17,8 +17,6 @@ namespace Stepquencer
 
         public static Song clearedSong;
 
-        Button undoClearButton;
-
 
         public MoreOptionsPage(MainPage passedpage)
         {
@@ -92,33 +90,46 @@ namespace Stepquencer
 
             // Initialize buttonGrid to hold all buttons 
 
-            Grid buttonGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand};
+            Grid buttonGrid = new Grid
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                RowSpacing = 7,
+                ColumnSpacing = 7
+            };
 
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+            buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            //buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            //buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 
             // Initialize buttons and add them to buttonGrid
 
-            Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                                         // Takes user to SavePage
-            Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                                         // Takes user to LoadPage
-            Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red };                   // Clears notes and resets UI on main screen
-            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                                              // Undos a recent clear
-            Button changeInstrumentsButton = new Button { Text = "CHANGE INSTRUMENTS", Style = buttonStyle, BackgroundColor = Color.Blue}; // Takes user to ChangeInstrumentsPage
+            Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                       // Takes user to SavePage
+            Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
+            Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
+            Button undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                            // Undos a recent clear
+            Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
+            { 
+                Text = "CHANGE INSTRUMENTS", 
+                Style = buttonStyle, 
+                BackgroundColor = Color.Blue
+            }; 
 
             if (clearedSong == null)
             {
                 undoClearButton.TextColor = Color.Gray;
             }
 
-            buttonGrid.Children.Add(saveButton, 0, 0);
-            buttonGrid.Children.Add(loadButton, 0, 1);
-            buttonGrid.Children.Add(clearAllButton, 1, 0);
-            buttonGrid.Children.Add(undoClearButton, 2, 0);
-            buttonGrid.Children.Add(changeInstrumentsButton, 1, 1);
+            buttonGrid.Children.Add(saveButton, 0, 1);
+            buttonGrid.Children.Add(loadButton, 0, 2);
+            buttonGrid.Children.Add(clearAllButton, 1, 1);
+            buttonGrid.Children.Add(undoClearButton, 1, 2);
+            buttonGrid.Children.Add(changeInstrumentsButton, 0, 0);
 
             Grid.SetColumnSpan(changeInstrumentsButton, 2);
 
@@ -189,6 +200,8 @@ namespace Stepquencer
         /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
+            Button undoClearButton = (Button)sender;
+
             clearedSong = mainpage.song;
             undoClearButton.TextColor = Color.White;
             mainpage.ClearStepGridAndSong();
@@ -202,6 +215,8 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnUndoClearClicked(object sender, EventArgs e)
         {
+            Button undoClearButton = (Button)sender;
+
             if (clearedSong != null)
             {
                 mainpage.SetSong(clearedSong);
