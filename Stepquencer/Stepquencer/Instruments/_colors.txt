@@ -1,10 +1,10 @@
-﻿BassDrum|038C3F
-Cabasa|ffffff
+﻿BassDrum|038c3f
+Cabasa|fad970
 Clap|7e57c2
 CrashCymbal|ffa500
 HiHat|ffff00
-Organ|ffffff
-Piano|ffffff
+Organ|D79AFF
+Piano|CA1155
 RecordScratch|ff00ff
 SlapBassHigh|03fef6
 SlapBassLow|33ff33

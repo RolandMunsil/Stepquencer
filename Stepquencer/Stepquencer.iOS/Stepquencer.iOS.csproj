@@ -137,6 +137,7 @@
     <BundleResource Include="Resources\Organ.png" />
     <BundleResource Include="Resources\SlapBassHigh.png" />
     <BundleResource Include="Resources\BassDrum.png" />
+    <BundleResource Include="Resources\Cabasa.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
