@@ -1,11 +1,11 @@
-﻿BassDrum|ff00ff
+﻿BassDrum|038C3F
 Cabasa|ffffff
 Clap|7e57c2
 CrashCymbal|ffa500
 HiHat|ffff00
 Organ|ffffff
 Piano|ffffff
-RecordScratch|ffffff
+RecordScratch|ff00ff
 SlapBassHigh|03fef6
 SlapBassLow|33ff33
 Snare|ff0000

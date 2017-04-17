@@ -133,6 +133,10 @@
     <BundleResource Include="Resources\CrashCymbal.png" />
     <BundleResource Include="Resources\RecordScratch.png" />
     <BundleResource Include="Resources\YRM1xAtmosphere.png" />
+    <BundleResource Include="Resources\SoftBrass.png" />
+    <BundleResource Include="Resources\Organ.png" />
+    <BundleResource Include="Resources\SlapBassHigh.png" />
+    <BundleResource Include="Resources\BassDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
