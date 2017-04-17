@@ -1,7 +1,7 @@
 ﻿BassDrum|ff00ff
 Cabasa|ffffff
 Clap|7e57c2
-CrashCymbal|ffffff
+CrashCymbal|ffa500
 HiHat|ffff00
 Organ|ffffff
 Piano|ffffff
