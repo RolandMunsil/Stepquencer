@@ -128,7 +128,6 @@
     <BundleResource Include="Resources\Snare.png" />
     <BundleResource Include="Resources\Piano.png" />
     <BundleResource Include="Resources\SlapBassLow.png" />
-    <BundleResource Include="Resources\HiHat.png" />
     <BundleResource Include="Resources\Clap.png" />
     <BundleResource Include="Resources\CrashCymbal.png" />
     <BundleResource Include="Resources\RecordScratch.png" />
@@ -138,6 +137,7 @@
     <BundleResource Include="Resources\SlapBassHigh.png" />
     <BundleResource Include="Resources\BassDrum.png" />
     <BundleResource Include="Resources\Cabasa.png" />
+    <BundleResource Include="Resources\HiHat.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
