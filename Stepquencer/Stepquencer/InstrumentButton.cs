@@ -22,6 +22,7 @@ namespace Stepquencer
 
         public bool Selected
         {
+            get { return BorderColor.Equals(Color.White); }
             set
             {
                 this.BorderColor = value ? Color.White : Color.Black;

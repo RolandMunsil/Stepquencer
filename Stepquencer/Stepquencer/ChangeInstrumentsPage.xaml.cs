@@ -10,7 +10,7 @@ namespace Stepquencer
 
         private MainPage mainpage;                      // Reference to the mainPage instance so that currently selected Colors can be used
         private StackLayout instrumentSlotLayout;
-        private HashSet<Color> selectedColors;
+        private HashSet<Instrument> selectedInstruments;
         private Grid allInstruments;
         InstrumentButton selectedSlot;
 
@@ -20,7 +20,7 @@ namespace Stepquencer
             this.BackgroundColor = Color.Black;             //* 
             this.Title = "Pick your instruments";           //* Set up basic page attributes
             NavigationPage.SetHasBackButton(this, false);   //*
-            selectedColors = new HashSet<Color>();
+            selectedInstruments = new HashSet<Instrument>();
 
 
             // Initialize masterGrid to hold all UI elements
@@ -53,7 +53,7 @@ namespace Stepquencer
                 button.Clicked += OnSlotClicked;
 
                 instrumentSlotLayout.Children.Add(button); // Add to layout
-                selectedColors.Add(button.BackgroundColor);     // Keep track of what colors are selected
+                selectedInstruments.Add(button.Instrument);     // Keep track of what colors are selected
 
                 if (j == 0)                         //
                 {                                   //
@@ -191,15 +191,11 @@ namespace Stepquencer
             InstrumentButton clickedButton = (InstrumentButton)sender;
             SongPlayer.PlayNote(clickedButton.Instrument.AtPitch(0));
 
-            if (!selectedColors.Contains(clickedButton.BackgroundColor))
+            if (!selectedInstruments.Contains(clickedButton.Instrument))
             {
-                selectedColors.Remove(selectedSlot.BackgroundColor);
-
-                selectedSlot.Instrument = clickedButton.Instrument;
-                selectedSlot.BackgroundColor = clickedButton.BackgroundColor;
-                selectedSlot.Image = clickedButton.Image;
-
-                selectedColors.Add(selectedSlot.BackgroundColor);
+                selectedInstruments.Remove(selectedSlot.Instrument);        // Remove current color from list of colors selected
+                selectedSlot.Instrument = clickedButton.Instrument;         // Set slot to hold the new instrument
+                selectedInstruments.Add(selectedSlot.Instrument);           // Update the list of colors selected
             }
         }
 
@@ -209,7 +205,7 @@ namespace Stepquencer
         /// </summary>
         async void OnCancelClicked(Object sender, EventArgs e)
         {
-            await Navigation.PopAsync();
+            await Navigation.PopToRootAsync();
         }
 
 
@@ -223,7 +219,7 @@ namespace Stepquencer
         public void OnSaveClicked(Object sender, EventArgs e)
         {
             // TODO: Warn the user about how things will change
-            if (selectedColors.Count < 4)
+            if (selectedInstruments.Count < 4)
             {
                 DisplayAlert("Not Enough Instruments!", "You need to select at least 4 instruments", "Dismiss");
             }
