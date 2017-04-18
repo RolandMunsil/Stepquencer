@@ -41,6 +41,19 @@ namespace Stepquencer
         //The next beat to generate
         int nextBeat;
 
+        private class PlayingNote
+        {
+            public Instrument.Note note;
+            public int startSample;
+
+            public PlayingNote(Instrument.Note note, int startSample)
+            {
+                this.note = note;
+                this.startSample = startSample;
+            }
+        }
+        List<PlayingNote> playingNotes;
+
         /// <summary>
         /// Whether the song is currently being played.
         /// </summary>
@@ -62,6 +75,7 @@ namespace Stepquencer
 
         public SongPlayer()
         {
+            playingNotes = new List<PlayingNote>();
 #if __IOS__
             streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  // Might need to check if little or big endian
 #endif
@@ -72,14 +86,16 @@ namespace Stepquencer
         /// </summary>
         public void BeginPlaying(Song song, int bpm)
         {
-            this.song = song;
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
             {
                 if (IsPlaying)
                 {
                     throw new InvalidOperationException("Audio is already playing.");
                 }
-                
+                this.song = song;
+
+                playingNotes.Clear();
+
                 samplesPerBeat = ((60 * PLAYBACK_RATE) / bpm);
                 short[] beat0 = MixBeat(song.NotesAtBeat(0));
                 short[] beat1 = MixBeat(song.NotesAtBeat(1));
@@ -97,33 +113,72 @@ namespace Stepquencer
         /// </summary>
         private short[] MixBeat(Instrument.Note[] notes)
         {
-            short[] beatData = new short[samplesPerBeat];
-            if (notes.Length > 0)
+            HashSet<Instrument> instrumentsStartingThisBeat = new HashSet<Instrument>();
+            for(int i = 0; i < notes.Length; i++)
             {
-                for (int i = 0; i < samplesPerBeat; i++)
+                instrumentsStartingThisBeat.Add(notes[i].instrument);
+            }
+            for(int i = 0; i < playingNotes.Count; i++)
+            {
+                if(instrumentsStartingThisBeat.Contains(playingNotes[i].note.instrument))
                 {
-                    int sampleSum = 0;
-                    //Add together the samples from each note
-                    for (int n = 0; n < notes.Length; n++)
-                    {
-                        if (i < notes[n].data.Length)
-                            sampleSum += notes[n].data[i];
-                    }
-                    //Divide sample sum by 4 to reduce audio clipping.
-                    sampleSum /= 4;
-
-                    //Clamp to short range
-                    short asShort;
-                    if (sampleSum >= short.MaxValue)
-                        asShort = short.MaxValue;
-                    else if (sampleSum <= short.MinValue)
-                        asShort = short.MinValue;
-                    else
-                        asShort = (short)sampleSum;
-
-                    beatData[i] = asShort;
+                    playingNotes.RemoveAt(i);
+                    i--;
                 }
             }
+
+            short[] beatData = new short[samplesPerBeat];
+
+            for (int i = 0; i < samplesPerBeat; i++)
+            {
+                int sampleSum = 0;
+                //Add together the samples from each note
+                for (int n = 0; n < notes.Length; n++)
+                {
+                    if (i < notes[n].data.Length)
+                        sampleSum += notes[n].data[i];
+                }
+                for (int n = 0; n < playingNotes.Count; n++)
+                {
+                    int s = playingNotes[n].startSample + i;
+                    if (s < playingNotes[n].note.data.Length)
+                        sampleSum += playingNotes[n].note.data[s];
+                }
+                //Divide sample sum by 4 to reduce audio clipping.
+                sampleSum /= 4;
+
+                //Clamp to short range
+                short asShort;
+                if (sampleSum >= short.MaxValue)
+                    asShort = short.MaxValue;
+                else if (sampleSum <= short.MinValue)
+                    asShort = short.MinValue;
+                else
+                    asShort = (short)sampleSum;
+
+                beatData[i] = asShort;
+            }
+
+            for(int i = 0; i < playingNotes.Count; i++)
+            {
+                if(playingNotes[i].startSample + samplesPerBeat >= playingNotes[i].note.data.Length)
+                {
+                    playingNotes.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    playingNotes[i].startSample += samplesPerBeat;
+                }
+            }
+            foreach (Instrument.Note note in notes)
+            {
+                if(note.data.Length > samplesPerBeat)
+                {
+                    playingNotes.Add(new PlayingNote(note, samplesPerBeat));
+                }
+            }
+
             return beatData;
         }
 
