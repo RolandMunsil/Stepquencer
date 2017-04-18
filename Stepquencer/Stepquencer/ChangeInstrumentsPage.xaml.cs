@@ -5,14 +5,18 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// A page that allows users to change the set of instruments they're using
+    /// </summary>
+
     public partial class ChangeInstrumentsPage : ContentPage
     {
 
-        private MainPage mainpage;                      // Reference to the mainPage instance so that currently selected Colors can be used
-        private StackLayout instrumentSlotLayout;
-        private HashSet<Instrument> selectedInstruments;
-        private Grid allInstruments;
-        InstrumentButton selectedSlot;
+        private MainPage mainpage;                        // Reference to the mainPage instance in order to access currently selected instruments
+        private HashSet<Instrument> selectedInstruments;  // Holds all currently selected instruments  
+        private StackLayout instrumentSlotLayout;         //* Layout for various UI elements  
+        private Grid allInstruments;                      //* 
+        private InstrumentButton selectedSlot;     // Currently selected instrument  
 
         public ChangeInstrumentsPage(MainPage mainpage)
         {
@@ -20,7 +24,7 @@ namespace Stepquencer
             this.BackgroundColor = Color.Black;             //* 
             this.Title = "Pick your instruments";           //* Set up basic page attributes
             NavigationPage.SetHasBackButton(this, false);   //*
-            selectedInstruments = new HashSet<Instrument>();
+            selectedInstruments = new HashSet<Instrument>();//*
 
 
             // Initialize masterGrid to hold all UI elements
@@ -33,7 +37,7 @@ namespace Stepquencer
             masterGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 
-            // Initialize a StackLayout with placeholder buttons for top row. This will be updated as user selects instruments
+            // Initialize a StackLayout to hold currently selected instruments
 
             instrumentSlotLayout = new StackLayout 
             { 
@@ -44,7 +48,10 @@ namespace Stepquencer
                 Spacing = 10
             };
 
-            int j = 0;      // Used to ensure first item is selected
+
+            // Make sure instrumentSlotLayout is initialized with instruments used on main page
+
+            int j = 0;      
             foreach (InstrumentButton sideButton in mainpage.instrumentButtons)
             {
                 InstrumentButton button = new InstrumentButton(sideButton.Instrument);
@@ -52,9 +59,9 @@ namespace Stepquencer
                 button.WidthRequest = 60;           //*
                 button.HeightRequest = 60;          //* Style choices
 
-                button.Clicked += OnSlotClicked;
+                button.Clicked += OnSlotClicked;    // Add event listener
 
-                instrumentSlotLayout.Children.Add(button); // Add to layout
+                instrumentSlotLayout.Children.Add(button);      // Add to layout
                 selectedInstruments.Add(button.Instrument);     // Keep track of what colors are selected
 
                 if (j == 0)                         //
@@ -69,7 +76,7 @@ namespace Stepquencer
 
 
 
-            // Initialize a Grid for all colors user currently has and a scrollview to hold it
+            // Initialize a Grid for all available instruments
 
             allInstruments = new Grid 
             { 
@@ -91,29 +98,29 @@ namespace Stepquencer
 
 
 
-            // Put all instruments in the allInstruments Grid
+            // Put instruments in the allInstruments Grid
 
-            int columnIndex = 0;
-            int rowIndex = 0;
+            int columnIndex = 0;        // Used for row/column placement calculations
+            int rowIndex = 0;           //
 
-            foreach (KeyValuePair<String, Color> nameAndColor in Instrument.colorMap)
+            foreach (KeyValuePair<String, Color> nameAndColor in Instrument.colorMap)   // For each mapping of instrument name and color:
             {
-                if (columnIndex > 4) 
-                { 
-                    columnIndex = columnIndex % 5;
-                    rowIndex++;
-                }
+                if (columnIndex > 4)                    //
+                {                                       //
+                    columnIndex = 0;                    // If at the end of a row, reset column index and move on to the next row
+                    rowIndex++;                         //
+                }                                       //
 
-                InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));
-                button.HeightRequest = 60;
-                button.Clicked += OnInstrumentClicked;
+                InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));     // Make a new InstrumentButton initialized with this instrument
+                button.HeightRequest = 60;                                                                  // Style choice
+                button.Clicked += OnInstrumentClicked;                                                      // Add event handler to button
 
-                allInstruments.Children.Add(button, columnIndex, rowIndex);
-                columnIndex++;
+                allInstruments.Children.Add(button, columnIndex, rowIndex);         // Add button to Grid 
+                columnIndex++;                                                      
             }
 
 
-            // Make a ScrollView to hold all of the instruments and add it to the masterGrid
+            // Make a ScrollView to hold the grid with all the instruments and add it to masterGrid
 
             ScrollView scroller = new ScrollView
             {
@@ -124,7 +131,7 @@ namespace Stepquencer
             masterGrid.Children.Add(scroller, 0, 1);
 
 
-            // Make a StackLayout to hold cancel, clear, and save buttons
+            // Make a StackLayout to hold cancel and done buttons
 
             StackLayout userButtons = new StackLayout 
             { 
@@ -132,6 +139,9 @@ namespace Stepquencer
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
             };
+
+
+            // Make cancel, done buttons
 
             Button cancelButton = new Button
             {
@@ -141,7 +151,7 @@ namespace Stepquencer
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
-            Button saveButton = new Button
+            Button doneButton = new Button
             {
                 Text = "DONE",
                 TextColor = Color.White,
@@ -150,11 +160,12 @@ namespace Stepquencer
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            cancelButton.Clicked += OnCancelClicked;            // Add event listeners
-            saveButton.Clicked += OnDoneClicked;                //
+
+            cancelButton.Clicked += OnCancelClicked;            // Add event listeners to
+            doneButton.Clicked += OnDoneClicked;                // cancel and done buttons
 
             userButtons.Children.Add(cancelButton);             // Add buttons to layout
-            userButtons.Children.Add(saveButton);               //
+            userButtons.Children.Add(doneButton);               //
 
             masterGrid.Children.Add(userButtons, 0, 2);
 
@@ -226,27 +237,30 @@ namespace Stepquencer
 
             // Switch the instruments being used by the main page
 
-            Instrument[] instruments = new Instrument[4];
-            int index = 0;
-            foreach (InstrumentButton button in instrumentSlotLayout.Children)
-            {                    
-                instruments[index] = button.Instrument;
-                index++;
-            }
+            Instrument[] instruments = new Instrument[4];                       //
+            int index = 0;                                                      //
+            foreach (InstrumentButton button in instrumentSlotLayout.Children)  //
+            {                                                                   // Gather up current selected instruments in an array
+                instruments[index] = button.Instrument;                         //
+                index++;                                                        //
+            }                                                                   //
 
-            //Figure out which instruments have changed
-            List<Instrument> oldInstruments = new List<Instrument>();
-            List<Instrument> newInstruments = new List<Instrument>();
-            for(int i = 0; i < instruments.Length; i++)
-            {
-                Instrument oldInstr = mainpage.instrumentButtons[i].Instrument;
-                Instrument newInstr = instruments[i];
-                if (oldInstr != newInstr)
-                {
-                    oldInstruments.Add(oldInstr);
-                    newInstruments.Add(newInstr);
-                }
-            }
+
+            List<Instrument> oldInstruments = new List<Instrument>();           //
+            List<Instrument> newInstruments = new List<Instrument>();           //
+            for(int i = 0; i < instruments.Length; i++)                         //
+            {                                                                   //
+                Instrument oldInstr = mainpage.instrumentButtons[i].Instrument; //
+                Instrument newInstr = instruments[i];                           // Figure out which instruments have changed
+                if (oldInstr != newInstr)                                       //
+                {                                                               //
+                    oldInstruments.Add(oldInstr);                               //
+                    newInstruments.Add(newInstr);                               //
+                }                                                               //
+            }                                                                   //
+
+
+            // Set up the main page for user's return and go back
 
             Device.BeginInvokeOnMainThread( delegate 
             {
@@ -255,7 +269,7 @@ namespace Stepquencer
                 mainpage.SetSong(mainpage.song);
             });
 
-            returnToMainPage();                             // Send user back to main page
+            returnToMainPage();                             
         }
 
 

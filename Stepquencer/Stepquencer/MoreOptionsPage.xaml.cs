@@ -5,6 +5,10 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// A page that allows user to change tempo and serves as a hub for saving, loading, clearing, undoing a clear, and switching instruments
+    /// </summary>
+
     public partial class MoreOptionsPage : ContentPage
     {
         const double MIN_BPM = 100;          // Minimum BPM user can change to

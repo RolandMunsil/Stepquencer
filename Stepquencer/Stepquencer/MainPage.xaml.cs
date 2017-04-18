@@ -263,6 +263,7 @@ namespace Stepquencer
             MoreOptionsPage.clearedSong = null;
         }
 
+
         /// <summary>
         /// Event handler for the Play/Stop button
         /// </summary>
@@ -280,6 +281,10 @@ namespace Stepquencer
             }
         }
 
+
+        /// <summary>
+        /// Starts playing the song
+        /// </summary>
         private void StartPlayingSong()
         {
             stepgrid.Children.Add(highlight, 0, 0);
@@ -288,12 +293,17 @@ namespace Stepquencer
             playStopButton.Image = "stop.png";
         }
 
+
+        /// <summary>
+        /// Stops playing the song
+        /// </summary>
         private void StopPlayingSong()
         {
             player.StopPlaying();
             playStopButton.Image = "play.png";
             stepgrid.Children.Remove(highlight);
         }
+
 
         /// <summary>
         /// Event handler for the more options button. Sends user to more options page.
@@ -309,6 +319,7 @@ namespace Stepquencer
 
             await Navigation.PushAsync(new MoreOptionsPage(this));
         }
+
 
         /// <summary>
         /// Event handler for buttons in the sidebar
@@ -331,6 +342,7 @@ namespace Stepquencer
                 selectedInstrButton = button;		//Set this button to be the currently selected button
             }
         }            
+
 
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
