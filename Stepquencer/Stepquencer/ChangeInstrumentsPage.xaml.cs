@@ -224,7 +224,7 @@ namespace Stepquencer
             //DisplayAlert("Not Enough Instruments!", "You need to select at least 4 instruments", "Dismiss");
 
 
-                // Switch the instruments being used by the main page
+            // Switch the instruments being used by the main page
 
             Instrument[] instruments = new Instrument[4];
             int index = 0;
