@@ -78,8 +78,8 @@ namespace Stepquencer
 
             // Initialize a Grid for all available instruments
 
-            allInstruments = new Grid 
-            { 
+            allInstruments = new Grid
+            {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
@@ -113,6 +113,7 @@ namespace Stepquencer
 
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));     // Make a new InstrumentButton initialized with this instrument
                 button.HeightRequest = 60;                                                                  // Style choice
+                button.BorderWidth = 0;
                 button.Clicked += OnInstrumentClicked;                                                      // Add event handler to button
 
                 allInstruments.Children.Add(button, columnIndex, rowIndex);         // Add button to Grid 
