@@ -62,7 +62,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
-    <None Include="$(MSBuildThisFileDirectory)Instruments\conga.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Conga.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />
@@ -84,5 +84,9 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Organ.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Piano.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\RecordScratch.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
   </ItemGroup>
 </Project>

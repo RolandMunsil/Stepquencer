@@ -1,6 +1,8 @@
 ﻿BassDrum|038c3f
 Cabasa|fad970
+Choir|fffffe
 Clap|7e57c2
+Conga|ffffff
 CrashCymbal|ffa500
 HiHat|ffff00
 Organ|D79AFF
@@ -10,4 +12,5 @@ SlapBassHigh|03fef6
 SlapBassLow|33ff33
 Snare|ff0000
 SoftBrass|00ffa6
+SteelDrum|fffffd
 YRM1xAtmosphere|3333ff
