@@ -157,6 +157,7 @@ namespace Stepquencer
                         file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
                     }
                 }
+                file.WriteLine(mainpage.currentTempo);
             }
         }
     }

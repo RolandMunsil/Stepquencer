@@ -104,8 +104,13 @@ namespace Stepquencer
         void OnSongTap(SongUIElement uiElement)
         {
             Instrument[] songInstruments;
-            mainpage.SetSong(LoadSongFromFile(uiElement.filePath, out songInstruments));
+            int tempo;
+            mainpage.SetSong(LoadSongFromFile(uiElement.filePath, out songInstruments, out tempo));
             mainpage.SetSidebarInstruments(songInstruments);
+            if(tempo > 0)
+            {
+                mainpage.currentTempo = tempo;
+            }
             ReturnToMainPage();
         }
 
@@ -114,7 +119,7 @@ namespace Stepquencer
         /// </summary>
         /// <returns>The song from file.</returns>
         /// <param name="songName">Song name.</param>
-        public static Song LoadSongFromFile(String path, out Instrument[] songInstruments)
+        public static Song LoadSongFromFile(String path, out Instrument[] songInstruments, out int tempo)
         {
             String filePath = path;
             Song loadedSong;
@@ -164,6 +169,9 @@ namespace Stepquencer
                         loadedSong.AddNote(note, i);
                     }
                 }
+                String lastLine = file.ReadLine();
+                tempo = -1;
+                int.TryParse(lastLine, out tempo);
             }
 
             return loadedSong;
