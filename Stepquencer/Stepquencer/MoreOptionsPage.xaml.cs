@@ -235,7 +235,7 @@ namespace Stepquencer
             mainpage.scroller.Content = mainpage.stepgrid;
 
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-            mainpage.mastergrid.Children.Add(mainpage.scroller, 0, 0); // Add scroller to first column of mastergrid
+            mainpage.mastergrid.Children.Add(mainpage.scroller, 1, 0); // Add scroller to first column of mastergrid
             mainpage.Content = mainpage.mastergrid;
         }
     }
