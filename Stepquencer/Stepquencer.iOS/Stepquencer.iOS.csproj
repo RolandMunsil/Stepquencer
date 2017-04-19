@@ -138,6 +138,9 @@
     <BundleResource Include="Resources\BassDrum.png" />
     <BundleResource Include="Resources\Cabasa.png" />
     <BundleResource Include="Resources\HiHat.png" />
+    <BundleResource Include="Resources\Choir.png" />
+    <BundleResource Include="Resources\Conga.png" />
+    <BundleResource Include="Resources\SteelDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
