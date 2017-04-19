@@ -2,6 +2,7 @@
 using Xamarin.Forms;
 using System.ComponentModel;
 using Stepquencer;
+using Xamarin.Forms.Platform.iOS;
 
 #if __ANDROID__
 using Xamarin.Forms.Platform.Android;
