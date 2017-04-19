@@ -6,6 +6,10 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// A grid that holds 4 boxviews, which can represent up to 4 instruments at a single pitch and time. 
+    /// </summary>
+
     class MiniGrid : Grid
     {
         private readonly static Color Grey = Color.FromHex("#606060");

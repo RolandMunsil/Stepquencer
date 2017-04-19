@@ -7,50 +7,47 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// Main page of the application. A place where users can make music, play and pause it, and go into another menu for more actions
+    /// </summary>
+
     public partial class MainPage : ContentPage
     {
-        const int NumRows = 13;
-        const int NumColumns = 8;
-        const int NumInstruments = 4;
-        const double brightnessIncrease = 0.25;						// Amount to increase the red, green, and blue values of each button when it's highlighted
+        const int NumRows = 13;                     // Number of rows of MiniGrids that users can tap and add sounds to
+        const int NumColumns = 8;                   // Number of columns of Minigrids
+        const int NumInstruments = 4;               // Number of instruments on the sidebar
+        const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        public static readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
+        public static readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };   // The set of instruments availble when first loading up the app
 
-        public Grid mastergrid;
-        public Grid stepgrid;                                       // Grid for whole screen
-        Grid sidebar;						                 // Grid for sidebar
+        SongPlayer player;                              // Plays the notes loaded into the current Song object
+        public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
+        public int currentTempo = 240;                  // Keeps track of tempo, initialized at 240
 
-        public ScrollView scroller;                                 // ScrollView that will be used to scroll through stepgrid
-        public int currentTempo = 240;
+        public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
+        InstrumentButton selectedInstrButton;           // Currently selected sidebar button
 
-        public Song song;                                    // Array of HashSets of Songplayer notes
+        public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
+        public Grid mastergrid;                         // Grid for whole screen
+        public Grid stepgrid;                           // Grid to hold MiniGrids
+        Grid sidebar;                                   // Grid for sidebar
 
-        public InstrumentButton[] instrumentButtons;
-        InstrumentButton selectedInstrButton;
+        BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
+        Button playStopButton;                          // Button to play and stop the music.
 
-        BoxView highlight;
-
-        SongPlayer player;
-
-        Button playStopButton;
-
-        
 
         public MainPage()
         {
             InitializeComponent();
-            BackgroundColor = Color.FromHex("#000000");     // Make background color black
-            NavigationPage.SetHasNavigationBar(this, false);    // Make sure navigation bar doesn't show up on this screen
+            BackgroundColor = Color.FromHex("#000000");         //* Set page style 
+            NavigationPage.SetHasNavigationBar(this, false);    //*
 
-            // Initialize the highlight box
-            highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
-            highlight.InputTransparent = true;
 
-            // Initializing the song player and noteArray
+            // Initialize the SongPlayer and noteArray
             song = new Song(NumColumns);
             player = new SongPlayer();
 
-            //Set up a master grid with 2 columns to eventually place stepgrid and sidebar in.
+            //Set up a master grid with 2 columns to hold stepgrid and sidebar.
             mastergrid = new Grid { ColumnSpacing = 2 };
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -62,32 +59,32 @@ namespace Stepquencer
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
+            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             for (int i = 0; i < NumInstruments + 2; i++)
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
-            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            // Fill sidebar with buttons
+            // Fill sidebar with buttons and put them in the instrumentButtons array
             instrumentButtons = new InstrumentButton[INITIAL_INSTRUMENTS.Length];
             for (int i = 0; i < INITIAL_INSTRUMENTS.Length; i++)
             {
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
 
-                if (i == 0)       // Initialize first sidebar button to be highlighted
-                {
-                    button.Selected = true;
-                    selectedInstrButton = button;   //Button now in use
-                }
-                button.Clicked += OnSidebarClicked;                                 // Add to sidebar event handler  
+                if (i == 0)                         //* 
+                {                                   //*
+                    button.Selected = true;         //* Initialize first sidebar button to be highlighted
+                    selectedInstrButton = button;   //*
+                }                                   //*
+                button.Clicked += OnSidebarClicked; // Add button to an event handler                                 
 
 
-                sidebar.Children.Add(button, 0, i+1);                                 // Add it to the sidebar
-                instrumentButtons[i] = button;
+                sidebar.Children.Add(button, 0, i+1);    // Add button to sidebar
+                instrumentButtons[i] = button;           // and instrumentButtons  
 
             }
 
-            // More options button
+            // Add a button to get to the MoreOptionsPage
             Button moreOptionsButton = new Button
             {
                 BackgroundColor = Color.Black,
@@ -98,7 +95,7 @@ namespace Stepquencer
             sidebar.Children.Add(moreOptionsButton, 0, 0);
             moreOptionsButton.Clicked += OnMoreOptionsClicked;
 
-            // Play/stop button
+            // Add a button to play/stop the SongPlayer
             playStopButton = new Button
             {
                 BackgroundColor = Color.Black,
@@ -106,11 +103,17 @@ namespace Stepquencer
                 TextColor = Color.White,
                 BorderRadius = 0,
             };
-            playStopButton.Image = "play.png";
-            sidebar.Children.Add(playStopButton, 0, 5);
-            playStopButton.Clicked += OnPlayStopClicked;
+            playStopButton.Image = "play.png";              //* Initialize playStop button as
+            sidebar.Children.Add(playStopButton, 0, 5);     //* stopped, add it to the sidebar,
+            playStopButton.Clicked += OnPlayStopClicked;    //* and add an event listener
 
-            // Set up scroll view and put grid inside it
+            // Initialize the highlight box
+            highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
+            highlight.InputTransparent = true;
+            player.BeatStarted += HighlightColumns;         // Add an event listener to keep highlight in time with beat
+
+
+            // Initialize scrollview and put stepgrid inside it
             scroller = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical  //Both vertical and horizontal orientation
@@ -118,12 +121,10 @@ namespace Stepquencer
             scroller.Content = stepgrid;
 
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-            mastergrid.Children.Add(scroller, 0, 0); // Add scroller to first column of mastergrid
-            mastergrid.Children.Add(sidebar, 1, 0);  // Add sidebar to final column of mastergrid
-                                                     //Grid.SetRowSpan(sidebar, NumRows);                  // Make sure that it spans the whole column
-
+            mastergrid.Children.Add(scroller, 0, 0); 
+            mastergrid.Children.Add(sidebar, 1, 0);  
+                                                     
             Content = mastergrid;
-            player.BeatStarted += HighlightColumns;
         }
 
         public void SetSidebarInstruments(Instrument[] instruments)

@@ -16,15 +16,15 @@ namespace Stepquencer
         private HashSet<Instrument> selectedInstruments;  // Holds all currently selected instruments  
         private StackLayout instrumentSlotLayout;         //* Layout for various UI elements  
         private Grid allInstruments;                      //* 
-        private InstrumentButton selectedSlot;     // Currently selected instrument  
+        private InstrumentButton selectedSlot;            // Currently selected instrument  
 
         public ChangeInstrumentsPage(MainPage mainpage)
         {
             this.mainpage = mainpage;
-            this.BackgroundColor = Color.Black;             //* 
-            this.Title = "Pick your instruments";           //* Set up basic page attributes
-            NavigationPage.SetHasBackButton(this, false);   //*
-            selectedInstruments = new HashSet<Instrument>();//*
+            this.BackgroundColor = Color.Black;                 //* 
+            this.Title = "Pick your instruments";               //* Set up basic page attributes
+            NavigationPage.SetHasBackButton(this, false);       //*
+            selectedInstruments = new HashSet<Instrument>();    //*
 
 
             // Initialize masterGrid to hold all UI elements
