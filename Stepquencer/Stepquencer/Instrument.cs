@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
+using Xamarin.Forms;
+
 namespace Stepquencer
 {
     [System.Diagnostics.DebuggerDisplay("{instrumentName}")]
@@ -49,10 +51,21 @@ namespace Stepquencer
 #if __ANDROID__
         const String resourcePrefix = "Stepquencer.Droid.Instruments.";
 #endif
+        public static Dictionary<String, Color> colorMap;
+
+        private static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
+
+        private static readonly String[] NOTE_NAMES = { "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B" };
+
         /// <summary>
         /// The name of the audio file this instrument is based on
         /// </summary>
-        public String instrumentName;
+        public String name;
+
+        /// <summary>
+        /// The color that this instrument is represented with
+        /// </summary>
+        public Color color;
 
         /// <summary>
         /// The raw audio data for the original audio file
@@ -64,23 +77,51 @@ namespace Stepquencer
         /// </summary>
         private Dictionary<int, Note> pitchedNotes;
 
-        public static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
-
         private Instrument(short[] unpitchedData, String instrumentName)
         {
             this.unpitchedData = unpitchedData;
             pitchedNotes = new Dictionary<int, Note>(72);
             pitchedNotes.Add(0, new Note(unpitchedData, this, 0));
-            this.instrumentName = instrumentName;
+            this.name = instrumentName;
+            this.color = colorMap[instrumentName];
+        }
+
+        public static void LoadColorMap()
+        {
+            colorMap = new Dictionary<String, Color>();
+
+            String resourceString = $"{resourcePrefix}_colors.txt";
+
+            //Read in data
+            using (System.IO.StreamReader stream = new System.IO.StreamReader(assembly.GetManifestResourceStream(resourceString)))
+            {
+                while(stream.Peek() != -1)
+                {
+                    string[] nameAndColor = stream.ReadLine().Split('|');
+                    colorMap.Add(nameAndColor[0], Color.FromHex("#" + nameAndColor[1]));
+                }
+            }
         }
 
         /// <summary>
-        /// Creates an instrument based on the file Instruments/<code>instrName</code>.wav
+        /// Loads or gets an instrument based on the file Instruments/<code>instrName</code>.wav
         /// </summary>
         /// <param name="instrName">The name of the wav file the created instrument will be based on</param>
         /// <returns>An instrument</returns>
-        public static Instrument LoadByName(String instrName)
+        public static Instrument GetByName(String instrName)
         {
+            if(colorMap == null)
+            {
+                LoadColorMap();
+            }
+
+            //If the instument has already been loaded, return it.
+            Instrument dictInstr;
+            if(loadedInstruments.TryGetValue(instrName, out dictInstr))
+            {
+                return dictInstr;
+            }
+
             //Generate the path to the audio file
             String resourceString = $"{resourcePrefix}{instrName}.wav";
 
@@ -96,14 +137,21 @@ namespace Stepquencer
             //Convert to shorts
             //Note that we skip 44 bytes because that is the size of the WAV header
             short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
-            for (int i = 22; i < dataAsShorts.Length; i++)
+            for (int i = 0; i < dataAsShorts.Length; i++)
             {
-                dataAsShorts[i - 22] = (short)(rawInstrumentData[2 * i] | (rawInstrumentData[2 * i + 1] << 8));
+                int srcPos = (i * 2) + 44;
+                dataAsShorts[i] = (short)(rawInstrumentData[srcPos] | (rawInstrumentData[srcPos + 1] << 8));
             }
 
             Instrument instrument = new Instrument(dataAsShorts, instrName);
             loadedInstruments.Add(instrName, instrument);
             return instrument;
+        }
+
+        public static String SemitoneShiftToString(int semitoneShift)
+        {
+            int index = (((semitoneShift % 12) + 12) % 12);
+            return NOTE_NAMES[index];
         }
 
         /// <summary>
