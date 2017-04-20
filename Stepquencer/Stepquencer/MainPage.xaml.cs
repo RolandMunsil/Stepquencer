@@ -337,12 +337,31 @@ namespace Stepquencer
         /// </summary>
         public void SetSong(Song song)
         {
-            this.song = song;
-
-            Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[song.BeatCount];
-            for (int i = 0; i < song.BeatCount; i++)
+            //Copy 8-beat songs to each set of 8 beats
+            if (song.BeatCount == 8)
             {
-                Instrument.Note[] notes = song.NotesAtBeat(i);
+                this.song = new Song(NumColumns);
+                for (int i = 0; i < 8; i++)
+                {
+                    foreach (Instrument.Note note in song.NotesAtBeat(i))
+                    {
+                        //Iterate over each set of 8 beats
+                        for (int e = 0; e < NumColumns / 8; e++)
+                        {
+                            this.song.AddNote(note, i + (e * 8));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.song = song;
+            }
+
+            Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[this.song.BeatCount];
+            for (int i = 0; i < this.song.BeatCount; i++)
+            {
+                Instrument.Note[] notes = this.song.NotesAtBeat(i);
                 colorsAtShiftAtBeat[i] = notes.GroupBy(n => n.semitoneShift)
                                               .ToDictionary(
                                                      g => g.Key,
