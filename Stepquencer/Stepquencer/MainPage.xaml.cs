@@ -15,7 +15,7 @@ namespace Stepquencer
     {
 
         const int NumRows = 13;                     // Number of rows of MiniGrids that users can tap and add sounds to
-        const int NumColumns = 8;                   // Number of columns of Minigrids
+        const int NumColumns = 16;                   // Number of columns of Minigrids
         const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
@@ -127,7 +127,7 @@ namespace Stepquencer
             // Initialize scrollview and put stepgrid inside it
             scroller = new ScrollView
             {
-                Orientation = ScrollOrientation.Vertical  //Both vertical and horizontal orientation
+                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
 
 
@@ -206,7 +206,7 @@ namespace Stepquencer
             //timer.Interval = 30;
             //timer.Start();
 
-            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.   
+            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
             Content = mastergrid;            
         }
@@ -288,7 +288,7 @@ namespace Stepquencer
             for (int i = 0; i < NumColumns; i++)
             {
                 //tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54, GridUnitType.Absolute) });
-                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(68, GridUnitType.Absolute) });
 
             }
 
