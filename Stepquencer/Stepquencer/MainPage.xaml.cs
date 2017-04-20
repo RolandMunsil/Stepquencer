@@ -208,10 +208,7 @@ namespace Stepquencer
 
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.   
 
-            Content = mastergrid;
-            player.BeatStarted += HighlightColumns;
-            
-            
+            Content = mastergrid;            
         }
 
         
