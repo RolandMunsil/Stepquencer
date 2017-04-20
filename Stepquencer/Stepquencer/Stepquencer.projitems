@@ -12,8 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SongFileUtilities.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Instrument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InstrumentButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -22,6 +24,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)SongPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MoreOptionsPage.xaml.cs">
       <DependentUpon>MoreOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SavePage.xaml.cs">
+      <DependentUpon>SavePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)LoadPage.xaml.cs">
+      <DependentUpon>LoadPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SongUIElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml.cs">
+      <DependentUpon>ChangeInstrumentsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -36,20 +48,46 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MoreOptionsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)SavePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)LoadPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Bass Drum.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Hi-Hat.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Conga.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1x Atmosphere.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Distorted Guitar.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass High.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Slap Bass Low.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Soft Brass.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassHigh.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassLow.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SoftBrass.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\_colors.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Cabasa.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\CrashCymbal.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Organ.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Piano.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\RecordScratch.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
   </ItemGroup>
 </Project>

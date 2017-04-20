@@ -2,7 +2,9 @@
 using Xamarin.Forms;
 using System.ComponentModel;
 using Stepquencer;
+#if __IOS__
 using Xamarin.Forms.Platform.iOS;
+#endif
 
 #if __ANDROID__
 using Xamarin.Forms.Platform.Android;

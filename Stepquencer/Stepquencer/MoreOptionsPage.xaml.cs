@@ -5,39 +5,36 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// A page that allows user to change tempo and serves as a hub for saving, loading, clearing, undoing a clear, and switching instruments
+    /// </summary>
+
     public partial class MoreOptionsPage : ContentPage
     {
-        const double minBPM = 100;          // Minimum BPM user can change to
-        const double maxBPM = 480;          // Maximum BPM user can go to
+        const double MIN_BPM = 100;          // Minimum BPM user can change to
+        const double MAX_BPM = 480;          // Maximum BPM user can go to
 
 
-        private StackLayout masterLayout;   // Overall layout (stacks tempo stuff on top of grid holding the buttons)
-        private Grid tempoGrid;             // Layout to hold tempo label and slider
-        private Grid buttonGrid;            // Grid to hold save, load, clear, and other button
-        private Label tempoLabel, bpmLabel; // Labels to show the current BPM
-        private Slider tempoSlider;         // Slider that user can interact with to change BPM
-        private Button saveButton, loadButton, clearAllButton, undoClearButton;     // Buttons to save, load, clear, etc
-        private Style buttonStyle;          // Style for the buttons on this page
-        private MainPage mainpage;          // The MainPage this screen came from
-        private Song song;                  // The user's current Song
+        private Label bpmLabel;                             // Label to show the current BPM
+        private Slider tempoSlider;                         // Slider that user can interact with to change BPM
+        private MainPage mainpage;                          // The MainPage this screen came from
+        private Button undoClearButton;
+
+        public static Song clearedSong;
 
 
-        public MoreOptionsPage(MainPage passedpage, Song passedSong)
+        public MoreOptionsPage(MainPage passedpage)
         {
-
             this.mainpage = passedpage;         // Need to pass in main page and song in order to change them on this page
-            this.song = passedSong;             //
 
             NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
 
-
             // Initialize style for buttons on this page
-
-            buttonStyle = new Style(typeof(Button))
+            Style buttonStyle = new Style(typeof(Button))
             {
-                Setters = 
+                Setters =
                 {
                     new Setter { Property = Button.TextColorProperty, Value = Color.White },        // Buttons will have white text,
                     new Setter { Property = Button.BackgroundColorProperty, Value = Color.Black },  // a black background,
@@ -46,22 +43,22 @@ namespace Stepquencer
             };
 
 
-            // Initialize tempoGrid to hold tempo and slider
+            // Initialize grid to hold tempo and slider
 
-            tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+            Grid tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for tempo label should take up 1/6 of horizontal space
-            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
+            tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }); // Column for slider should take up 2/3 of horizontal space
 
 
             // Initialize tempo label
 
-            tempoLabel = new Label
+            Label tempoLabel = new Label
             {
                 Text = "Tempo: ",
                 TextColor = Color.White,
-                FontSize = 20,
+                FontSize = 24,
                 HorizontalTextAlignment = TextAlignment.Center,     //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
                 HorizontalOptions = LayoutOptions.EndAndExpand      //* 
@@ -72,20 +69,21 @@ namespace Stepquencer
 
             bpmLabel = new Label
             {
-                Text = mainpage.currentTempo + "\nBPM",
+                Text = mainpage.currentTempo + "  " + "BPM",
                 TextColor = Color.White,
                 FontSize = 20,
-                HorizontalTextAlignment = TextAlignment.Center,     //*
+                HorizontalTextAlignment = TextAlignment.End,        //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
-                HorizontalOptions = LayoutOptions.StartAndExpand    //*
+                HorizontalOptions = LayoutOptions.CenterAndExpand   //*
             };
 
 
             // Initialize tempo slider
 
-            tempoSlider = new Slider(minBPM, maxBPM, mainpage.currentTempo);    //*
+            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.currentTempo);  //*
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;        //* Spacing/Alignment options
             tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;          //*
+            tempoSlider.Margin = 7;                                             //*
 
 
             // Add tempo label, BPM label and slider to tempoGrid
@@ -95,42 +93,64 @@ namespace Stepquencer
             tempoGrid.Children.Add(tempoSlider, 2, 0);
 
 
-            // Initialize buttonGrid to hold buttons (2 rows and 2 columns)
+            // Initialize buttonGrid to hold all buttons 
 
-            buttonGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand};
+            Grid buttonGrid = new Grid
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                RowSpacing = 6,
+                ColumnSpacing = 6
+            };
 
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 
             // Initialize buttons and add them to buttonGrid
 
-            saveButton = new Button { Text = "SAVE", Style = buttonStyle };
-            loadButton = new Button { Text = "LOAD", Style = buttonStyle };
-            clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle };
-            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };
+            Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                       // Takes user to SavePage
+            Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
+            Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
+            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                            // Undos a recent clear
+            Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
+            {
+                Text = "SWAP INSTRUMENTS",
+                Style = buttonStyle,
+                BackgroundColor = Color.Blue
+            };
+
+            if (clearedSong == null)
+            {
+                undoClearButton.TextColor = Color.Gray;
+            }
 
             buttonGrid.Children.Add(saveButton, 0, 0);
             buttonGrid.Children.Add(loadButton, 0, 1);
             buttonGrid.Children.Add(clearAllButton, 1, 0);
             buttonGrid.Children.Add(undoClearButton, 1, 1);
+            buttonGrid.Children.Add(changeInstrumentsButton, 2, 0);
+
+            Grid.SetRowSpan(changeInstrumentsButton, 2);
 
 
             // Add grids to masterLayout
 
-            masterLayout = new StackLayout();
-            masterLayout.Children.Add(tempoGrid);           
+            StackLayout masterLayout = new StackLayout();       // Overall layout (stacks tempo stuff on top of grid holding the buttons)
+            masterLayout.Children.Add(tempoGrid);
             masterLayout.Children.Add(buttonGrid);
 
 
             // Add event listeners
 
-            tempoSlider.ValueChanged += OnSliderChanged;        // Event listener for slider
-            saveButton.Clicked += OnSaveButtonClicked;          // Event listener for save button
-            loadButton.Clicked += OnLoadButtonClicked;          // Event listener for load button
-            clearAllButton.Clicked += OnClearAllClicked;        // Event listener for clear all button
+            tempoSlider.ValueChanged += OnSliderChanged;                     // Event listener for slider
+            saveButton.Clicked += OnSaveButtonClicked;                       // Event listener for save button
+            loadButton.Clicked += OnLoadButtonClicked;                       // Event listener for load button
+            clearAllButton.Clicked += OnClearAllClicked;                     // Event listener for clear all button
+            undoClearButton.Clicked += OnUndoClearClicked;                   // Event listener for undo clear button
+            changeInstrumentsButton.Clicked += OnChangeInstrumentsClicked;   // Event listener for change instruments button
 
 
             Content = masterLayout;             // Put masterLayout on page
@@ -145,9 +165,11 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-            int newTempo = (int)e.NewValue;
-            bpmLabel.Text = newTempo + "\nBPM";
-            mainpage.currentTempo = newTempo;
+
+            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
+            bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
+            mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
+
         }
 
 
@@ -156,29 +178,9 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnSaveButtonClicked(object sender, EventArgs e)
+        async void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-
-            String filePath = Path.Combine(savePath, "TEST.txt");
-
-            using (StreamWriter file = File.CreateText(filePath))
-            {
-                Song song = mainpage.song;
-                file.WriteLine($"{song.BeatCount} total beats");
-                for (int i = 0; i < song.BeatCount; i++)
-                {
-                    Instrument.Note[] notes = song.NotesAtBeat(i);
-                    file.WriteLine($"Beat {i}|{notes.Length}");
-                    foreach(Instrument.Note note in song.NotesAtBeat(i))
-                    {
-                        file.WriteLine($"{note.instrument.instrumentName}:{note.semitoneShift}");
-                    }
-                }
-            }
+            await Navigation.PushAsync(new SavePage(mainpage));   // Send to SavePage
         }
 
 
@@ -187,39 +189,9 @@ namespace Stepquencer
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        private void OnLoadButtonClicked(object sender, EventArgs e)
+        async void OnLoadButtonClicked(object sender, EventArgs e)
         {
-            String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String savePath = Path.Combine(documentsPath, "stepsongs/");
-
-            String filePath = Path.Combine(savePath, "TEST.txt");
-
-            Song loadedSong;
-
-            using (StreamReader file = File.OpenText(filePath))
-            {
-                int totalBeats = int.Parse(file.ReadLine().Split(' ')[0]);
-                loadedSong = new Song(totalBeats);
-                for (int i = 0; i < totalBeats; i++)
-                {
-                    String header = file.ReadLine();
-                    if(!header.Contains($"Beat {i}"))
-                        throw new Exception("Invalid file or bug in file loader");
-                    int numNotes = int.Parse(header.Split('|')[1]);
-
-                    for(int n = 0; n < numNotes; n++)
-                    {
-                        String[] noteStringParts = file.ReadLine().Split(':');
-                        String instrName = noteStringParts[0];
-                        int semitoneShift = int.Parse(noteStringParts[1]);
-
-                        Instrument.Note note = Instrument.loadedInstruments[instrName].AtPitch(semitoneShift);
-                        loadedSong.AddNote(note, i);
-                    }
-                }
-            }
-
-            mainpage.SetSong(loadedSong);
+            await Navigation.PushAsync(new LoadPage(mainpage));   // Send to LoadPage
         }
 
 
@@ -230,13 +202,30 @@ namespace Stepquencer
         /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
-            mainpage.MakeNewStepGrid();
-            song.ClearAllBeats();
-            mainpage.scroller.Content = mainpage.stepgrid;
+            clearedSong = mainpage.song;
+            undoClearButton.TextColor = Color.White;
+            mainpage.ClearStepGridAndSong();
+        }
 
-            // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-            mainpage.mastergrid.Children.Add(mainpage.scroller, 1, 0); // Add scroller to first column of mastergrid
-            mainpage.Content = mainpage.mastergrid;
+
+        /// <summary>
+        /// Event listener for undo clear button
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void OnUndoClearClicked(object sender, EventArgs e)
+        {
+            if (clearedSong != null)
+            {
+                mainpage.SetSong(clearedSong);
+                clearedSong = null;
+                undoClearButton.TextColor = Color.Gray;
+            }
+        }
+
+        async void OnChangeInstrumentsClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ChangeInstrumentsPage(this.mainpage));
         }
     }
 }
