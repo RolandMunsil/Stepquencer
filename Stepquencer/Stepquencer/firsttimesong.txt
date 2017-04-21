@@ -1,0 +1,44 @@
+16 total beats|SlapBassLow|Snare|Clap|HiHat
+Beat 0|1
+Snare:7
+Beat 1|1
+HiHat:7
+Beat 2|1
+Clap:7
+Beat 3|1
+HiHat:7
+Beat 4|1
+HiHat:7
+Beat 5|2
+HiHat:7
+Snare:7
+Beat 6|3
+HiHat:7
+Snare:7
+Clap:7
+Beat 7|3
+HiHat:7
+Snare:7
+Clap:7
+Beat 8|1
+Snare:7
+Beat 9|1
+HiHat:7
+Beat 10|1
+Clap:7
+Beat 11|1
+HiHat:7
+Beat 12|1
+HiHat:7
+Beat 13|2
+HiHat:7
+Snare:7
+Beat 14|3
+HiHat:7
+Snare:7
+Clap:7
+Beat 15|3
+HiHat:7
+Snare:7
+Clap:7
+240

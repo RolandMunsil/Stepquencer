@@ -38,9 +38,6 @@ namespace Stepquencer
         {
             String documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             String savePath = Path.Combine(documentsPath, "stepsongs/");
-            if (!Directory.Exists(savePath))
-                Directory.CreateDirectory(savePath);
-
             return Path.Combine(savePath, $"{songName}.txt");
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Timers;
@@ -19,10 +20,6 @@ namespace Stepquencer
         const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
-
-        public static readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };   // The set of instruments availble when first loading up the app
-
-
         public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
         RelativeLayout verticalBarArea;                 //Area on the left sie of the screen for the vertical scroll bar
         RelativeLayout horizontalBarArea;               //Area on the bottom of the screen for the horizontal scroll bar
@@ -32,7 +29,7 @@ namespace Stepquencer
 
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
-        public int currentTempo = 240;                  // Keeps track of tempo, initialized at 240
+        public int currentTempo;                  // Keeps track of tempo, initialized at 240
 
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
@@ -52,19 +49,25 @@ namespace Stepquencer
             BackgroundColor = Color.FromHex("#000000");         //* Set page style 
             NavigationPage.SetHasNavigationBar(this, false);    //*
 
-            if (currentTempo == 0)
-            {
-                currentTempo = 240;                   // If the tempo hasn't been changed, initialize it to 240
-            }
-
-
-            // Initialize the SongPlayer and noteArray
-            song = new Song(NumColumns);
+            // Initialize the SongPlayer
             player = new SongPlayer();
 
             // Make the stepgrid and fill it with boxes
             MakeStepGrid();
 
+            //Load default tempo and instruments, and if this is the first time the user has launched the app, show the startup song
+            Instrument[] startupInstruments;
+            Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"), out startupInstruments, out currentTempo);
+
+            if (!Directory.Exists(FileUtilities.PathToSongDirectory))
+            {
+                Directory.CreateDirectory(FileUtilities.PathToSongDirectory);
+                SetSong(startSong);
+            }
+            else
+            {
+                song = new Song(NumColumns);
+            }
 
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
@@ -76,10 +79,10 @@ namespace Stepquencer
             }
 
             // Fill sidebar with buttons and put them in the instrumentButtons array
-            instrumentButtons = new InstrumentButton[INITIAL_INSTRUMENTS.Length];
-            for (int i = 0; i < INITIAL_INSTRUMENTS.Length; i++)
+            instrumentButtons = new InstrumentButton[startupInstruments.Length];
+            for (int i = 0; i < startupInstruments.Length; i++)
             {
-                InstrumentButton button = new InstrumentButton(Instrument.GetByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
+                InstrumentButton button = new InstrumentButton(startupInstruments[i]);   // Make a new button
 
                 if (i == 0)                         //* 
                 {                                   //*
@@ -130,12 +133,7 @@ namespace Stepquencer
                 Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
 
-
-
             scroller.Content = stepgrid;
-
-            
-
 
             //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
             mastergrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };

@@ -90,4 +90,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)firsttimesong.txt" />
+  </ItemGroup>
 </Project>

@@ -29,12 +29,6 @@ namespace Stepquencer
                 Margin = 7
             };
 
-            // Check to make sure that the stepsongs folder exists, and create it if it doesn't
-            if (!Directory.Exists(FileUtilities.PathToSongDirectory))           
-            {
-                Directory.CreateDirectory(FileUtilities.PathToSongDirectory);
-            }
-
             // Load in all of the songUIElements
             LoadSongUIElements();
         }
