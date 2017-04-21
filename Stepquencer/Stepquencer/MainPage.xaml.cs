@@ -29,8 +29,6 @@ namespace Stepquencer
 
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
-        public int currentTempo;                  // Keeps track of tempo, initialized at 240
-
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
         InstrumentButton selectedInstrButton;           // Currently selected sidebar button
@@ -41,7 +39,6 @@ namespace Stepquencer
 
         BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
-
 
         public MainPage()
         {
@@ -56,8 +53,7 @@ namespace Stepquencer
             MakeStepGrid();
 
             //Load default tempo and instruments, and if this is the first time the user has launched the app, show the startup song
-            Instrument[] startupInstruments;
-            Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"), out startupInstruments, out currentTempo);
+            Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"));
 
             if (!Directory.Exists(FileUtilities.PathToSongDirectory))
             {
@@ -66,7 +62,7 @@ namespace Stepquencer
             }
             else
             {
-                song = new Song(NumColumns);
+                song = new Song(NumColumns, startSong.Instruments, startSong.Tempo);
             }
 
             // Make the sidebar
@@ -79,10 +75,10 @@ namespace Stepquencer
             }
 
             // Fill sidebar with buttons and put them in the instrumentButtons array
-            instrumentButtons = new InstrumentButton[startupInstruments.Length];
-            for (int i = 0; i < startupInstruments.Length; i++)
+            instrumentButtons = new InstrumentButton[song.Instruments.Length];
+            for (int i = 0; i < song.Instruments.Length; i++)
             {
-                InstrumentButton button = new InstrumentButton(startupInstruments[i]);   // Make a new button
+                InstrumentButton button = new InstrumentButton(song.Instruments[i]);   // Make a new button
 
                 if (i == 0)                         //* 
                 {                                   //*
@@ -215,7 +211,7 @@ namespace Stepquencer
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
+        private void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
         {           
             {
                 //uncomment the line below and uncomment ");" near the end of this method to try method with timers
@@ -261,18 +257,29 @@ namespace Stepquencer
             
         }
 
-        public void SetSidebarInstruments(Instrument[] instruments)
-        {
-            for (int i = 0; i < instrumentButtons.Length; i++)
-            {
-                instrumentButtons[i].Instrument = instruments[i];
-            }
+        public void ReplaceInstruments(Instrument[] instruments)
+        {           
+            List<Instrument> oldInstruments = new List<Instrument>();           //
+            List<Instrument> newInstruments = new List<Instrument>();           //
+            for (int i = 0; i < instruments.Length; i++)                        //
+            {                                                                   //
+                Instrument oldInstr = song.Instruments[i];                      //
+                Instrument newInstr = instruments[i];                           // Figure out which instruments have changed
+                if (oldInstr != newInstr)                                       //
+                {                                                               //
+                    oldInstruments.Add(oldInstr);                               //
+                    newInstruments.Add(newInstr);                               //
+                }                                                               //
+            }                                                                   //
+
+            song.ReplaceInstruments(oldInstruments, newInstruments);         
+            SetSong(song);
         }
 
         /// <summary>
         /// Method to make a new, empty stepGrid
         /// </summary>
-        public void MakeStepGrid()
+        private void MakeStepGrid()
         {
             //Set up grid of note squares
             stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
@@ -326,22 +333,22 @@ namespace Stepquencer
             {
                 miniGrid.SetColors(new List<Color>());
             }
-            this.song = new Song(song.BeatCount);
+            song = new Song(NumColumns, song.Instruments, song.Tempo);
         }
 
 
         /// <summary>
         /// Sets the current song (and grid represntation) to be the given song.
         /// </summary>
-        public void SetSong(Song song)
+        public void SetSong(Song newSong)
         {
             //Copy 8-beat songs to each set of 8 beats
-            if (song.BeatCount == 8)
+            if (newSong.BeatCount == 8)
             {
-                this.song = new Song(NumColumns);
+                this.song = new Song(NumColumns, newSong.Instruments, newSong.Tempo);
                 for (int i = 0; i < 8; i++)
                 {
-                    foreach (Instrument.Note note in song.NotesAtBeat(i))
+                    foreach (Instrument.Note note in newSong.NotesAtBeat(i))
                     {
                         //Iterate over each set of 8 beats
                         for (int e = 0; e < NumColumns / 8; e++)
@@ -353,7 +360,7 @@ namespace Stepquencer
             }
             else
             {
-                this.song = song;
+                this.song = newSong;
             }
 
             Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[this.song.BeatCount];
@@ -380,6 +387,11 @@ namespace Stepquencer
                 {
                     miniGrid.SetColors(new List<Color>());
                 }
+            }
+
+            for (int i = 0; i < instrumentButtons.Length; i++)
+            {
+                instrumentButtons[i].Instrument = song.Instruments[i];
             }
         }
 
@@ -438,7 +450,7 @@ namespace Stepquencer
         {
             stepgrid.Children.Add(highlight, 0, 0);
             Grid.SetRowSpan(highlight, NumRows);
-            player.BeginPlaying(song, currentTempo);
+            player.BeginPlaying(song);
             playStopButton.Image = "stop.png";
         }
 

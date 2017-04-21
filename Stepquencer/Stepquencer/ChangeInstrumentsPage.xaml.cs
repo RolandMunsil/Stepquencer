@@ -246,28 +246,10 @@ namespace Stepquencer
                 index++;                                                        //
             }                                                                   //
 
-
-            List<Instrument> oldInstruments = new List<Instrument>();           //
-            List<Instrument> newInstruments = new List<Instrument>();           //
-            for(int i = 0; i < instruments.Length; i++)                         //
-            {                                                                   //
-                Instrument oldInstr = mainpage.instrumentButtons[i].Instrument; //
-                Instrument newInstr = instruments[i];                           // Figure out which instruments have changed
-                if (oldInstr != newInstr)                                       //
-                {                                                               //
-                    oldInstruments.Add(oldInstr);                               //
-                    newInstruments.Add(newInstr);                               //
-                }                                                               //
-            }                                                                   //
-
-
             // Set up the main page for user's return and go back
-
             Device.BeginInvokeOnMainThread( delegate 
             {
-                this.mainpage.SetSidebarInstruments(instruments);
-                mainpage.song.ReplaceInstruments(oldInstruments, newInstruments);
-                mainpage.SetSong(mainpage.song);
+                mainpage.ReplaceInstruments(instruments);
             });
 
             returnToMainPage();                             

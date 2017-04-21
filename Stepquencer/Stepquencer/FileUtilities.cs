@@ -56,23 +56,24 @@ namespace Stepquencer
         /// Loads a song given its name
         /// </summary>
         /// <returns>The song from file.</returns>
-        public static Song LoadSongFromFile(String path, out Instrument[] songInstruments, out int tempo)
+        public static Song LoadSongFromFile(String path)
         {
             using (StreamReader file = File.OpenText(path))
             {
-                return LoadSongFromStream(file.BaseStream, out songInstruments, out tempo);
+                return LoadSongFromStream(file.BaseStream);
             }
         }
 
-        public static Song LoadSongFromStream(Stream stream, out Instrument[] songInstruments, out int tempo)
+        public static Song LoadSongFromStream(Stream stream)
         {
             StreamReader file = new StreamReader(stream);
 
             String[] firstLineParts = file.ReadLine().Split('|');
             int totalBeats = int.Parse(firstLineParts[0].Split(' ')[0]);
-            Song loadedSong = new Song(totalBeats);
+
 
             //Load instruments
+            Instrument[] songInstruments;
             if (firstLineParts.Length > 1)
             {
                 songInstruments = new Instrument[firstLineParts.Length - 1];
@@ -87,6 +88,8 @@ namespace Stepquencer
                 //If no instruments, use default instruments (for backwards compatability)
                 songInstruments = oldDefaultInstruments.Select(str => Instrument.GetByName(str)).ToArray();
             }
+
+            Song loadedSong = new Song(totalBeats, songInstruments, 240);
 
             for (int i = 0; i < totalBeats; i++)
             {
@@ -112,19 +115,22 @@ namespace Stepquencer
                 }
             }
             String lastLine = file.ReadLine();
-            tempo = -1;
-            int.TryParse(lastLine, out tempo);
+            int tempo = -1;
+            if (int.TryParse(lastLine, out tempo))
+            {
+                loadedSong.Tempo = tempo;
+            }
 
             return loadedSong;
         }
 
-        public static void SaveSongToFile(Song songToSave, Instrument[] instruments, int tempo, String songName)
+        public static void SaveSongToFile(Song songToSave, String songName)
         {
             String filePath = FileUtilities.PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {
-                String instrumentNames = String.Join("|", instruments.Select(instr => instr.name));
+                String instrumentNames = String.Join("|", songToSave.Instruments.Select(instr => instr.name));
                 file.WriteLine($"{songToSave.BeatCount} total beats|{instrumentNames}");
 
                 for (int i = 0; i < songToSave.BeatCount; i++)
@@ -136,7 +142,7 @@ namespace Stepquencer
                         file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
                     }
                 }
-                file.WriteLine(tempo);
+                file.WriteLine(songToSave.Tempo);
             }
         }
     }

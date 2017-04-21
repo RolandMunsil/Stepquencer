@@ -69,7 +69,7 @@ namespace Stepquencer
 
             bpmLabel = new Label
             {
-                Text = mainpage.currentTempo + "  " + "BPM",
+                Text = mainpage.song.Tempo + " BPM",
                 TextColor = Color.White,
                 FontSize = 20,
                 HorizontalTextAlignment = TextAlignment.End,        //*
@@ -80,7 +80,7 @@ namespace Stepquencer
 
             // Initialize tempo slider
 
-            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.currentTempo);  //*
+            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.song.Tempo);  //*
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;        //* Spacing/Alignment options
             tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;          //*
             tempoSlider.Margin = 7;                                             //*
@@ -165,7 +165,7 @@ namespace Stepquencer
             int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
             tempoSlider.Value = newTempo;
             bpmLabel.Text = newTempo + " BPM"; // Change the label to reflect the new BPM
-            mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
+            mainpage.song.Tempo = newTempo;        // Update the value stored by the mainpage
         }
 
         /// <summary>

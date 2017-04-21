@@ -134,8 +134,7 @@ namespace Stepquencer
                         File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
 
                         //Add new song
-                        Instrument[] instruments = mainpage.instrumentButtons.Select(b => b.Instrument).ToArray();
-                        FileUtilities.SaveSongToFile(mainpage.song, instruments, mainpage.currentTempo, songTitleEntry.Text);
+                        FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
 
                         //Go back to main grid
                         await Navigation.PopToRootAsync();
@@ -144,8 +143,7 @@ namespace Stepquencer
                 }
                 else
                 {
-                    Instrument[] instruments = mainpage.instrumentButtons.Select(b => b.Instrument).ToArray();
-                    FileUtilities.SaveSongToFile(mainpage.song, instruments, mainpage.currentTempo, songTitleEntry.Text);
+                    FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
                     await Navigation.PopToRootAsync();
                 }
             }

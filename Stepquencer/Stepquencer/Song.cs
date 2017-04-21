@@ -12,6 +12,9 @@ namespace Stepquencer
         /// </summary>
         HashSet<Instrument.Note>[] beats;
 
+        public Instrument[] Instruments { get; private set; }
+        public int Tempo { get; set; }
+
         /// <summary>
         /// The number of beats in this song
         /// </summary>
@@ -23,13 +26,15 @@ namespace Stepquencer
             }
         }
 
-        public Song(int numBeats)
+        public Song(int numBeats, Instrument[] instruments, int tempo)
         {
             beats = new HashSet<Instrument.Note>[numBeats];
             for(int i = 0; i < numBeats; i++)
             {
                 beats[i] = new HashSet<Instrument.Note>();
             }
+            Instruments = instruments;
+            Tempo = tempo;
         }
 
         /// <summary>
@@ -76,7 +81,7 @@ namespace Stepquencer
             return notes;
         }
 
-        public void ReplaceInstruments(IList<Instrument> oldInstruments, IList<Instrument> newInstrument)
+        public void ReplaceInstruments(IList<Instrument> oldInstruments, IList<Instrument> newInstruments)
         {
             lock(beats)
             {
@@ -96,10 +101,16 @@ namespace Stepquencer
                         else
                         {
                             //Replace with new note
-                            Instrument.Note newNote = newInstrument[index].AtPitch(oldNote.semitoneShift);
+                            Instrument.Note newNote = newInstruments[index].AtPitch(oldNote.semitoneShift);
                             beat.Add(newNote);
                         }
                     }
+                }
+                
+                for(int i = 0; i < oldInstruments.Count; i++)
+                {
+                    Instrument oldInstr = oldInstruments[i];
+                    Instruments[Array.IndexOf(Instruments, oldInstr)] = newInstruments[i];
                 }
             }
         }

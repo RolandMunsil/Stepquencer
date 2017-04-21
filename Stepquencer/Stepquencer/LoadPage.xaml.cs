@@ -116,14 +116,7 @@ namespace Stepquencer
         /// <param name="songUI">Song user interface.</param>
         void OnSongTap(SongUIElement uiElement)
         {
-            Instrument[] songInstruments;
-            int tempo;
-            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath, out songInstruments, out tempo));
-            mainpage.SetSidebarInstruments(songInstruments);
-            if (tempo > 0)
-            {
-                mainpage.currentTempo = tempo;
-            }
+            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));         
             ReturnToMainPage();
         }
 
