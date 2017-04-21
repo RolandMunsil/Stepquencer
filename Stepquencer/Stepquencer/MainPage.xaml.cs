@@ -65,7 +65,7 @@ namespace Stepquencer
                 song = new Song(NumColumns, startSong.Instruments, startSong.Tempo);
             }
 
-            String backupDir = Path.Combine(FileUtilities.PathToSongDirectory, "backups/");
+            String backupDir = Path.Combine(FileUtilities.PathToSongDirectory, "backups2/");
             if (!Directory.Exists(backupDir))
             {
                 Directory.CreateDirectory(backupDir);
@@ -358,26 +358,7 @@ namespace Stepquencer
         /// </summary>
         public void SetSong(Song newSong)
         {
-            //Copy 8-beat songs to each set of 8 beats
-            if (newSong.BeatCount == 8)
-            {
-                this.song = new Song(NumColumns, newSong.Instruments, newSong.Tempo);
-                for (int i = 0; i < 8; i++)
-                {
-                    foreach (Instrument.Note note in newSong.NotesAtBeat(i))
-                    {
-                        //Iterate over each set of 8 beats
-                        for (int e = 0; e < NumColumns / 8; e++)
-                        {
-                            this.song.AddNote(note, i + (e * 8));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                this.song = newSong;
-            }
+            this.song = newSong;
 
             Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[this.song.BeatCount];
             for (int i = 0; i < this.song.BeatCount; i++)

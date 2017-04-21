@@ -121,7 +121,27 @@ namespace Stepquencer
                 loadedSong.Tempo = tempo;
             }
 
-            return loadedSong;
+            //Copy 8-beat songs to each set of 8 beats
+            if (loadedSong.BeatCount == 8)
+            {
+                Song copiedSong = new Song(16, loadedSong.Instruments, loadedSong.Tempo);
+                for (int i = 0; i < 8; i++)
+                {
+                    foreach (Instrument.Note note in loadedSong.NotesAtBeat(i))
+                    {
+                        //Iterate over each set of 8 beats
+                        for (int e = 0; e < 16 / 8; e++)
+                        {
+                            copiedSong.AddNote(note, i + (e * 8));
+                        }
+                    }
+                }
+                return copiedSong;
+            }
+            else
+            {
+                return loadedSong;
+            }
         }
 
         public static void SaveSongToFile(Song songToSave, String songName)
