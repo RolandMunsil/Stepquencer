@@ -117,5 +117,27 @@ namespace Stepquencer
 
             return loadedSong;
         }
+
+        public static void SaveSongToFile(Song songToSave, Instrument[] instruments, int tempo, String songName)
+        {
+            String filePath = FileUtilities.PathToSongFile(songName);
+
+            using (StreamWriter file = File.CreateText(filePath))
+            {
+                String instrumentNames = String.Join("|", instruments.Select(instr => instr.name));
+                file.WriteLine($"{songToSave.BeatCount} total beats|{instrumentNames}");
+
+                for (int i = 0; i < songToSave.BeatCount; i++)
+                {
+                    Instrument.Note[] notes = songToSave.NotesAtBeat(i);
+                    file.WriteLine($"Beat {i}|{notes.Length}");
+                    foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
+                    {
+                        file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
+                    }
+                }
+                file.WriteLine(tempo);
+            }
+        }
     }
 }

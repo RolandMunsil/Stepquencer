@@ -134,7 +134,8 @@ namespace Stepquencer
                         File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
 
                         //Add new song
-                        SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                        Instrument[] instruments = mainpage.instrumentButtons.Select(b => b.Instrument).ToArray();
+                        FileUtilities.SaveSongToFile(mainpage.song, instruments, mainpage.currentTempo, songTitleEntry.Text);
 
                         //Go back to main grid
                         await Navigation.PopToRootAsync();
@@ -143,33 +144,10 @@ namespace Stepquencer
                 }
                 else
                 {
-                    SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                    Instrument[] instruments = mainpage.instrumentButtons.Select(b => b.Instrument).ToArray();
+                    FileUtilities.SaveSongToFile(mainpage.song, instruments, mainpage.currentTempo, songTitleEntry.Text);
                     await Navigation.PopToRootAsync();
                 }
-            }
-        }
-    
-
-
-        private void SaveSongToFile(Song songToSave, String songName)
-        {
-            String filePath = FileUtilities.PathToSongFile(songName);
-
-            using (StreamWriter file = File.CreateText(filePath))
-            {
-                String instruments = String.Join("|", mainpage.instrumentButtons.Select(btn => btn.Instrument.name));
-                file.WriteLine($"{songToSave.BeatCount} total beats|{instruments}");
-
-                for (int i = 0; i < songToSave.BeatCount; i++)
-                {
-                    Instrument.Note[] notes = songToSave.NotesAtBeat(i);
-                    file.WriteLine($"Beat {i}|{notes.Length}");
-                    foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
-                    {
-                        file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
-                    }
-                }
-                file.WriteLine(mainpage.currentTempo);
             }
         }
     }
