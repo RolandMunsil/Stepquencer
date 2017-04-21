@@ -87,18 +87,18 @@ namespace Stepquencer
             }
 
             //Remove/add sidebarColor depending on if it's on this grid already
-            bool addColor = colorList.Contains(sidebarColor);            
-            if (addColor)
-            {
-                colorList.Add(sidebarColor);
-            }
-            else
+            bool removeColor = colorList.Contains(sidebarColor);            
+            if (removeColor)
             {
                 colorList.Remove(sidebarColor);
             }
+            else
+            {
+                colorList.Add(sidebarColor);
+            }
             SetColors(colorList);
 
-            return addColor;
+            return !removeColor;
         }
 
         /// <summary>
