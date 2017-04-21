@@ -131,7 +131,7 @@ namespace Stepquencer
                     if (answer.Equals(true))                           
                     {
                         //Delete old song first
-                        File.Delete(SongFileUtilities.PathToSongFile(songTitleEntry.Text));
+                        File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
 
                         //Add new song
                         SaveSongToFile(mainpage.song, songTitleEntry.Text);
