@@ -12,8 +12,11 @@ namespace Stepquencer
 
         private StackLayout masterLayout;       // Layout that holds all UI elements
         private ScrollView scroller;            // Scrollview to accomodate more songs than the screen can handle
+        private SearchBar searchbar;
+        private Label resultsLabel;
 
-        public LoadPage(MainPage mainpage)
+
+        public LoadPage(MainPage mainpage) 
         {
             this.mainpage = mainpage;
             this.BackgroundColor = Color.FromHex("#2C2C2C");
@@ -27,6 +30,22 @@ namespace Stepquencer
                 Orientation = StackOrientation.Vertical,
                 BackgroundColor = Color.FromHex("#2C2C2C"),
                 Margin = 7
+            };
+
+            //Initialize resultsLabel
+            resultsLabel = new Label
+            {
+            Text = "Result will appear here.",
+            VerticalOptions = LayoutOptions.FillAndExpand,
+            FontSize = 25
+            };
+
+            //Initialize searchbar
+            searchbar = new SearchBar
+            {
+                Placeholder = "Enter search term",
+                SearchCommand = new Command(() => { resultsLabel.Text = "Result: " + searchbar.Text + " is what you asked for."; })
+
             };
 
             // Check to make sure that the stepsongs folder exists, and create it if it doesn't
@@ -78,7 +97,6 @@ namespace Stepquencer
                     };
 
                     masterLayout.Children.Add(songUI);          // Add UI element to the masterLayout
-
                 }
             }
 

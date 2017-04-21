@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Xamarin.Forms;
@@ -26,7 +27,7 @@ namespace Stepquencer
 
             // Initialize masterLayout
 
-            StackLayout masterLayout = new StackLayout { Spacing = 30};
+            StackLayout masterLayout = new StackLayout { Spacing = 30 };
 
 
             // Initialize saveLabel
@@ -64,19 +65,19 @@ namespace Stepquencer
 
             // Initialize save and cancel buttons
 
-            saveButton = new Button 
-            { 
-                Text = "SAVE", 
-                TextColor = Color.White, 
+            saveButton = new Button
+            {
+                Text = "SAVE",
+                TextColor = Color.White,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            cancelButton = new Button 
-            { 
-                Text = "CANCEL", 
-                TextColor = Color.White, 
+            cancelButton = new Button
+            {
+                Text = "CANCEL",
+                TextColor = Color.White,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -124,9 +125,25 @@ namespace Stepquencer
                 }
                 else if (File.Exists(SongFileUtilities.PathToSongFile(songTitleEntry.Text)))
                 {
-                    await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK");
-                    if (buttonPressed.Equals("OK"))
+                    //DisplayAlert returns boolean value
+                    var answer = await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK", "Cancel");
+                    //If user presses "OK"
+                    if (answer.Equals(true))                           
                     {
+                        //Delete old song first
+                        File.Delete(SongFileUtilities.PathToSongFile(songTitleEntry.Text));
+
+                        //Add new song
+                        SaveSongToFile(mainpage.song, songTitleEntry.Text);
+
+                        //Go back to main grid
+                        await Navigation.PopToRootAsync();
+
+                    }
+                    //If user presses "Cancel"
+                    if (answer.Equals(false))
+                    {
+                        //Go back to SavePage
                         await Navigation.PopToRootAsync();
                     }
                 }
@@ -137,6 +154,7 @@ namespace Stepquencer
                 }
             }
         }
+    
 
 
         private void SaveSongToFile(Song songToSave, String songName)
