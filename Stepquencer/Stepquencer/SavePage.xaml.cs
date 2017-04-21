@@ -126,7 +126,7 @@ namespace Stepquencer
                 else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
                 {
                     //DisplayAlert returns boolean value
-                    var answer = await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK", "Cancel");
+                    var answer = await DisplayAlert("Overwrite Warning", "A song with this name already exists. Do you want to overwrite it?", "Overwrite", "Cancel");
                     //If user presses "OK"
                     if (answer.Equals(true))                           
                     {
