@@ -381,31 +381,23 @@ namespace Stepquencer
                     miniGrid.SetColors(new List<Color>());
                 }
             }
-
         }
 
         /// <summary>
         /// Event handler for individual miniGrid (holding 1-4 sounds) in mastergrid
         /// </summary>
-        /// <param name="miniGrid">miniGrid.</param>
         void OnMiniGridTapped(MiniGrid miniGrid)
         {
             Instrument selectedInstrument = selectedInstrButton.Instrument;
 
             // Changes UI represenation and returns new set of colors on this grid
-            List<Color> colors = miniGrid.ToggleColor(selectedInstrument.color);
+            bool added = miniGrid.ToggleColor(selectedInstrument.color);
 
             // If sidebar color isn't part of button's new set of colors, remove it
             Instrument.Note toggledNote = selectedInstrument.AtPitch(miniGrid.semitoneShift);
 
             //If sidebar button color = clicked button color
-            if (!colors.Contains(selectedInstrument.color))
-            {
-                song.RemoveNote(toggledNote, Grid.GetColumn(miniGrid));
-            }
-
-            //If sidebar button color != clicked button color 
-            else if (colors.Contains(selectedInstrument.color))
+            if (added)
             {
                 song.AddNote(toggledNote, Grid.GetColumn(miniGrid));        // Add the note
 
@@ -413,6 +405,10 @@ namespace Stepquencer
                 {
                     SongPlayer.PlayNote(selectedInstrument.AtPitch(miniGrid.semitoneShift));   // Play note so long as not already playing a song
                 }
+            }
+            else
+            {
+                song.RemoveNote(toggledNote, Grid.GetColumn(miniGrid));
             }
 
             //Undo clear stops woking when user adds stuff to grid so they don't accidentally undo clear
@@ -423,8 +419,6 @@ namespace Stepquencer
         /// <summary>
         /// Event handler for the Play/Stop button
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         void OnPlayStopClicked(object sender, EventArgs e)
         {
             if (player.IsPlaying)
@@ -435,10 +429,7 @@ namespace Stepquencer
             {
                 StartPlayingSong();
             }
-
         }
-
-
 
         /// <summary>
         /// Starts playing the song
@@ -451,7 +442,6 @@ namespace Stepquencer
             playStopButton.Image = "stop.png";
         }
 
-
         /// <summary>
         /// Stops playing the song
         /// </summary>
@@ -462,28 +452,21 @@ namespace Stepquencer
             stepgrid.Children.Remove(highlight);
         }
 
-
         /// <summary>
         /// Event handler for the more options button. Sends user to more options page.
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         async void OnMoreOptionsClicked(object sender, EventArgs e)
         {
             if (player.IsPlaying)
             {
                 StopPlayingSong();
             }
-
             await Navigation.PushAsync(new MoreOptionsPage(this));
         }
-
 
         /// <summary>
         /// Event handler for buttons in the sidebar
         /// </summary>
-        /// Clicking new button if button is in use (dehighlighting old button) does not work quite yet,
-        /// 
         void OnSidebarClicked(object sender, EventArgs e)
         {
             InstrumentButton button = (InstrumentButton)sender;
@@ -501,11 +484,9 @@ namespace Stepquencer
             }
         }            
 
-
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
         /// </summary>
-        /// <param name="currentBeat">Current beat.</param>
         void HighlightColumns(int currentBeat, bool firstBeat)
         {
             Device.BeginInvokeOnMainThread(delegate ()

@@ -157,49 +157,36 @@ namespace Stepquencer
 
         }
 
-
         /// <summary>
         /// Changes the BPM visualization when slider changes
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
             int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
             tempoSlider.Value = newTempo;
-            bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
+            bpmLabel.Text = newTempo + " BPM"; // Change the label to reflect the new BPM
             mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
-
         }
-
 
         /// <summary>
         /// Event listener for save button
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// </summary
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SavePage(mainpage));   // Send to SavePage
         }
 
-
         /// <summary>
         /// Event listener for the load button
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         async void OnLoadButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new LoadPage(mainpage));   // Send to LoadPage
         }
 
-
         /// <summary>
         /// Clears the stepgrid and audio data when ClearAllButton is clicked
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
             clearedSong = mainpage.song;
@@ -207,12 +194,9 @@ namespace Stepquencer
             mainpage.ClearStepGridAndSong();
         }
 
-
         /// <summary>
         /// Event listener for undo clear button
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         private void OnUndoClearClicked(object sender, EventArgs e)
         {
             if (clearedSong != null)
