@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -13,21 +14,27 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
+
         const int NumRows = 13;                     // Number of rows of MiniGrids that users can tap and add sounds to
-        const int NumColumns = 8;                   // Number of columns of Minigrids
+        const int NumColumns = 16;                   // Number of columns of Minigrids
         const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        public static readonly String[] INITIAL_INSTRUMENTS = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };   // The set of instruments availble when first loading up the app
+        public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
+        RelativeLayout verticalBarArea;                 //Area on the left sie of the screen for the vertical scroll bar
+        RelativeLayout horizontalBarArea;               //Area on the bottom of the screen for the horizontal scroll bar
+        BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
+        BoxView horizontalScrollBar;                    // Scroll bar to show position on horizontal scroll
+
 
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
-        public int currentTempo = 240;                  // Keeps track of tempo, initialized at 240
+        public int currentTempo;                  // Keeps track of tempo, initialized at 240
+
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
         InstrumentButton selectedInstrButton;           // Currently selected sidebar button
 
-        public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
         public Grid mastergrid;                         // Grid for whole screen
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
@@ -42,19 +49,25 @@ namespace Stepquencer
             BackgroundColor = Color.FromHex("#000000");         //* Set page style 
             NavigationPage.SetHasNavigationBar(this, false);    //*
 
-
-            // Initialize the SongPlayer and noteArray
-            song = new Song(NumColumns);
+            // Initialize the SongPlayer
             player = new SongPlayer();
-
-            //Set up a master grid with 2 columns to hold stepgrid and sidebar.
-            mastergrid = new Grid { ColumnSpacing = 2 };
-            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });
-            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             // Make the stepgrid and fill it with boxes
             MakeStepGrid();
 
+            //Load default tempo and instruments, and if this is the first time the user has launched the app, show the startup song
+            Instrument[] startupInstruments;
+            Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"), out startupInstruments, out currentTempo);
+
+            if (!Directory.Exists(FileUtilities.PathToSongDirectory))
+            {
+                Directory.CreateDirectory(FileUtilities.PathToSongDirectory);
+                SetSong(startSong);
+            }
+            else
+            {
+                song = new Song(NumColumns);
+            }
 
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
@@ -66,10 +79,10 @@ namespace Stepquencer
             }
 
             // Fill sidebar with buttons and put them in the instrumentButtons array
-            instrumentButtons = new InstrumentButton[INITIAL_INSTRUMENTS.Length];
-            for (int i = 0; i < INITIAL_INSTRUMENTS.Length; i++)
+            instrumentButtons = new InstrumentButton[startupInstruments.Length];
+            for (int i = 0; i < startupInstruments.Length; i++)
             {
-                InstrumentButton button = new InstrumentButton(Instrument.GetByName(INITIAL_INSTRUMENTS[i]));   // Make a new button
+                InstrumentButton button = new InstrumentButton(startupInstruments[i]);   // Make a new button
 
                 if (i == 0)                         //* 
                 {                                   //*
@@ -107,6 +120,7 @@ namespace Stepquencer
             sidebar.Children.Add(playStopButton, 0, 5);     //* stopped, add it to the sidebar,
             playStopButton.Clicked += OnPlayStopClicked;    //* and add an event listener
 
+
             // Initialize the highlight box
             highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
             highlight.InputTransparent = true;
@@ -116,15 +130,135 @@ namespace Stepquencer
             // Initialize scrollview and put stepgrid inside it
             scroller = new ScrollView
             {
-                Orientation = ScrollOrientation.Vertical  //Both vertical and horizontal orientation
+                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
+
             scroller.Content = stepgrid;
 
+            //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
+            mastergrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
+            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14, GridUnitType.Absolute) });  //spot for up-down scrollbar
+            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(8, GridUnitType.Star) });  // spot for stepgrid
+            mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });  // spot for sidebar
+            mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });  // horizontal spot for everything, but side scrollbar
+            mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(14, GridUnitType.Absolute) });  // spot for side scrollbar
+            
+            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            verticalScrollBar = new BoxView
+            {
+                BackgroundColor = Color.FromHex("D3D3D3"),
+                WidthRequest = 1,
+                HeightRequest = 1,
+            };
+
+            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            horizontalScrollBar = new BoxView
+            {
+                BackgroundColor = Color.FromHex("D3D3D3"),
+                WidthRequest = 1,
+                HeightRequest = 1,
+            };
+
+            verticalBarArea = new RelativeLayout();
+
+            verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) => {
+                return (parent.Width * 0.1);
+            }), Constraint.RelativeToParent((parent) => {
+                return (0);
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Width * 0.8;
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Height * parent.Height / (58 * 12 - 4);
+            }));
+
+            horizontalBarArea = new RelativeLayout();
+
+            horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) => {
+                return (0);
+            }), Constraint.RelativeToParent((parent) => {
+                return (parent.Height * 0.1);
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Width * parent.Width / (58 * 16 - 4);
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Height * 0.8;
+            }));
+
+            
+
+            //Add the Relative layouts that will hold the sidebars to the mastergrid
+            mastergrid.Children.Add(verticalBarArea, 0, 0); 
+            mastergrid.Children.Add(horizontalBarArea, 1, 1);
+
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-            mastergrid.Children.Add(scroller, 0, 0); 
-            mastergrid.Children.Add(sidebar, 1, 0);  
-                                                     
-            Content = mastergrid;
+
+            mastergrid.Children.Add(scroller, 1, 0); // Add scroller to first column of mastergrid
+            mastergrid.Children.Add(sidebar, 2, 0);  // Add sidebar to final column of mastergrid
+            Grid.SetRowSpan(sidebar, 2);  //make sidebar take up both rows in rightmost column
+
+
+            // Tried using a timer to call updateScrollBars, is not reliable
+            //Timer timer = new Timer();
+
+
+            //timer.Elapsed += updateScrollBars;
+            //timer.Interval = 30;
+            //timer.Start();
+
+            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
+
+            Content = mastergrid;            
+        }
+
+        
+        /// <summary>
+        /// This method redraws the scrollbars at a location that properly represents the location in the scrollview
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
+        public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
+        {           
+            {
+                //uncomment the line below and uncomment ");" near the end of this method to try method with timers
+                //also change ScrolledEventArgs to EventArgs in paramaters of this method to test with timer.
+                //also comment out adding this method to event listener scroller.Scrolled (code near end of
+
+                //Device.BeginInvokeOnMainThread(delegate ()               
+                {
+                    if (scroller.ScrollX != 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
+                    {
+                        horizontalBarArea.Children.Remove(horizontalScrollBar);
+                        horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
+                        {
+                            return (parent.Width - parent.Width * parent.Width / (58 * 16 - 4)) * scroller.ScrollX / ((58 * 16 - 4) - parent.Width); // x location to place bar, updated by pos in scroll
+                        }), Constraint.RelativeToParent((parent) =>
+                        {
+                            return (0.1 * parent.Height - 1); // y location to place bar
+                        }), Constraint.RelativeToParent((parent) => {
+                            return parent.Width * parent.Width / (58 * 16 - 4); //width of bar
+                        }), Constraint.RelativeToParent((parent) => {
+                            return parent.Height * 0.8; //height of bar
+                        }));
+                        
+                    }
+                    if (scroller.ScrollY != 0)
+                    {
+                        verticalBarArea.Children.Remove(verticalScrollBar);
+                        verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) =>
+                        {
+                            return 0.1 * parent.Width + 1; // x location to place bar
+                        }), Constraint.RelativeToParent((parent) =>
+                        {
+                            return (parent.Height - parent.Height * parent.Height / (58 * 12 - 4)) * scroller.ScrollY / ((58 * 12 - 4) - parent.Height); // y location to place bar, updated by pos in scroll
+                        }), Constraint.RelativeToParent((parent) => {
+                            return parent.Width * 0.8;      //width of bar
+                        }), Constraint.RelativeToParent((parent) => {
+                            return parent.Height * parent.Height / (58 * 12 - 4); //height of bar
+                        }));              
+                    }
+
+                }//);
+            }
+            
         }
 
         public void SetSidebarInstruments(Instrument[] instruments)
@@ -136,7 +270,7 @@ namespace Stepquencer
         }
 
         /// <summary>
-        /// Method to make a fresh stepGrid
+        /// Method to make a new, empty stepGrid
         /// </summary>
         public void MakeStepGrid()
         {
@@ -146,12 +280,14 @@ namespace Stepquencer
             //Initialize the number of rows and columns for the tempGrid
             for (int i = 0; i < NumRows; i++)
             {
+
                 stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54, GridUnitType.Absolute) });
             }
             for (int i = 0; i < NumColumns; i++)
             {
                 //tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54, GridUnitType.Absolute) });
-                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(68, GridUnitType.Absolute) });
+
             }
 
             //Add grids to the tempGrid, and give each 2 columns, two rows and a BoxView
@@ -199,12 +335,31 @@ namespace Stepquencer
         /// </summary>
         public void SetSong(Song song)
         {
-            this.song = song;
-
-            Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[song.BeatCount];
-            for (int i = 0; i < song.BeatCount; i++)
+            //Copy 8-beat songs to each set of 8 beats
+            if (song.BeatCount == 8)
             {
-                Instrument.Note[] notes = song.NotesAtBeat(i);
+                this.song = new Song(NumColumns);
+                for (int i = 0; i < 8; i++)
+                {
+                    foreach (Instrument.Note note in song.NotesAtBeat(i))
+                    {
+                        //Iterate over each set of 8 beats
+                        for (int e = 0; e < NumColumns / 8; e++)
+                        {
+                            this.song.AddNote(note, i + (e * 8));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.song = song;
+            }
+
+            Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[this.song.BeatCount];
+            for (int i = 0; i < this.song.BeatCount; i++)
+            {
+                Instrument.Note[] notes = this.song.NotesAtBeat(i);
                 colorsAtShiftAtBeat[i] = notes.GroupBy(n => n.semitoneShift)
                                               .ToDictionary(
                                                      g => g.Key,
@@ -272,7 +427,7 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         void OnPlayStopClicked(object sender, EventArgs e)
         {
-            if(player.IsPlaying)
+            if (player.IsPlaying)
             {
                 StopPlayingSong();
             }
@@ -280,7 +435,9 @@ namespace Stepquencer
             {
                 StartPlayingSong();
             }
+
         }
+
 
 
         /// <summary>

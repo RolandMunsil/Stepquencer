@@ -32,6 +32,7 @@ namespace Stepquencer
                 Margin = 7
             };
 
+
             //Initialize resultsLabel
             resultsLabel = new Label
             {
@@ -54,6 +55,7 @@ namespace Stepquencer
                 Directory.CreateDirectory(SongFileUtilities.PathToSongDirectory);
             }
 
+
             // Load in all of the songUIElements
             LoadSongUIElements();
         }
@@ -65,7 +67,7 @@ namespace Stepquencer
         /// </summary>
         public void LoadSongUIElements()
         {
-            String[] songNames = Directory.GetFiles(SongFileUtilities.PathToSongDirectory);           // Get all the remaining files
+            String[] songNames = Directory.GetFiles(FileUtilities.PathToSongDirectory);           // Get all the remaining files
 
             if (songNames.Length == 0)      // If there are no saved songs, 
             {
@@ -122,71 +124,15 @@ namespace Stepquencer
         void OnSongTap(SongUIElement uiElement)
         {
             Instrument[] songInstruments;
-            mainpage.SetSong(LoadSongFromFile(uiElement.filePath, out songInstruments));
+            int tempo;
+            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath, out songInstruments, out tempo));
             mainpage.SetSidebarInstruments(songInstruments);
+            if (tempo > 0)
+            {
+                mainpage.currentTempo = tempo;
+            }
             ReturnToMainPage();
         }
-
-        /// <summary>
-        /// Loads a song given its name
-        /// </summary>
-        /// <returns>The song from file.</returns>
-        /// <param name="songName">Song name.</param>
-        public static Song LoadSongFromFile(String path, out Instrument[] songInstruments)
-        {
-            String filePath = path;
-            Song loadedSong;
-
-            using (StreamReader file = File.OpenText(filePath))
-            {
-                String[] firstLineParts = file.ReadLine().Split('|');
-                int totalBeats = int.Parse(firstLineParts[0].Split(' ')[0]);
-                loadedSong = new Song(totalBeats);
-
-                //Load instruments
-                if (firstLineParts.Length > 1)
-                {                  
-                    songInstruments = new Instrument[firstLineParts.Length - 1];
-                    for (int i = 1; i < firstLineParts.Length; i++)
-                    {
-                        songInstruments[i - 1] = Instrument.GetByName(firstLineParts[i]);
-                    }
-                }
-                else
-                {
-                    String[] oldDefaultInstruments = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
-                    //If no instruments, use default instruments (for backwards compatability)
-                    songInstruments = oldDefaultInstruments.Select(str => Instrument.GetByName(str)).ToArray();
-                }             
-
-                for (int i = 0; i < totalBeats; i++)
-                {
-                    String header = file.ReadLine();
-                    if (!header.Contains($"Beat {i}"))
-                        throw new Exception("Invalid file or bug in file loader");
-                    int numNotes = int.Parse(header.Split('|')[1]);
-
-                    for (int n = 0; n < numNotes; n++)
-                    {
-                        String[] noteStringParts = file.ReadLine().Split(':');
-                        String instrName = noteStringParts[0];
-                        int semitoneShift = int.Parse(noteStringParts[1]);
-
-                        //To allow loading of songs saved before a lot of instrument names were changed
-                        if (instrName.Contains(' ') || instrName.Contains('-'))
-                        {
-                            instrName = instrName.Replace(" ", "").Replace("-", "");
-                        }
-
-                        Instrument.Note note = Instrument.GetByName(instrName).AtPitch(semitoneShift);
-                        loadedSong.AddNote(note, i);
-                    }
-                }
-            }
-
-            return loadedSong;
-        }
-
 
         /// <summary>
         /// Given the name of a song, deletes its corresponding file
@@ -194,7 +140,7 @@ namespace Stepquencer
         /// <param name="songName">Song name.</param>
         private static void DeleteSongFile(String songName)
         {
-            File.Delete(SongFileUtilities.PathToSongFile(songName));
+            File.Delete(FileUtilities.PathToSongFile(songName));
         }
     }
 }

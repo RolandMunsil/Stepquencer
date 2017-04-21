@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Xamarin.Forms;
@@ -34,7 +34,7 @@ namespace Stepquencer
             // Initialize style for buttons on this page
             Style buttonStyle = new Style(typeof(Button))
             {
-                Setters = 
+                Setters =
                 {
                     new Setter { Property = Button.TextColorProperty, Value = Color.White },        // Buttons will have white text,
                     new Setter { Property = Button.BackgroundColorProperty, Value = Color.Black },  // a black background,
@@ -116,11 +116,11 @@ namespace Stepquencer
             Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
             undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                            // Undos a recent clear
             Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
-            { 
+            {
                 Text = "SWAP INSTRUMENTS",
-                Style = buttonStyle, 
+                Style = buttonStyle,
                 BackgroundColor = Color.Blue
-            }; 
+            };
 
             if (clearedSong == null)
             {
@@ -139,7 +139,7 @@ namespace Stepquencer
             // Add grids to masterLayout
 
             StackLayout masterLayout = new StackLayout();       // Overall layout (stacks tempo stuff on top of grid holding the buttons)
-            masterLayout.Children.Add(tempoGrid);           
+            masterLayout.Children.Add(tempoGrid);
             masterLayout.Children.Add(buttonGrid);
 
 
@@ -165,8 +165,8 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-
-            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
+            int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
+            tempoSlider.Value = newTempo;
             bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
             mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
 

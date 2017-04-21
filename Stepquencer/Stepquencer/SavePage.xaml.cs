@@ -123,7 +123,7 @@ namespace Stepquencer
                         $"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}",
                          "OK");
                 }
-                else if (File.Exists(SongFileUtilities.PathToSongFile(songTitleEntry.Text)))
+                else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
                 {
                     //DisplayAlert returns boolean value
                     var answer = await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK", "Cancel");
@@ -159,7 +159,7 @@ namespace Stepquencer
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
-            String filePath = SongFileUtilities.PathToSongFile(songName);
+            String filePath = FileUtilities.PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {
@@ -175,6 +175,7 @@ namespace Stepquencer
                         file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
                     }
                 }
+                file.WriteLine(mainpage.currentTempo);
             }
         }
     }
