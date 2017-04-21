@@ -122,7 +122,7 @@ namespace Stepquencer
                         $"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}",
                          "OK");
                 }
-                else if (File.Exists(SongFileUtilities.PathToSongFile(songTitleEntry.Text)))
+                else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
                 {
                     await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK");
                     if (buttonPressed.Equals("OK"))
@@ -141,7 +141,7 @@ namespace Stepquencer
 
         private void SaveSongToFile(Song songToSave, String songName)
         {
-            String filePath = SongFileUtilities.PathToSongFile(songName);
+            String filePath = FileUtilities.PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {

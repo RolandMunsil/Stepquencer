@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 
@@ -41,16 +42,6 @@ namespace Stepquencer
             }
         }
 
-        /// <summary>
-        /// Used to get the audio files embedded in our program
-        /// </summary>
-        private static Assembly assembly = typeof(MainPage).GetTypeInfo().Assembly;
-#if __IOS__
-        const String resourcePrefix = "Stepquencer.iOS.Instruments.";
-#endif
-#if __ANDROID__
-        const String resourcePrefix = "Stepquencer.Droid.Instruments.";
-#endif
         public static Dictionary<String, Color> colorMap;
 
         private static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
@@ -90,12 +81,10 @@ namespace Stepquencer
         {
             colorMap = new Dictionary<String, Color>();
 
-            String resourceString = $"{resourcePrefix}_colors.txt";
-
             //Read in data
-            using (System.IO.StreamReader stream = new System.IO.StreamReader(assembly.GetManifestResourceStream(resourceString)))
+            using (StreamReader stream = new StreamReader(FileUtilities.LoadEmbeddedResource("Instruments._colors.txt")))
             {
-                while(stream.Peek() != -1)
+                while (stream.Peek() != -1)
                 {
                     string[] nameAndColor = stream.ReadLine().Split('|');
                     colorMap.Add(nameAndColor[0], Color.FromHex("#" + nameAndColor[1]));
@@ -122,12 +111,9 @@ namespace Stepquencer
                 return dictInstr;
             }
 
-            //Generate the path to the audio file
-            String resourceString = $"{resourcePrefix}{instrName}.wav";
-
             //Read in data
             byte[] rawInstrumentData;
-            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceString))
+            using (System.IO.Stream stream = FileUtilities.LoadEmbeddedResource($"Instruments.{instrName}.wav"))
             {
                 int streamLength = (int)stream.Length;
                 rawInstrumentData = new byte[streamLength];

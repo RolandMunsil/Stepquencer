@@ -24,7 +24,7 @@ namespace Stepquencer
 
             Label songLabel = new Label             // Make a new label initialized with the song name
             {
-                Text = SongFileUtilities.SongNameFromFilePath(filePath),
+                Text = FileUtilities.SongNameFromFilePath(filePath),
                 FontSize = 20,
                 BackgroundColor = Color.Black,
                 TextColor = Color.White,
