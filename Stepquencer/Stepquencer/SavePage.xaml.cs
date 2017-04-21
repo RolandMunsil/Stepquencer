@@ -140,12 +140,6 @@ namespace Stepquencer
                         await Navigation.PopToRootAsync();
 
                     }
-                    //If user presses "Cancel"
-                    if (answer.Equals(false))
-                    {
-                        //Go back to SavePage
-                        await Navigation.PopToRootAsync();
-                    }
                 }
                 else
                 {
