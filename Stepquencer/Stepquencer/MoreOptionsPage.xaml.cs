@@ -165,8 +165,8 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-
-            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
+            int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
+            tempoSlider.Value = newTempo;
             bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
             mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
 
