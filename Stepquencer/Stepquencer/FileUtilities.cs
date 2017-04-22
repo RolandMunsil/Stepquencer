@@ -68,34 +68,25 @@ namespace Stepquencer
         {
             StreamReader file = new StreamReader(stream);
 
+            //Get total beats
             String[] firstLineParts = file.ReadLine().Split('|');
             int totalBeats = int.Parse(firstLineParts[0].Split(' ')[0]);
 
-
             //Load instruments
-            Instrument[] songInstruments;
-            if (firstLineParts.Length > 1)
+            Instrument[] songInstruments = new Instrument[firstLineParts.Length - 1];
+            for (int i = 1; i < firstLineParts.Length; i++)
             {
-                songInstruments = new Instrument[firstLineParts.Length - 1];
-                for (int i = 1; i < firstLineParts.Length; i++)
-                {
-                    songInstruments[i - 1] = Instrument.GetByName(firstLineParts[i]);
-                }
-            }
-            else
-            {
-                String[] oldDefaultInstruments = { "Snare", "YRM1xAtmosphere", "SlapBassLow", "HiHat" };
-                //If no instruments, use default instruments (for backwards compatability)
-                songInstruments = oldDefaultInstruments.Select(str => Instrument.GetByName(str)).ToArray();
+                songInstruments[i - 1] = Instrument.GetByName(firstLineParts[i]);
             }
 
-            Song loadedSong = new Song(totalBeats, songInstruments, 240);
+            //Make song with default tempo
+            Song loadedSong = new Song(totalBeats, songInstruments, -1);
 
+            //Load notes
             for (int i = 0; i < totalBeats; i++)
             {
                 String header = file.ReadLine();
-                if (!header.Contains($"Beat {i}"))
-                    throw new Exception("Invalid file or bug in file loader");
+                if (!header.Contains($"Beat {i}")) throw new Exception("Invalid file or bug in file loader");
                 int numNotes = int.Parse(header.Split('|')[1]);
 
                 for (int n = 0; n < numNotes; n++)
@@ -104,44 +95,12 @@ namespace Stepquencer
                     String instrName = noteStringParts[0];
                     int semitoneShift = int.Parse(noteStringParts[1]);
 
-                    //To allow loading of songs saved before a lot of instrument names were changed
-                    if (instrName.Contains(' ') || instrName.Contains('-'))
-                    {
-                        instrName = instrName.Replace(" ", "").Replace("-", "");
-                    }
-
                     Instrument.Note note = Instrument.GetByName(instrName).AtPitch(semitoneShift);
                     loadedSong.AddNote(note, i);
                 }
             }
-            String lastLine = file.ReadLine();
-            int tempo = -1;
-            if (int.TryParse(lastLine, out tempo))
-            {
-                loadedSong.Tempo = tempo;
-            }
-
-            //Copy 8-beat songs to each set of 8 beats
-            if (loadedSong.BeatCount == 8)
-            {
-                Song copiedSong = new Song(16, loadedSong.Instruments, loadedSong.Tempo);
-                for (int i = 0; i < 8; i++)
-                {
-                    foreach (Instrument.Note note in loadedSong.NotesAtBeat(i))
-                    {
-                        //Iterate over each set of 8 beats
-                        for (int e = 0; e < 16 / 8; e++)
-                        {
-                            copiedSong.AddNote(note, i + (e * 8));
-                        }
-                    }
-                }
-                return copiedSong;
-            }
-            else
-            {
-                return loadedSong;
-            }
+            loadedSong.Tempo = int.Parse(file.ReadLine());
+            return loadedSong;
         }
 
         public static void SaveSongToFile(Song songToSave, String songName)

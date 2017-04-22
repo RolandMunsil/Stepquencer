@@ -65,22 +65,6 @@ namespace Stepquencer
                 song = new Song(NumColumns, startSong.Instruments, startSong.Tempo);
             }
 
-            String backupDir = Path.Combine(FileUtilities.PathToSongDirectory, "backups2/");
-            if (!Directory.Exists(backupDir))
-            {
-                Directory.CreateDirectory(backupDir);
-                foreach (String songPath in Directory.GetFiles(FileUtilities.PathToSongDirectory))
-                {
-                    Song loadedSong = FileUtilities.LoadSongFromFile(songPath);
-
-                    //Backup just in case
-                    String songName = FileUtilities.SongNameFromFilePath(songPath);
-                    File.Move(songPath, Path.Combine(backupDir, songName));
-
-                    FileUtilities.SaveSongToFile(loadedSong, FileUtilities.SongNameFromFilePath(songPath));
-                }
-            }
-
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
