@@ -9,14 +9,16 @@ namespace Stepquencer
 {
     public partial class App : Application
     {
+        private MainPage mainpage;
+
         public App ()
         {
-            MainPage = new NavigationPage(new MainPage()) 
+            mainpage = new MainPage();
+            MainPage = new NavigationPage(mainpage) 
             {
                 BarBackgroundColor = Color.Black,
                 BarTextColor = Color.White
             };
-
         }
 
         protected override void OnStart ()
@@ -26,7 +28,7 @@ namespace Stepquencer
 
         protected override void OnSleep ()
         {
-            // Handle when your app sleeps
+            mainpage.StopPlayingSong();
         }
 
         protected override void OnResume ()

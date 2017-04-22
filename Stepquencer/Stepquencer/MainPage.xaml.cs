@@ -21,8 +21,8 @@ namespace Stepquencer
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
         public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
-        RelativeLayout verticalBarArea;                 //Area on the left sie of the screen for the vertical scroll bar
-        RelativeLayout horizontalBarArea;               //Area on the bottom of the screen for the horizontal scroll bar
+        RelativeLayout verticalBarArea;                 // Area on the left sie of the screen for the vertical scroll bar
+        RelativeLayout horizontalBarArea;               // Area on the bottom of the screen for the horizontal scroll bar
         BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
         BoxView horizontalScrollBar;                    // Scroll bar to show position on horizontal scroll
 
@@ -438,11 +438,14 @@ namespace Stepquencer
         /// <summary>
         /// Stops playing the song
         /// </summary>
-        private void StopPlayingSong()
+        public void StopPlayingSong()
         {
-            player.StopPlaying();
-            playStopButton.Image = "play.png";
-            stepgrid.Children.Remove(highlight);
+            if (player.IsPlaying)
+            {
+                player.StopPlaying();
+                playStopButton.Image = "play.png";
+                stepgrid.Children.Remove(highlight);
+            }
         }
 
         /// <summary>

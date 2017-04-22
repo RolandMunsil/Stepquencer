@@ -11,6 +11,7 @@ namespace Stepquencer
 
     public partial class ChangeInstrumentsPage : ContentPage
     {
+        private const int instrumentsPerRow = 4;
 
         private MainPage mainpage;                        // Reference to the mainPage instance in order to access currently selected instruments
         private HashSet<Instrument> selectedInstruments;  // Holds all currently selected instruments  
@@ -63,9 +64,9 @@ namespace Stepquencer
                 instrumentSlotLayout.Children.Add(button);      // Add to layout
                 selectedInstruments.Add(button.Instrument);     // Keep track of what colors are selected
 
-                if (sideButton.Equals(mainpage.selectedInstrButton))                         //
+                if (sideButton.Equals(mainpage.selectedInstrButton))
                 {                                   //
-                    selectedSlot = button;          // Makes sure first slot is selected
+                    selectedSlot = button;          // Makes sure previously selected slot is selected
                     button.Selected = true;         //
                 }                                   //
             }
@@ -85,7 +86,7 @@ namespace Stepquencer
             int numInstruments = Instrument.colorMap.Keys.Count;        // First, calculate how many rows we'll need given a max of 4(?) columns
             int numRows = (int)Math.Ceiling(numInstruments / 4.0);      // NOTE: I know this is inefficient, but this was the simplest way to do it
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < instrumentsPerRow; i++)
             {                                                                                                                   //
                 allInstruments.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });    //
             }                                                                                                                   //
@@ -103,7 +104,7 @@ namespace Stepquencer
 
             foreach (KeyValuePair<String, Color> nameAndColor in Instrument.colorMap)   // For each mapping of instrument name and color:
             {
-                if (columnIndex > 4)                    //
+                if (columnIndex > instrumentsPerRow)                    //
                 {                                       //
                     columnIndex = 0;                    // If at the end of a row, reset column index and move on to the next row
                     rowIndex++;                         //
