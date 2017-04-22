@@ -237,7 +237,7 @@ namespace Stepquencer
 
             // Switch the instruments being used by the main page
 
-            Instrument[] instruments = new Instrument[4];                       //
+            Instrument[] instruments = new Instrument[MainPage.NumInstruments];                       //
             int index = 0;                                                      //
             foreach (InstrumentButton button in instrumentSlotLayout.Children)  //
             {                                                                   // Gather up current selected instruments in an array

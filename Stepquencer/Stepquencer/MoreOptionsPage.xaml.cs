@@ -14,14 +14,10 @@ namespace Stepquencer
         const double MIN_BPM = 100;          // Minimum BPM user can change to
         const double MAX_BPM = 480;          // Maximum BPM user can go to
 
-
         private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
         private MainPage mainpage;                          // The MainPage this screen came from
         private Button undoClearButton;
-
-        public static Song clearedSong;
-
 
         public MoreOptionsPage(MainPage passedpage)
         {
@@ -122,7 +118,7 @@ namespace Stepquencer
                 BackgroundColor = Color.Blue
             };
 
-            if (clearedSong == null)
+            if (mainpage.clearedSong == null)
             {
                 undoClearButton.TextColor = Color.Gray;
             }
@@ -189,7 +185,6 @@ namespace Stepquencer
         /// </summary>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
-            clearedSong = mainpage.song;
             undoClearButton.TextColor = Color.White;
             mainpage.ClearStepGridAndSong();
         }
@@ -199,10 +194,9 @@ namespace Stepquencer
         /// </summary>
         private void OnUndoClearClicked(object sender, EventArgs e)
         {
-            if (clearedSong != null)
+            if (mainpage.clearedSong != null)
             {
-                mainpage.SetSong(clearedSong);
-                clearedSong = null;
+                mainpage.UndoClear();
                 undoClearButton.TextColor = Color.Gray;
             }
         }

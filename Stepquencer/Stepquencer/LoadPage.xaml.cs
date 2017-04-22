@@ -116,7 +116,9 @@ namespace Stepquencer
         /// <param name="songUI">Song user interface.</param>
         void OnSongTap(SongUIElement uiElement)
         {
-            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));         
+            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
+            //Don't let users undo clear after loading a song
+            mainpage.clearedSong = null;
             ReturnToMainPage();
         }
 

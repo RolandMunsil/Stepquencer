@@ -17,7 +17,7 @@ namespace Stepquencer
 
         const int NumRows = 13;                     // Number of rows of MiniGrids that users can tap and add sounds to
         const int NumColumns = 16;                   // Number of columns of Minigrids
-        const int NumInstruments = 4;               // Number of instruments on the sidebar
+        public const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
 
         public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
@@ -29,6 +29,7 @@ namespace Stepquencer
 
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
+        public Song clearedSong;
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
         public InstrumentButton selectedInstrButton;           // Currently selected sidebar button
@@ -333,7 +334,14 @@ namespace Stepquencer
             {
                 miniGrid.SetColors(new List<Color>());
             }
+            clearedSong = song;
             song = new Song(NumColumns, song.Instruments, song.Tempo);
+        }
+
+        public void UndoClear()
+        {
+            SetSong(clearedSong);
+            clearedSong = null;
         }
 
 
@@ -405,7 +413,7 @@ namespace Stepquencer
             }
 
             //Undo clear stops woking when user adds stuff to grid so they don't accidentally undo clear
-            MoreOptionsPage.clearedSong = null;
+            clearedSong = null;
         }
 
 
