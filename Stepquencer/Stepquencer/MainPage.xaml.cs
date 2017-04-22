@@ -31,7 +31,7 @@ namespace Stepquencer
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
-        InstrumentButton selectedInstrButton;           // Currently selected sidebar button
+        public InstrumentButton selectedInstrButton;           // Currently selected sidebar button
 
         public Grid mastergrid;                         // Grid for whole screen
         public Grid stepgrid;                           // Grid to hold MiniGrids

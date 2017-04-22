@@ -51,7 +51,6 @@ namespace Stepquencer
 
             // Make sure instrumentSlotLayout is initialized with instruments used on main page
 
-            int j = 0;      
             foreach (InstrumentButton sideButton in mainpage.instrumentButtons)
             {
                 InstrumentButton button = new InstrumentButton(sideButton.Instrument);
@@ -64,12 +63,11 @@ namespace Stepquencer
                 instrumentSlotLayout.Children.Add(button);      // Add to layout
                 selectedInstruments.Add(button.Instrument);     // Keep track of what colors are selected
 
-                if (j == 0)                         //
+                if (sideButton.Equals(mainpage.selectedInstrButton))                         //
                 {                                   //
                     selectedSlot = button;          // Makes sure first slot is selected
                     button.Selected = true;         //
                 }                                   //
-                j++;                                //
             }
 
             masterGrid.Children.Add(instrumentSlotLayout, 0, 0);     // Add selectedButtons to masterGrid
