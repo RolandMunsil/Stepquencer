@@ -77,7 +77,7 @@ namespace Stepquencer
         {
             playingNotes = new List<PlayingNote>();
 #if __IOS__
-            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  // Might need to check if little or big endian
+            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  
 #endif
         }
 
