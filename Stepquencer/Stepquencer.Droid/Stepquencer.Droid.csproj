@@ -122,6 +122,7 @@
     <AndroidResource Include="Resources\Drawable\YRM1xAtmosphere.png" />
     <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
+    <AndroidResource Include="Resources\Drawable\NewIcon 4.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
