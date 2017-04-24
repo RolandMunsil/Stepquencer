@@ -23,11 +23,13 @@ namespace Stepquencer
 
         protected override void OnStart ()
         {
-            // Handle when your app starts
+            // Handle when app starts
+            if (mainpage.firstTime) { mainpage.displayInstructions(); }
         }
 
         protected override void OnSleep ()
         {
+            // Handle when app sleeps
             mainpage.StopPlayingSong();
         }
 

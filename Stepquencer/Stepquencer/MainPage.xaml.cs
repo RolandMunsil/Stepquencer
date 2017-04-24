@@ -41,6 +41,8 @@ namespace Stepquencer
         BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
 
+        public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
+
         public MainPage()
         {
             InitializeComponent();
@@ -62,10 +64,12 @@ namespace Stepquencer
                 this.song = startSong;
                 UpdateStepGridToMatchSong();
                 FileUtilities.SaveSongToFile(startSong, "Initial beat");
+                firstTime = true;
             }
             else
             {
                 song = new Song(NumColumns, startSong.Instruments, startSong.Tempo);
+                firstTime = false;
             }
 
             // Make the sidebar
@@ -205,7 +209,9 @@ namespace Stepquencer
 
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
-            Content = mastergrid;            
+            Content = mastergrid;
+
+            if (firstTime) { displayInstructions(); }   // Displays instructions if it's the first time user opens the app.
         }
 
         
@@ -439,6 +445,7 @@ namespace Stepquencer
             }
         }
 
+
         /// <summary>
         /// Starts playing the song
         /// </summary>
@@ -449,6 +456,7 @@ namespace Stepquencer
             player.BeginPlaying(song);
             playStopButton.Image = "stop.png";
         }
+
 
         /// <summary>
         /// Stops playing the song
@@ -463,6 +471,7 @@ namespace Stepquencer
             }
         }
 
+
         /// <summary>
         /// Event handler for the more options button. Sends user to more options page.
         /// </summary>
@@ -474,6 +483,7 @@ namespace Stepquencer
             }
             await Navigation.PushAsync(new MoreOptionsPage(this));
         }
+
 
         /// <summary>
         /// Event handler for buttons in the sidebar
@@ -495,6 +505,7 @@ namespace Stepquencer
             }
         }            
 
+
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
         /// </summary>
@@ -504,6 +515,15 @@ namespace Stepquencer
             {
                 Grid.SetColumn(highlight, currentBeat);
             });
+        }
+
+
+        /// <summary>
+        /// Displays a popup with instructions for a first-time user
+        /// </summary>
+        public async void displayInstructions()
+        {
+            await DisplayAlert("Welcome to Stepquencer!", "Tap on a square to place a sound, and hit play to hear your masterpiece.", "Get Started");
         }
     }
 }
