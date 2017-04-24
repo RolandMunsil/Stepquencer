@@ -59,7 +59,9 @@ namespace Stepquencer
             if (!Directory.Exists(FileUtilities.PathToSongDirectory))
             {
                 Directory.CreateDirectory(FileUtilities.PathToSongDirectory);
-                SetSong(startSong);
+                this.song = startSong;
+                UpdateStepGridToMatchSong();
+                FileUtilities.SaveSongToFile(startSong, "Initial beat");
             }
             else
             {
@@ -352,6 +354,16 @@ namespace Stepquencer
         {
             this.song = newSong;
 
+            UpdateStepGridToMatchSong();
+
+            for (int i = 0; i < instrumentButtons.Length; i++)
+            {
+                instrumentButtons[i].Instrument = song.Instruments[i];
+            }
+        }
+
+        private void UpdateStepGridToMatchSong()
+        {
             Dictionary<int, List<Color>>[] colorsAtShiftAtBeat = new Dictionary<int, List<Color>>[this.song.BeatCount];
             for (int i = 0; i < this.song.BeatCount; i++)
             {
@@ -376,11 +388,6 @@ namespace Stepquencer
                 {
                     miniGrid.SetColors(new List<Color>());
                 }
-            }
-
-            for (int i = 0; i < instrumentButtons.Length; i++)
-            {
-                instrumentButtons[i].Instrument = song.Instruments[i];
             }
         }
 
