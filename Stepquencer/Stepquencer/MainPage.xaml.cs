@@ -210,8 +210,6 @@ namespace Stepquencer
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
             Content = mastergrid;
-
-            if (firstTime) { displayInstructions(); }   // Displays instructions if it's the first time user opens the app.
         }
 
         
