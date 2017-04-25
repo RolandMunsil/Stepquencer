@@ -141,7 +141,7 @@ namespace Stepquencer
             };
 
 
-            // Make cancel, done buttons
+            // Make cancel and done buttons
 
             Button cancelButton = new Button
             {
@@ -174,7 +174,7 @@ namespace Stepquencer
 
 
         /// <summary>
-        /// Event handler for instrument slots up top
+        /// Event handler for instrument slots (currently selected instruments)
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
