@@ -58,9 +58,10 @@ namespace Stepquencer
             BackgroundColor = Color.FromHex("#000000");         //* Set page style 
             NavigationPage.SetHasNavigationBar(this, false);    //*
 
+            MakeStepGrid();
+
             // Initialize the SongPlayer
             player = new SongPlayer();
-
 
             //Load default tempo and instruments, and if this is the first time the user has launched the app, show the startup song
             Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"));
@@ -215,7 +216,7 @@ namespace Stepquencer
                 Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
             
-            MakeStepGrid();
+
             scroller.Content = stepgrid;
             mastergrid.Children.Add(scroller, 1, 0);
 
