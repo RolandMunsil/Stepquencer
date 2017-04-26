@@ -354,68 +354,19 @@ namespace Stepquencer
                         stepgrid.Children.Add(noteLabel, j, i);
                     }
 
-                    if ((i == 0))
+                    if (i == 0 && j % 4 == 3)
                     {
-                        if (j == 3)
+                        Label measureLabel = new Label
                         {
-                            Label measureLabel = new Label
-                            {
-                                Text = "4",
-                                FontSize = 17,
-                                FontAttributes = FontAttributes.Bold,
-                                TextColor = new Color(0.18),
-                                Margin = new Thickness(4, 3, 0, 0),
-                                InputTransparent = true
-                            };
+                            Text = (j+1).ToString(),
+                            FontSize = 17,
+                            FontAttributes = FontAttributes.Bold,
+                            TextColor = new Color(0.18),
+                            Margin = new Thickness(4, 3, 0, 0),
+                            InputTransparent = true
+                        };
 
-                            stepgrid.Children.Add(measureLabel, j, i);
-                        }
-
-                        if (((j == 7)))
-                        {
-                            Label measureLabel2 = new Label
-                            {
-                                Text = "8",
-                                FontSize = 17,
-                                FontAttributes = FontAttributes.Bold,
-                                TextColor = new Color(0.18),
-                                Margin = new Thickness(4, 3, 0, 0),
-                                InputTransparent = true
-                            };
-
-                            stepgrid.Children.Add(measureLabel2, j, i);
-                        }
-
-                        if (((j == 11)))
-                        {
-                            Label measureLabel3 = new Label
-							{
-								Text = "12",
-								FontSize = 17,
-								FontAttributes = FontAttributes.Bold,
-								TextColor = new Color(0.18),
-								Margin = new Thickness(4, 3, 0, 0),
-								InputTransparent = true
-							};
-
-                            stepgrid.Children.Add(measureLabel3, j, i);
-                        }
-
-                        if (((j == 15)))
-                        {
-                            Label measureLabel4 = new Label
-							{
-								Text = "16",
-								FontSize = 17,
-								FontAttributes = FontAttributes.Bold,
-								TextColor = new Color(0.18),
-								Margin = new Thickness(4, 3, 0, 0),
-								InputTransparent = true
-							};
-
-                            stepgrid.Children.Add(measureLabel4, j, i);
-                        }
-
+                        stepgrid.Children.Add(measureLabel, j, i);
                     }  
                 }
             }
