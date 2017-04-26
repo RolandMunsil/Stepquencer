@@ -52,8 +52,10 @@ namespace Stepquencer
             // Initialize the SongPlayer
             player = new SongPlayer();
 
+
             // Make the stepgrid and fill it with boxes
             MakeStepGrid();
+
 
             //Load default tempo and instruments, and if this is the first time the user has launched the app, show the startup song
             Song startSong = FileUtilities.LoadSongFromStream(FileUtilities.LoadEmbeddedResource("firsttimesong.txt"));
@@ -72,6 +74,7 @@ namespace Stepquencer
                 firstTime = false;
             }
 
+
             // Make the sidebar
             sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
@@ -80,6 +83,7 @@ namespace Stepquencer
             {
                 sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             }
+
 
             // Fill sidebar with buttons and put them in the instrumentButtons array
             instrumentButtons = new InstrumentButton[song.Instruments.Length];
@@ -100,6 +104,7 @@ namespace Stepquencer
 
             }
 
+
             // Add a button to get to the MoreOptionsPage
             Button moreOptionsButton = new Button
             {
@@ -110,6 +115,7 @@ namespace Stepquencer
             };
             sidebar.Children.Add(moreOptionsButton, 0, 0);
             moreOptionsButton.Clicked += OnMoreOptionsClicked;
+
 
             // Add a button to play/stop the SongPlayer
             playStopButton = new Button
@@ -138,6 +144,7 @@ namespace Stepquencer
 
             scroller.Content = stepgrid;
 
+
             //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
             mastergrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14, GridUnitType.Absolute) });  //spot for up-down scrollbar
@@ -145,7 +152,8 @@ namespace Stepquencer
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });  // spot for sidebar
             mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });  // horizontal spot for everything, but side scrollbar
             mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(14, GridUnitType.Absolute) });  // spot for side scrollbar
-            
+
+
             //make vertical scrollbar, size doesn't matter because constraints are used to size it later
             verticalScrollBar = new BoxView
             {
@@ -153,6 +161,7 @@ namespace Stepquencer
                 WidthRequest = 1,
                 HeightRequest = 1,
             };
+
 
             //make vertical scrollbar, size doesn't matter because constraints are used to size it later
             horizontalScrollBar = new BoxView
@@ -191,6 +200,7 @@ namespace Stepquencer
             //Add the Relative layouts that will hold the sidebars to the mastergrid
             mastergrid.Children.Add(verticalBarArea, 0, 0); 
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
+
 
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
 
@@ -264,6 +274,12 @@ namespace Stepquencer
             
         }
 
+
+        //When a new instrument is selected for a sidebar button, all sections of the
+        //minigrids that correspond to that particular sidebar button will be changed
+        //to the new instrument sound. For instance, if 'Clap' is selected to be in 
+        //'Hi-Hat''s place on the sidebar, all hi-hat sections of a song will be replaced
+        //with claps.
         public void ReplaceInstruments(Instrument[] instruments)
         {           
             List<Instrument> oldInstruments = new List<Instrument>();           //
@@ -282,6 +298,7 @@ namespace Stepquencer
             song.ReplaceInstruments(oldInstruments, newInstruments);         
             SetSong(song);
         }
+
 
         /// <summary>
         /// Method to make a new, empty stepGrid
@@ -313,6 +330,7 @@ namespace Stepquencer
                     MiniGrid miniGrid = new MiniGrid(semitoneShift);
                     miniGrid.Tap += OnMiniGridTapped;
                     stepgrid.Children.Add(miniGrid, j, i);
+
                     if(j % 8 == 0)
                     {
                         Label noteLabel = new Label
@@ -325,8 +343,73 @@ namespace Stepquencer
                             Margin = new Thickness(4, 3, 0, 0),
                             InputTransparent = true
                         };
+
                         stepgrid.Children.Add(noteLabel, j, i);
                     }
+
+                    if ((i == 0))
+                    {
+                        if (j == 3)
+                        {
+                            Label measureLabel = new Label
+                            {
+                                Text = "4",
+                                FontSize = 17,
+                                FontAttributes = FontAttributes.Bold,
+                                TextColor = new Color(0.18),
+                                Margin = new Thickness(4, 3, 0, 0),
+                                InputTransparent = true
+                            };
+
+                            stepgrid.Children.Add(measureLabel, j, i);
+                        }
+
+                        if (((j == 7)))
+                        {
+                            Label measureLabel2 = new Label
+                            {
+                                Text = "8",
+                                FontSize = 17,
+                                FontAttributes = FontAttributes.Bold,
+                                TextColor = new Color(0.18),
+                                Margin = new Thickness(4, 3, 0, 0),
+                                InputTransparent = true
+                            };
+
+                            stepgrid.Children.Add(measureLabel2, j, i);
+                        }
+
+                        if (((j == 11)))
+                        {
+                            Label measureLabel3 = new Label
+							{
+								Text = "12",
+								FontSize = 17,
+								FontAttributes = FontAttributes.Bold,
+								TextColor = new Color(0.18),
+								Margin = new Thickness(4, 3, 0, 0),
+								InputTransparent = true
+							};
+
+                            stepgrid.Children.Add(measureLabel3, j, i);
+                        }
+
+                        if (((j == 15)))
+                        {
+                            Label measureLabel4 = new Label
+							{
+								Text = "16",
+								FontSize = 17,
+								FontAttributes = FontAttributes.Bold,
+								TextColor = new Color(0.18),
+								Margin = new Thickness(4, 3, 0, 0),
+								InputTransparent = true
+							};
+
+                            stepgrid.Children.Add(measureLabel4, j, i);
+                        }
+
+                    }  
                 }
             }
         }
