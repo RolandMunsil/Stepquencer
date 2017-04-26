@@ -6,6 +6,7 @@ using System.Text;
 using System.Timers;
 using Xamarin.Forms;
 using System.Threading;
+using System.Timers;
 
 
 namespace Stepquencer
@@ -16,6 +17,8 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
+        System.Timers.Timer timer;
+        bool stepGridLoaded = false;
         const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
         const int NumColumns = 16;                   // Number of columns of Minigrids
         public const int NumInstruments = 4;               // Number of instruments on the sidebar
@@ -214,8 +217,8 @@ namespace Stepquencer
             {
                 Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
-            
-            MakeStepGrid();
+
+            stepgrid = new Grid { ColumnSpacing = stepGridSpacing, RowSpacing = stepGridSpacing };
             scroller.Content = stepgrid;
             mastergrid.Children.Add(scroller, 1, 0);
 
@@ -224,11 +227,37 @@ namespace Stepquencer
 
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
-            Content = mastergrid;
-           
+            Content = mastergrid;        
+            
         }
 
-        private void getMiniGridDimensions()//Object o, EventArgs e)
+        override protected void OnAppearing()
+        {
+            if (stepGridLoaded == false)
+            {
+                timer = new System.Timers.Timer();
+                timer.Interval = 1;
+                timer.Start();
+                timer.Elapsed += timerE;
+                stepGridLoaded = true;
+            }
+            
+        }
+
+        private void timerE(object o, ElapsedEventArgs e)
+        {
+
+            Device.BeginInvokeOnMainThread(delegate ()
+            {
+                getMiniGridDimensions();
+                MakeStepGrid();
+                scroller.Content = stepgrid;
+            });
+            timer.Stop();
+
+        }
+
+        private void getMiniGridDimensions()
         {
             scrollerHeightShown = mastergrid.Height - horizontalBarArea.Height;
             miniGridHeight = (int)(scrollerHeightShown + stepGridSpacing) / 6 - stepGridSpacing;
@@ -247,7 +276,7 @@ namespace Stepquencer
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
+        private void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
         {
             if (scroller.ScrollX != (double) 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
             {
