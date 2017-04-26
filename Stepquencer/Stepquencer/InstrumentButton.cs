@@ -5,10 +5,17 @@ using Xamarin.Forms;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// A button that represents an instrument. It has a reference to it's instrument and
+    /// updates it's appearance to match the instrument it is assigned
+    /// </summary>
     public class InstrumentButton : Button
     {
         private Instrument instrument;
 
+        /// <summary>
+        /// Note: setting the instrument also sets the appearance of this button
+        /// </summary>
         public Instrument Instrument
         {
             get { return instrument; }
@@ -20,9 +27,12 @@ namespace Stepquencer
             }
         }
 
+        /// <summary>
+        /// A selected instrument button has a white border
+        /// </summary>
         public bool Selected
         {
-            get { return BorderColor.Equals(Color.White); }
+            get { return BorderColor == Color.White; }
             set
             {
                 this.BorderColor = value ? Color.White : Color.Black;

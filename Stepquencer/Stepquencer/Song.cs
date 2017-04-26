@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Stepquencer
 {
+    /// <summary>
+    /// Represents a song (i.e. a set of beats containing notes).
+    /// Designed to be thread-safe, since it is accessed by both the UI thread and the audio thread
+    /// </summary>
     public class Song
     {
         /// <summary>
@@ -12,6 +16,11 @@ namespace Stepquencer
         /// </summary>
         HashSet<Instrument.Note>[] beats;
 
+        /// <summary>
+        ///The instruments associated with this song. The song may not necessarily have notes
+        ///from all of the instruments in Instruments, but when the song is loaded these are
+        ///the instruments that will be in the sidebar
+        /// </summary>
         public Instrument[] Instruments { get; private set; }
         public int Tempo { get; set; }
 
@@ -28,6 +37,7 @@ namespace Stepquencer
 
         public Song(int numBeats, Instrument[] instruments, int tempo)
         {
+            //Initialize the array of hashsets
             beats = new HashSet<Instrument.Note>[numBeats];
             for(int i = 0; i < numBeats; i++)
             {
@@ -44,6 +54,7 @@ namespace Stepquencer
         /// <param name="beat">The beat to add the note at</param>
         public void AddNote(Instrument.Note note, int beat)
         {
+            //We use a lock so that the beat data is not modified while we are adding
             lock (beats)
             {
                 beats[beat].Add(note);
@@ -57,6 +68,7 @@ namespace Stepquencer
         /// <param name="beat">The beat to remove the note from</param>
         public void RemoveNote(Instrument.Note note, int beat)
         {
+            //We use a lock so that the beat data is not modified while we are removing
             lock (beats)
             {
                 beats[beat].Remove(note);
@@ -81,9 +93,13 @@ namespace Stepquencer
             return notes;
         }
 
+        /// <summary>
+        /// Replaces the instruments listed in oldInstruments with the respective instrument in newInstruments
+        /// </summary>
         public void ReplaceInstruments(IList<Instrument> oldInstruments, IList<Instrument> newInstruments)
         {
-            lock(beats)
+            //Lock so that the beats do not change while they are being modified
+            lock (beats)
             {
                 foreach(HashSet<Instrument.Note> beat in beats)
                 {
@@ -92,6 +108,8 @@ namespace Stepquencer
 
                     foreach(Instrument.Note oldNote in oldNotes)
                     {
+                        //If this note's instrument is in oldInstrument, replace it with a note
+                        //of the same pitch but from the new instrument
                         int index = oldInstruments.IndexOf(oldNote.instrument);
                         if(index < 0)
                         {
@@ -107,6 +125,7 @@ namespace Stepquencer
                     }
                 }
                 
+                //Update Instruments
                 for(int i = 0; i < oldInstruments.Count; i++)
                 {
                     Instrument oldInstr = oldInstruments[i];
