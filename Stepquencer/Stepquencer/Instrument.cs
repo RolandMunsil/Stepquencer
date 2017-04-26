@@ -22,7 +22,6 @@ namespace Stepquencer
             /// </summary>
             public readonly short[] data;
 
-            #region Used for constructing button layouts from a Song
             /// <summary>
             /// The instrument that generated this note.
             /// </summary>
@@ -32,7 +31,6 @@ namespace Stepquencer
             /// The pitch shift of this note from the original audio file
             /// </summary>
             public readonly int semitoneShift;
-            #endregion
 
             public Note(short[] data, Instrument instrument, int semitoneShift)
             {
@@ -42,11 +40,22 @@ namespace Stepquencer
             }
         }
 
+        #region Static variables
+        /// <summary>
+        /// Maps instrument names to colors. Loaded from the _colors.txt file
+        /// </summary>
         public static Dictionary<String, Color> colorMap;
 
+        /// <summary>
+        /// Stores all instruments that have been loaded.  Used so that instruments are not loaded every time they are needed
+        /// </summary>
         private static Dictionary<String, Instrument> loadedInstruments = new Dictionary<string, Instrument>();
 
+        /// <summary>
+        /// The string representations of different pitches
+        /// </summary>
         private static readonly String[] NOTE_NAMES = { "C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B" };
+        #endregion
 
         /// <summary>
         /// The name of the audio file this instrument is based on
@@ -64,7 +73,7 @@ namespace Stepquencer
         private short[] unpitchedData;
 
         /// <summary>
-        /// A dictionary mapping pitches to Notes. Used so that notes are not regenerated every time they are needed
+        /// A dictionary mapping pitches to notes. Used so that notes are not regenerated every time they are needed
         /// </summary>
         private Dictionary<int, Note> pitchedNotes;
 
@@ -77,6 +86,9 @@ namespace Stepquencer
             this.color = colorMap[instrumentName];
         }
 
+        /// <summary>
+        /// Loads information about instrument<->color mappings from the map file
+        /// </summary>
         public static void LoadColorMap()
         {
             colorMap = new Dictionary<String, Color>();
@@ -84,7 +96,7 @@ namespace Stepquencer
             //Read in data
             using (StreamReader stream = new StreamReader(FileUtilities.LoadEmbeddedResource("Instruments._colors.txt")))
             {
-                while (stream.Peek() != -1)
+                while (stream.Peek() != -1) //While there are no more lines left to read
                 {
                     string[] nameAndColor = stream.ReadLine().Split('|');
                     colorMap.Add(nameAndColor[0], Color.FromHex("#" + nameAndColor[1]));
@@ -95,8 +107,6 @@ namespace Stepquencer
         /// <summary>
         /// Loads or gets an instrument based on the file Instruments/<code>instrName</code>.wav
         /// </summary>
-        /// <param name="instrName">The name of the wav file the created instrument will be based on</param>
-        /// <returns>An instrument</returns>
         public static Instrument GetByName(String instrName)
         {
             if(colorMap == null)
@@ -111,7 +121,7 @@ namespace Stepquencer
                 return dictInstr;
             }
 
-            //Read in data
+            //Read in audio file as raw bytes
             byte[] rawInstrumentData;
             using (System.IO.Stream stream = FileUtilities.LoadEmbeddedResource($"Instruments.{instrName}.wav"))
             {
@@ -120,8 +130,8 @@ namespace Stepquencer
                 stream.Read(rawInstrumentData, 0, streamLength);
             }
 
-            //Convert to shorts
-            //Note that we skip 44 bytes because that is the size of the WAV header
+            //Reinterperet bytes as shorts. We do this because the wav data is in 16-bit unsigned format
+            //Note that we skip the first 44 bytes because that is the size of the WAV header
             short[] dataAsShorts = new short[(rawInstrumentData.Length - 44) / 2];
             for (int i = 0; i < dataAsShorts.Length; i++)
             {
@@ -134,8 +144,12 @@ namespace Stepquencer
             return instrument;
         }
 
+        /// <summary>
+        /// Maps a semitone shift to a note string
+        /// </summary>
         public static String SemitoneShiftToString(int semitoneShift)
         {
+            //This modulo code makes it so the shifts loop around, i.e. -12, 0, and 12 all map to the same string
             int index = (((semitoneShift % 12) + 12) % 12);
             return NOTE_NAMES[index];
         }
@@ -154,6 +168,7 @@ namespace Stepquencer
             }
             else
             {
+                //Resample the base audio data to pitch it up or down
                 Note note = new Note(Resample(semitoneShift), this, semitoneShift);
                 pitchedNotes[semitoneShift] = note;
                 return note;
@@ -164,7 +179,6 @@ namespace Stepquencer
         /// Generates audio data for this instrument at the given pitch by resampling the audio data
         /// </summary>
         /// <param name="semitoneShift">Semitones to shift the base audio file by</param>
-        /// <returns></returns>
         private short[] Resample(int semitoneShift)
         {
             //The amount to stretch the audio by
@@ -179,6 +193,8 @@ namespace Stepquencer
 
                 //Linearly interpolate between the samples before and after the given position
                 int left = (int)Math.Floor(sourcePos);
+
+                //Special case for when the sample is past the end of the original data
                 short rightSample = left + 1 < unpitchedData.Length ? unpitchedData[left + 1] : (short)0;
 
                 output[s] = (short)(unpitchedData[left] + ((sourcePos % 1) * (rightSample - unpitchedData[left])));
