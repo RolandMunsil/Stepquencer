@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using Xamarin.Forms;
+using System.Threading;
+
+// size changed
+// layout changed
 
 namespace Stepquencer
 {
@@ -13,8 +17,8 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
-
-        const int NumRows = 13;                     // Number of rows of MiniGrids that users can tap and add sounds to
+        bool firstupdate = true;
+        const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
         const int NumColumns = 16;                   // Number of columns of Minigrids
         const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
@@ -42,6 +46,14 @@ namespace Stepquencer
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
+        int miniGridWidth = 54;                              // width of each minigrid
+        int miniGridHeight = 54;                             // height of each minigrid
+        const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
+        double scrollerWidthShown;                      // width of the area of the scroller/stepgrid that is displayed on screen
+        double scrollerHeightShown;                     // height of the area of the scroller/stepgrid that is displayed on screen
+        double scrollerActualWidth;
+        double scrollerActualHeight;
+
         BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
 
@@ -61,9 +73,6 @@ namespace Stepquencer
             // Initialize the SongPlayer and noteArray
             song = new Song(NumColumns);
             player = new SongPlayer();
-
-            // Make the stepgrid and fill it with boxes
-            MakeStepGrid();
 
 
             // Make the sidebar
@@ -124,19 +133,6 @@ namespace Stepquencer
             player.BeatStarted += HighlightColumns;         // Add an event listener to keep highlight in time with beat
 
 
-            // Initialize scrollview and put stepgrid inside it
-            scroller = new ScrollView
-            {
-                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
-            };
-
-
-
-            scroller.Content = stepgrid;
-
-            
-
-
             //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
             mastergrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14, GridUnitType.Absolute) });  //spot for up-down scrollbar
@@ -162,6 +158,10 @@ namespace Stepquencer
             };
 
             verticalBarArea = new RelativeLayout();
+            mastergrid.Children.Add(verticalBarArea, 0, 0);
+
+            horizontalBarArea = new RelativeLayout();
+            mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
             verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) => {
                 return (parent.Width * 0.1);
@@ -170,46 +170,51 @@ namespace Stepquencer
             }), Constraint.RelativeToParent((parent) => {
                 return parent.Width * 0.8;
             }), Constraint.RelativeToParent((parent) => {
-                return parent.Height * parent.Height / (58 * 12 - 4);
+                return parent.Height * parent.Height / scrollerActualHeight;
             }));
 
-            horizontalBarArea = new RelativeLayout();
 
             horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) => {
                 return (0);
             }), Constraint.RelativeToParent((parent) => {
                 return (parent.Height * 0.1);
             }), Constraint.RelativeToParent((parent) => {
-                return parent.Width * parent.Width / (58 * 16 - 4);
+                return parent.Width * parent.Width / scrollerActualWidth;
             }), Constraint.RelativeToParent((parent) => {
                 return parent.Height * 0.8;
             }));
 
-            
+            // Add the sidebar to mastergrid
 
-            //Add the Relative layouts that will hold the sidebars to the mastergrid
-            mastergrid.Children.Add(verticalBarArea, 0, 0); 
-            mastergrid.Children.Add(horizontalBarArea, 1, 1);
-
-            // Add the scroller (which contains stepgrid) and sidebar to mastergrid
-
-            mastergrid.Children.Add(scroller, 1, 0); // Add scroller to first column of mastergrid
             mastergrid.Children.Add(sidebar, 2, 0);  // Add sidebar to final column of mastergrid
             Grid.SetRowSpan(sidebar, 2);  //make sidebar take up both rows in rightmost column
 
+            // Initialize scrollview and put stepgrid inside it
+            scroller = new ScrollView
+            {
+                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
+            };
+            
+            MakeStepGrid();
+            scroller.Content = stepgrid;
+            mastergrid.Children.Add(scroller, 1, 0);
+            Content = mastergrid;
 
-            // Tried using a timer to call updateScrollBars, is not reliable
-            //Timer timer = new Timer();
-
-
-            //timer.Elapsed += updateScrollBars;
-            //timer.Interval = 30;
-            //timer.Start();
-
-            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
-
-            Content = mastergrid;            
+            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.      
+           
         }
+
+        private void getMiniGridDimensions()//Object o, EventArgs e)
+        {
+            scrollerHeightShown = mastergrid.Height - horizontalBarArea.Height;
+            miniGridHeight = (int)(scrollerHeightShown + stepGridSpacing) / 6 - stepGridSpacing;
+            scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
+
+            scrollerWidthShown = mastergrid.Width - verticalBarArea.Width - sidebar.Width;
+            miniGridWidth = (int)(scrollerWidthShown + stepGridSpacing) / 8 - stepGridSpacing;  // stores a value for minigrid width that will give 8 columns of minigrids
+            scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
+        }
+
 
         
         /// <summary>
@@ -218,49 +223,41 @@ namespace Stepquencer
         /// <param name="o"></param>
         /// <param name="e"></param>
         public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
-        {           
+        {
+            if (scroller.ScrollX != 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
             {
-                //uncomment the line below and uncomment ");" near the end of this method to try method with timers
-                //also change ScrolledEventArgs to EventArgs in paramaters of this method to test with timer.
-                //also comment out adding this method to event listener scroller.Scrolled (code near end of
-
-                //Device.BeginInvokeOnMainThread(delegate ()               
+                horizontalBarArea.Children.Remove(horizontalScrollBar);
+                horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
                 {
-                    if (scroller.ScrollX != 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
-                    {
-                        horizontalBarArea.Children.Remove(horizontalScrollBar);
-                        horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
-                        {
-                            return (parent.Width - parent.Width * parent.Width / (58 * 16 - 4)) * scroller.ScrollX / ((58 * 16 - 4) - parent.Width); // x location to place bar, updated by pos in scroll
-                        }), Constraint.RelativeToParent((parent) =>
-                        {
-                            return (0.1 * parent.Height - 1); // y location to place bar
-                        }), Constraint.RelativeToParent((parent) => {
-                            return parent.Width * parent.Width / (58 * 16 - 4); //width of bar
-                        }), Constraint.RelativeToParent((parent) => {
-                            return parent.Height * 0.8; //height of bar
-                        }));
-                        
-                    }
-                    if (scroller.ScrollY != 0)
-                    {
-                        verticalBarArea.Children.Remove(verticalScrollBar);
-                        verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) =>
-                        {
-                            return 0.1 * parent.Width + 1; // x location to place bar
-                        }), Constraint.RelativeToParent((parent) =>
-                        {
-                            return (parent.Height - parent.Height * parent.Height / (58 * 12 - 4)) * scroller.ScrollY / ((58 * 12 - 4) - parent.Height); // y location to place bar, updated by pos in scroll
-                        }), Constraint.RelativeToParent((parent) => {
-                            return parent.Width * 0.8;      //width of bar
-                        }), Constraint.RelativeToParent((parent) => {
-                            return parent.Height * parent.Height / (58 * 12 - 4); //height of bar
-                        }));              
-                    }
+                    return (parent.Width - parent.Width * parent.Width / scrollerActualWidth) * scroller.ScrollX / (scrollerActualWidth - parent.Width); // x location to place bar, updated by pos in scroll
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    double n = (0.1 * parent.Height - 1);
+                    return (0.1 * parent.Height - 1); // y location to place bar
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Width * parent.Width / scrollerActualWidth; //width of bar
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Height * 0.8; //height of bar
+                }));
 
-                }//);
             }
-            
+
+            if (scroller.ScrollY != 0)
+            {
+                verticalBarArea.Children.Remove(verticalScrollBar);
+                verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) =>
+                {
+                    return 0.1 * parent.Width + 1; // x location to place bar
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    return (parent.Height - parent.Height * parent.Height / scrollerActualHeight) * scroller.ScrollY / (scrollerActualHeight - parent.Height); // y location to place bar, updated by pos in scroll
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Width * 0.8;      //width of bar
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Height * parent.Height / scrollerActualHeight; //height of bar
+                }));
+            }
+
         }
 
         public void SetSidebarInstruments(Instrument[] instruments)
@@ -277,22 +274,19 @@ namespace Stepquencer
         public void MakeStepGrid()
         {
             //Set up grid of note squares
-            stepgrid = new Grid { ColumnSpacing = 4, RowSpacing = 4 };
+            stepgrid = new Grid { ColumnSpacing = stepGridSpacing, RowSpacing = stepGridSpacing };
 
-            //Initialize the number of rows and columns for the tempGrid
+            //Initialize the number of rows and columns for the stepgrid
             for (int i = 0; i < NumRows; i++)
             {
-
-                stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54, GridUnitType.Absolute) });
+                stepgrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(miniGridHeight, GridUnitType.Absolute) });
             }
             for (int i = 0; i < NumColumns; i++)
-            {
-                //tempGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(54, GridUnitType.Absolute) });
-                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(68, GridUnitType.Absolute) });
-
+            {      
+                stepgrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(miniGridWidth, GridUnitType.Absolute) });
             }
-
-            //Add grids to the tempGrid, and give each 2 columns, two rows and a BoxView
+            
+            //Add grids to the stepgrid, and give each 2 columns, two rows and a BoxView
             for (int i = 0; i < NumRows; i++)
             {
                 for (int j = 0; j < NumColumns; j++)
@@ -410,6 +404,11 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         void OnPlayStopClicked(object sender, EventArgs e)
         {
+            getMiniGridDimensions();
+            MakeStepGrid();
+            scroller.Content = stepgrid;
+           // mastergrid.Children.Add(scroller, 1, 0);
+
             if (player.IsPlaying)
             {
                 StopPlayingSong();
