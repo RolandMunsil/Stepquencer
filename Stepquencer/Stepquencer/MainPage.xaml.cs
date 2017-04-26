@@ -16,7 +16,6 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
-        bool firstupdate = true;
         const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
         const int NumColumns = 16;                   // Number of columns of Minigrids
         public const int NumInstruments = 4;               // Number of instruments on the sidebar
@@ -222,8 +221,7 @@ namespace Stepquencer
 
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
-            Content = mastergrid;
-      
+            Content = mastergrid;  
         }
 
         private void getMiniGridDimensions()//Object o, EventArgs e)
@@ -522,11 +520,6 @@ namespace Stepquencer
         /// </summary>
         void OnPlayStopClicked(object sender, EventArgs e)
         {
-            getMiniGridDimensions();
-            MakeStepGrid();
-            scroller.Content = stepgrid;
-           // mastergrid.Children.Add(scroller, 1, 0);
-
             if (player.IsPlaying)
             {
                 StopPlayingSong();
