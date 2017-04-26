@@ -224,8 +224,8 @@ namespace Stepquencer
 
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
-            Content = mastergrid;
-           
+            Content = mastergrid;    
+                 
         }
 
         private void getMiniGridDimensions()//Object o, EventArgs e)
