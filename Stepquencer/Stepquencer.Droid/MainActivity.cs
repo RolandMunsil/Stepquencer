@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace Stepquencer.Droid
 {
-    [Activity (Label = "Stepquencer", Icon = "@drawable/NewIcon 4", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
+    [Activity (Label = "Stepquencer", Icon = "@drawable/NewIcon4", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
         struct Note
