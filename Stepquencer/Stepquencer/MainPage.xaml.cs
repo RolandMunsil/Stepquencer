@@ -355,7 +355,8 @@ namespace Stepquencer
                         stepgrid.Children.Add(noteLabel, j, i);
                     }
 
-                    if (i == 0 && j % 4 == 3)
+                    //Measure labels appear every 6 rows, 4 columns
+                    if ((i == 0 | i % 7 == 6) && j % 4 == 3)
                     {
                         Label measureLabel = new Label
                         {
