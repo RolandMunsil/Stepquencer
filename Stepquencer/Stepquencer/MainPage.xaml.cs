@@ -219,9 +219,13 @@ namespace Stepquencer
             scroller.Content = stepgrid;
             mastergrid.Children.Add(scroller, 1, 0);
 
+            scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
+            scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
+
             scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
 
-            Content = mastergrid;  
+            Content = mastergrid;
+           
         }
 
         private void getMiniGridDimensions()//Object o, EventArgs e)
@@ -245,7 +249,7 @@ namespace Stepquencer
         /// <param name="e"></param>
         public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
         {
-            if (scroller.ScrollX != 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
+            if (scroller.ScrollX != (double) 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
             {
                 horizontalBarArea.Children.Remove(horizontalScrollBar);
                 horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
@@ -253,7 +257,6 @@ namespace Stepquencer
                     return (parent.Width - parent.Width * parent.Width / scrollerActualWidth) * scroller.ScrollX / (scrollerActualWidth - parent.Width); // x location to place bar, updated by pos in scroll
                 }), Constraint.RelativeToParent((parent) =>
                 {
-                    double n = (0.1 * parent.Height - 1);
                     return (0.1 * parent.Height - 1); // y location to place bar
                 }), Constraint.RelativeToParent((parent) => {
                     return parent.Width * parent.Width / scrollerActualWidth; //width of bar
@@ -263,7 +266,7 @@ namespace Stepquencer
 
             }
 
-            if (scroller.ScrollY != 0)
+            if (scroller.ScrollY != (double) 0)
             {
                 verticalBarArea.Children.Remove(verticalScrollBar);
                 verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) =>
