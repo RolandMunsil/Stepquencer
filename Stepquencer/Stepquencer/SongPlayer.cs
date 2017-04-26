@@ -77,14 +77,14 @@ namespace Stepquencer
         {
             playingNotes = new List<PlayingNote>();
 #if __IOS__
-            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  // Might need to check if little or big endian
+            streamDesc = AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false);  
 #endif
         }
 
         /// <summary>
         /// Begins playing at the specified BPM
         /// </summary>
-        public void BeginPlaying(Song song, int bpm)
+        public void BeginPlaying(Song song)
         {
             lock (startStopSyncObject) //Use lock so track is not stopped while it is being started
             {
@@ -96,7 +96,7 @@ namespace Stepquencer
 
                 playingNotes.Clear();
 
-                samplesPerBeat = ((60 * PLAYBACK_RATE) / bpm);
+                samplesPerBeat = ((60 * PLAYBACK_RATE) / song.Tempo);
                 short[] beat0 = MixBeat(song.NotesAtBeat(0));
                 short[] beat1 = MixBeat(song.NotesAtBeat(1));
 

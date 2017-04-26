@@ -12,8 +12,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)SongFileUtilities.cs" />
-	<Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Instrument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InstrumentButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
@@ -89,5 +89,8 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)firsttimesong.txt" />
   </ItemGroup>
 </Project>

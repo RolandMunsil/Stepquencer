@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Xamarin.Forms;
@@ -26,7 +27,7 @@ namespace Stepquencer
 
             // Initialize masterLayout
 
-            StackLayout masterLayout = new StackLayout { Spacing = 30};
+            StackLayout masterLayout = new StackLayout { Spacing = 30 };
 
 
             // Initialize saveLabel
@@ -64,19 +65,19 @@ namespace Stepquencer
 
             // Initialize save and cancel buttons
 
-            saveButton = new Button 
-            { 
-                Text = "SAVE", 
-                TextColor = Color.White, 
+            saveButton = new Button
+            {
+                Text = "SAVE",
+                TextColor = Color.White,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            cancelButton = new Button 
-            { 
-                Text = "CANCEL", 
-                TextColor = Color.White, 
+            cancelButton = new Button
+            {
+                Text = "CANCEL",
+                TextColor = Color.White,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -122,42 +123,29 @@ namespace Stepquencer
                         $"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}",
                          "OK");
                 }
-                else if (File.Exists(SongFileUtilities.PathToSongFile(songTitleEntry.Text)))
+                else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
                 {
-                    await DisplayAlert("Overwrite Warning", "A song file with this title already exists in Load folder", "OK");
-                    if (buttonPressed.Equals("OK"))
+                    //DisplayAlert returns boolean value
+                    var answer = await DisplayAlert("Overwrite Warning", "A song with this name already exists. Do you want to overwrite it?", "Overwrite", "Cancel");
+                    //If user presses "OK"
+                    if (answer.Equals(true))                           
                     {
+                        //Delete old song first
+                        File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
+
+                        //Add new song
+                        FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
+
+                        //Go back to main grid
                         await Navigation.PopToRootAsync();
+
                     }
                 }
                 else
                 {
-                    SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                    FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
                     await Navigation.PopToRootAsync();
                 }
-            }
-        }
-
-
-        private void SaveSongToFile(Song songToSave, String songName)
-        {
-            String filePath = SongFileUtilities.PathToSongFile(songName);
-
-            using (StreamWriter file = File.CreateText(filePath))
-            {
-                String instruments = String.Join("|", mainpage.instrumentButtons.Select(btn => btn.Instrument.name));
-                file.WriteLine($"{songToSave.BeatCount} total beats|{instruments}");
-
-                for (int i = 0; i < songToSave.BeatCount; i++)
-                {
-                    Instrument.Note[] notes = songToSave.NotesAtBeat(i);
-                    file.WriteLine($"Beat {i}|{notes.Length}");
-                    foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
-                    {
-                        file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
-                    }
-                }
-                file.WriteLine(mainpage.currentTempo);
             }
         }
     }

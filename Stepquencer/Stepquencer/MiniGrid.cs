@@ -72,7 +72,8 @@ namespace Stepquencer
         /// <summary>
         /// Adds or removes <code>sidebarColor</code> from this grid.
         /// </summary>
-        public List<Color> ToggleColor(Color sidebarColor)
+        /// <returns>true if sidebarColor was added, false if not</returns>
+        public bool ToggleColor(Color sidebarColor)
         {
             List<Color> colorList = new List<Color>();		// List to store the colors to be added to the new button
 
@@ -86,18 +87,18 @@ namespace Stepquencer
             }
 
             //Remove/add sidebarColor depending on if it's on this grid already
-            if (colorList.Contains(sidebarColor))			// If button already has the sidebar color, remove it from colorList
+            bool removeColor = colorList.Contains(sidebarColor);            
+            if (removeColor)
             {
                 colorList.Remove(sidebarColor);
             }
-            else    										// If button doesn't already have the sidebar color, add it to colorList
+            else
             {
                 colorList.Add(sidebarColor);
             }
+            SetColors(colorList);
 
-            this.SetColors(colorList);
-
-            return colorList;
+            return !removeColor;
         }
 
         /// <summary>

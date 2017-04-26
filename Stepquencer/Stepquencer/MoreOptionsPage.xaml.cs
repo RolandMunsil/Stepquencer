@@ -14,14 +14,10 @@ namespace Stepquencer
         const double MIN_BPM = 100;          // Minimum BPM user can change to
         const double MAX_BPM = 480;          // Maximum BPM user can go to
 
-
         private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
         private MainPage mainpage;                          // The MainPage this screen came from
         private Button undoClearButton;
-
-        public static Song clearedSong;
-
 
         public MoreOptionsPage(MainPage passedpage)
         {
@@ -69,7 +65,7 @@ namespace Stepquencer
 
             bpmLabel = new Label
             {
-                Text = mainpage.currentTempo + "  " + "BPM",
+                Text = mainpage.song.Tempo + " BPM",
                 TextColor = Color.White,
                 FontSize = 20,
                 HorizontalTextAlignment = TextAlignment.End,        //*
@@ -80,7 +76,7 @@ namespace Stepquencer
 
             // Initialize tempo slider
 
-            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.currentTempo);  //*
+            tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.song.Tempo);  //*
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;        //* Spacing/Alignment options
             tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;          //*
             tempoSlider.Margin = 7;                                             //*
@@ -122,7 +118,7 @@ namespace Stepquencer
                 BackgroundColor = Color.Blue
             };
 
-            if (clearedSong == null)
+            if (mainpage.clearedSong == null)
             {
                 undoClearButton.TextColor = Color.Gray;
             }
@@ -157,68 +153,50 @@ namespace Stepquencer
 
         }
 
-
         /// <summary>
         /// Changes the BPM visualization when slider changes
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-
-            int newTempo = (int)e.NewValue;          // Cast new BPM value to an int
-            bpmLabel.Text = newTempo + "  " + "BPM"; // Change the label to reflect the new BPM
-            mainpage.currentTempo = newTempo;        // Update the value stored by the mainpage
-
+            int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
+            tempoSlider.Value = newTempo;
+            bpmLabel.Text = newTempo + " BPM"; // Change the label to reflect the new BPM
+            mainpage.song.Tempo = newTempo;        // Update the value stored by the mainpage
         }
-
 
         /// <summary>
         /// Event listener for save button
-        /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
+        /// </summary
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SavePage(mainpage));   // Send to SavePage
         }
 
-
         /// <summary>
         /// Event listener for the load button
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         async void OnLoadButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new LoadPage(mainpage));   // Send to LoadPage
         }
 
-
         /// <summary>
         /// Clears the stepgrid and audio data when ClearAllButton is clicked
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
-            clearedSong = mainpage.song;
             undoClearButton.TextColor = Color.White;
             mainpage.ClearStepGridAndSong();
         }
 
-
         /// <summary>
         /// Event listener for undo clear button
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         private void OnUndoClearClicked(object sender, EventArgs e)
         {
-            if (clearedSong != null)
+            if (mainpage.clearedSong != null)
             {
-                mainpage.SetSong(clearedSong);
-                clearedSong = null;
+                mainpage.UndoClear();
                 undoClearButton.TextColor = Color.Gray;
             }
         }
