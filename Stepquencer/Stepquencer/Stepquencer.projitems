@@ -14,52 +14,51 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)FileUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Instrument.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)InstrumentButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)MiniGrid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Song.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SongPlayer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MoreOptionsPage.xaml.cs">
-      <DependentUpon>MoreOptionsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)SavePage.xaml.cs">
-      <DependentUpon>SavePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)LoadPage.xaml.cs">
-      <DependentUpon>LoadPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)SongUIElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\ChangeInstrumentsPage.xaml.cs">
       <DependentUpon>ChangeInstrumentsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\LoadPage.xaml.cs">
+      <DependentUpon>LoadPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\MoreOptionsPage.xaml.cs">
+      <DependentUpon>MoreOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\SavePage.xaml.cs">
+      <DependentUpon>SavePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UIElements\InstrumentButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIElements\MiniGrid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UIElements\LoadUIElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Instrument.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\Song.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\SongPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)MoreOptionsPage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\ChangeInstrumentsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)SavePage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\LoadPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)LoadPage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)ChangeInstrumentsPage.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\MoreOptionsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\SavePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
@@ -92,5 +91,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)firsttimesong.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Pages\" />
+    <Folder Include="$(MSBuildThisFileDirectory)UIElements\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Audio\" />
   </ItemGroup>
 </Project>
