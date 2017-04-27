@@ -40,7 +40,7 @@ namespace Stepquencer
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
-        int miniGridWidth = 54;                              // width of each minigrid
+        int miniGridWidth = 68;                              // width of each minigrid
         int miniGridHeight = 54;                             // height of each minigrid
         const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
         double scrollerWidthShown;                      // width of the area of the scroller/stepgrid that is displayed on screen
