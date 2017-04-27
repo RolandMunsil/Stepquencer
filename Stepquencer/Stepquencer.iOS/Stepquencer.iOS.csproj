@@ -125,7 +125,10 @@
     <BundleResource Include="Resources\Choir.png" />
     <BundleResource Include="Resources\Conga.png" />
     <BundleResource Include="Resources\SteelDrum.png" />
+<<<<<<< HEAD
     <BundleResource Include="Resources\LaunchScreen.storyboard" />
+=======
+>>>>>>> origin/master
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

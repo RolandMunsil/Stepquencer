@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -82,10 +82,10 @@ namespace Stepquencer
             {
                 foreach (String name in songNames)
                 {
-                    SongUIElement songUI = new SongUIElement(name);     // Make a new instance of the UI element
+                    LoadUIElement songUI = new LoadUIElement(name);     // Make a new instance of the UI element
 
                     songUI.Tap += OnSongTap;
-                    songUI.DeleteClicked += delegate(SongUIElement elem)          
+                    songUI.DeleteClicked += delegate(LoadUIElement elem)          
                     {
                         File.Delete(elem.filePath);             // Delete song file
                         masterLayout.Children.Remove(elem);     // Refresh the page
@@ -114,7 +114,7 @@ namespace Stepquencer
         /// Event handler for a SongUIElement being tapped
         /// </summary>
         /// <param name="songUI">Song user interface.</param>
-        void OnSongTap(SongUIElement uiElement)
+        void OnSongTap(LoadUIElement uiElement)
         {
             mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
             //Don't let users undo clear after loading a song

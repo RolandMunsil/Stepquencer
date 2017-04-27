@@ -7,14 +7,14 @@ namespace Stepquencer
     /// <summary>
     /// Encapsulation of a single song that a user can load or delete
     /// </summary>
-    public class SongUIElement : StackLayout
+    public class LoadUIElement : StackLayout
     {
         public readonly String filePath;                // Path to the song file this UI element references
 
-        public event Action<SongUIElement> DeleteClicked;   // Allows other classes to decide what happens
-        public event Action<SongUIElement> Tap;             // when either this is tapped or delete button is tapped
+        public event Action<LoadUIElement> DeleteClicked;   // Allows other classes to decide what happens
+        public event Action<LoadUIElement> Tap;             // when either this is tapped or delete button is tapped
 
-        public SongUIElement(String filePath) : base()
+        public LoadUIElement(String filePath) : base()
         {
             this.filePath = filePath;
 

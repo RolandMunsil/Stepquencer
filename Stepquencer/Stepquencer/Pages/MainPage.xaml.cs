@@ -17,6 +17,7 @@ namespace Stepquencer
     public partial class MainPage : ContentPage
     {
         const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
+        const int RowWithSemitoneShiftOfZero = 12;
         const int NumColumns = 16;                   // Number of columns of Minigrids
         public const int NumInstruments = 4;               // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
@@ -39,7 +40,7 @@ namespace Stepquencer
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
-        int miniGridWidth = 54;                              // width of each minigrid
+        int miniGridWidth = 68;                              // width of each minigrid
         int miniGridHeight = 54;                             // height of each minigrid
         const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
         double scrollerWidthShown;                      // width of the area of the scroller/stepgrid that is displayed on screen
@@ -334,7 +335,7 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-                    int semitoneShift = (NumRows - 1) - i;
+                    int semitoneShift = RowWithSemitoneShiftOfZero - i;
                     MiniGrid miniGrid = new MiniGrid(semitoneShift);
                     miniGrid.Tap += OnMiniGridTapped;
                     stepgrid.Children.Add(miniGrid, j, i);
