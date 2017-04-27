@@ -102,19 +102,10 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
-    <ITunesArtwork Include="iTunesArtwork@2x" />
     <None Include="packages.config" />
+    <ITunesArtwork Include="iTunesArtwork%402x" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Resources\Default-Portrait.png" />
-    <BundleResource Include="Resources\Default-Portrait%402x.png" />
-    <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default%402x.png" />
-    <BundleResource Include="Resources\Icon-60%403x.png" />
-    <BundleResource Include="Resources\Icon-Small-40%403x.png" />
-    <BundleResource Include="Resources\Icon-Small%403x.png" />
-    <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
     <BundleResource Include="Resources\settings.png" />
     <BundleResource Include="Resources\play.png" />
     <BundleResource Include="Resources\stop.png" />
@@ -134,7 +125,7 @@
     <BundleResource Include="Resources\Choir.png" />
     <BundleResource Include="Resources\Conga.png" />
     <BundleResource Include="Resources\SteelDrum.png" />
-    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <BundleResource Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -161,13 +152,20 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-60%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-Small.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-Small%402x.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 2.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 3.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 4.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 5.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green58.png" />
+    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Image.imageset\sidewaysmusicnotes.png" />
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\jkjkjk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets.xcassets\Best launch image.launchimage\" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

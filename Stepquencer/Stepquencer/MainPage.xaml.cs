@@ -356,7 +356,7 @@ namespace Stepquencer
                     }
 
                     //Measure labels appear every 6 rows, 4 columns
-                    if ((i == 0 | i % 7 == 6) && j % 4 == 3)
+                    if ((i % 7 == 6) && (j % 4 == 3)) //See if this works
                     {
                         Label measureLabel = new Label
                         {
