@@ -16,7 +16,7 @@ namespace Stepquencer
         private MainPage mainpage;                        // Reference to the mainPage instance in order to access currently selected instruments
         private HashSet<Instrument> selectedInstruments;  // Holds all currently selected instruments  
         private StackLayout instrumentSlotLayout;         //* Layout for various UI elements  
-        private Grid allInstruments;                      //* 
+        private Grid allInstruments;                      // Displays all instrument icons in a grid 
         private InstrumentButton selectedSlot;            // Currently selected instrument  
 
         public ChangeInstrumentsPage(MainPage mainpage)
