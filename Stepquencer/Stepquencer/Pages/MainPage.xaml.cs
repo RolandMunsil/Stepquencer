@@ -48,7 +48,9 @@ namespace Stepquencer
         double scrollerActualWidth;
         double scrollerActualHeight;
 
-        BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
+        //We need to use multiple highlights because on android they can't be more than a certain height
+        int highlight2StartRow = 13;
+        BoxView[] highlights;                              // Transparent View objects that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
 
         public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
@@ -138,8 +140,11 @@ namespace Stepquencer
 
 
             // Initialize the highlight box
-            highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
-            highlight.InputTransparent = true;
+            highlights = new BoxView[2];
+            for (int i = 0; i < 2; i++)
+            {
+                highlights[i] = new BoxView() { Color = Color.White, Opacity = brightnessIncrease, InputTransparent = true };
+            }
             player.BeatStarted += HighlightColumns;         // Add an event listener to keep highlight in time with beat
 
 
@@ -493,8 +498,10 @@ namespace Stepquencer
         /// </summary>
         private void StartPlayingSong()
         {
-            stepgrid.Children.Add(highlight, 0, 0);
-            Grid.SetRowSpan(highlight, NumRows);
+            stepgrid.Children.Add(highlights[0], 0, 0);
+            Grid.SetRowSpan(highlights[0], highlight2StartRow);
+            stepgrid.Children.Add(highlights[1], 0, highlight2StartRow);
+            Grid.SetRowSpan(highlights[1], NumRows - highlight2StartRow);
             player.BeginPlaying(song);
             playStopButton.Image = "stop.png";
         }
@@ -509,7 +516,10 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 playStopButton.Image = "play.png";
-                stepgrid.Children.Remove(highlight);
+                foreach (BoxView highlight in highlights)
+                {
+                    stepgrid.Children.Remove(highlight);
+                }
             }
         }
 
@@ -555,7 +565,10 @@ namespace Stepquencer
         {
             Device.BeginInvokeOnMainThread(delegate ()
             {
-                Grid.SetColumn(highlight, currentBeat);
+                for (int i = 0; i < highlights.Length; i++)
+                {
+                    Grid.SetColumn(highlights[i], currentBeat);
+                }
             });
         }
 
