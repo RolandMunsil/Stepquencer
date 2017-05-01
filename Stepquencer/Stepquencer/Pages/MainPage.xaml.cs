@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Timers;
 using Xamarin.Forms;
-using System.Threading;
 
 
 namespace Stepquencer
@@ -42,8 +39,7 @@ namespace Stepquencer
         int miniGridWidth = 54;                              // width of each minigrid
         int miniGridHeight = 54;                             // height of each minigrid
         const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
-        double scrollerWidthShown;                      // width of the area of the scroller/stepgrid that is displayed on screen
-        double scrollerHeightShown;                     // height of the area of the scroller/stepgrid that is displayed on screen
+
         double scrollerActualWidth;
         double scrollerActualHeight;
 
@@ -169,37 +165,30 @@ namespace Stepquencer
                 HeightRequest = 1,
             };
 
+            //This calculates the pixel values for the width and height of the whole scroller (including offscreen)
+            scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;    
+            scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
+
+            // Initialize scrollview and put stepgrid inside it
+            scroller = new ScrollView
+            {
+                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
+            };
+            scroller.Content = stepgrid;
+
+            mastergrid.Children.Add(scroller, 1, 0);
+            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
+
             verticalBarArea = new RelativeLayout();
             mastergrid.Children.Add(verticalBarArea, 0, 0);
 
             horizontalBarArea = new RelativeLayout();
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
-            verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) => {
-                return (parent.Width * 0.1);
-            }), Constraint.RelativeToParent((parent) => {
-                return (0);
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Width * 0.8;
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Height * parent.Height / scrollerActualHeight;
-            }));
+            drawScrollBar(horizontalScrollBar);
+            drawScrollBar(verticalScrollBar);
 
-
-            horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) => {
-                return (0);
-            }), Constraint.RelativeToParent((parent) => {
-                return (parent.Height * 0.1);
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Width * parent.Width / scrollerActualWidth;
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Height * 0.8;
-            }));
-
-
-            
-
-            //Add the Relative layouts that will hold the sidebars to the mastergrid
+            //Add the Relative layouts that will hold the sidebars to their proper positions in mastergrid
             mastergrid.Children.Add(verticalBarArea, 0, 0); 
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
@@ -210,41 +199,13 @@ namespace Stepquencer
             mastergrid.Children.Add(sidebar, 2, 0);  // Add sidebar to final column of mastergrid
             Grid.SetRowSpan(sidebar, 2);  //make sidebar take up both rows in rightmost column
 
-            // Initialize scrollview and put stepgrid inside it
-            scroller = new ScrollView
-            {
-                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
-            };
-            
-
-            scroller.Content = stepgrid;
-            mastergrid.Children.Add(scroller, 1, 0);
-
-            scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
-            scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
-
-            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
-
             Content = mastergrid;
            
         }
 
-        private void getMiniGridDimensions()//Object o, EventArgs e)
-        {
-            scrollerHeightShown = mastergrid.Height - horizontalBarArea.Height;
-            miniGridHeight = (int)(scrollerHeightShown + stepGridSpacing) / 6 - stepGridSpacing;
-            scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
-
-            scrollerWidthShown = mastergrid.Width - verticalBarArea.Width - sidebar.Width;
-            miniGridWidth = (int)(scrollerWidthShown + stepGridSpacing) / 8 - stepGridSpacing;  // stores a value for minigrid width that will give 8 columns of minigrids
-            scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
-
-        }
-
-
         
         /// <summary>
-        /// This method redraws the scrollbars at a location that properly represents the location in the scrollview
+        /// This method redraws the scrollbars when the scroller.Scrolled event is raised
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
@@ -252,8 +213,42 @@ namespace Stepquencer
         {
             if (scroller.ScrollX != (double) 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
             {
-                horizontalBarArea.Children.Remove(horizontalScrollBar);
-                horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
+                drawScrollBar(horizontalScrollBar);
+            }
+
+            if (scroller.ScrollY != (double) 0)
+            {
+                drawScrollBar(verticalScrollBar);
+            }
+
+        }
+
+        /// <summary>
+        /// Determines the location to draw the scrollbars on the screen and draws them
+        /// </summary>
+        /// <param name="scrollBar"></param>
+        /// <param name="isVertical"></param>
+        private void drawScrollBar(BoxView scrollBar)
+        {
+            if (scrollBar == verticalScrollBar)
+            {
+                verticalBarArea.Children.Remove(scrollBar);
+                verticalBarArea.Children.Add(scrollBar, Constraint.RelativeToParent((parent) =>
+                {
+                    return 0.1 * parent.Width + 1; // x location to place bar
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    return (parent.Height - parent.Height * parent.Height / scrollerActualHeight) * scroller.ScrollY / (scrollerActualHeight - parent.Height); // y location to place bar, updated by pos in scroll
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Width * 0.8;      //width of barrelative to the scroll bar area
+                }), Constraint.RelativeToParent((parent) => {
+                    return parent.Height * parent.Height / scrollerActualHeight; //height of bar
+                }));
+            }
+            else 
+            {
+                horizontalBarArea.Children.Remove(scrollBar);
+                horizontalBarArea.Children.Add(scrollBar, Constraint.RelativeToParent((parent) =>
                 {
                     return (parent.Width - parent.Width * parent.Width / scrollerActualWidth) * scroller.ScrollX / (scrollerActualWidth - parent.Width); // x location to place bar, updated by pos in scroll
                 }), Constraint.RelativeToParent((parent) =>
@@ -262,27 +257,9 @@ namespace Stepquencer
                 }), Constraint.RelativeToParent((parent) => {
                     return parent.Width * parent.Width / scrollerActualWidth; //width of bar
                 }), Constraint.RelativeToParent((parent) => {
-                    return parent.Height * 0.8; //height of bar
-                }));
-
-            }
-
-            if (scroller.ScrollY != (double) 0)
-            {
-                verticalBarArea.Children.Remove(verticalScrollBar);
-                verticalBarArea.Children.Add(verticalScrollBar, Constraint.RelativeToParent((parent) =>
-                {
-                    return 0.1 * parent.Width + 1; // x location to place bar
-                }), Constraint.RelativeToParent((parent) =>
-                {
-                    return (parent.Height - parent.Height * parent.Height / scrollerActualHeight) * scroller.ScrollY / (scrollerActualHeight - parent.Height); // y location to place bar, updated by pos in scroll
-                }), Constraint.RelativeToParent((parent) => {
-                    return parent.Width * 0.8;      //width of bar
-                }), Constraint.RelativeToParent((parent) => {
-                    return parent.Height * parent.Height / scrollerActualHeight; //height of bar
+                    return parent.Height * 0.8; //height of bar relative to height
                 }));
             }
-
         }
 
 
