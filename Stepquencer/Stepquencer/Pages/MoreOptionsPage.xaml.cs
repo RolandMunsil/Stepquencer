@@ -113,10 +113,16 @@ namespace Stepquencer
             undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                            // Undos a recent clear
             Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
             {
-                Text = "SWAP INSTRUMENTS",
                 Style = buttonStyle,
                 BackgroundColor = Color.Blue
             };
+
+#if __IOS__
+            changeInstrumentsButton.Image = "swapinstr.png";        // Accounts for smaller iPhone screens
+#endif
+#if __ANDROID__
+            changeinstrumentsButton.Text = "SWAP INSTRUMENTS";
+#endif
 
             if (mainpage.clearedSong == null)
             {
