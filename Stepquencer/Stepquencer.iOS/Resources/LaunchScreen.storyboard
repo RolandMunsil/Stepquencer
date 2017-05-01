@@ -1,39 +1,72 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="X5k-f2-b5h">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
-        <scene sceneID="gAE-YM-kbH">
+        <scene sceneID="EHf-IW-A2E">
             <objects>
-                <viewController id="X5k-f2-b5h" sceneMemberID="viewController">
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Y8P-hJ-Z43"/>
-                        <viewControllerLayoutGuide type="bottom" id="9ZL-r4-8FZ"/>
+                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
+                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="yd7-JS-zBw">
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" colorSpace="calibratedRGB" red="0.54117647058823526" green="0.42352941176470588" blue="0.7803921568627451" alpha="1"/>
+                        <accessibility key="accessibilityConfiguration" label="Stepquencer">
+                            <accessibilityTraits key="traits" image="YES"/>
+                        </accessibility>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" image="Icon-60.png" translatesAutoresizingMaskIntoConstraints="NO" id="23">
-                                <rect key="frame" x="270" y="270" width="60" height="60"/>
-                                <rect key="contentStretch" x="0.0" y="0.0" width="0.0" height="0.0"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="35" translatesAutoresizingMaskIntoConstraints="NO" image="Image" misplaced="YES">
+                                <rect key="frame" x="187" y="169" width="226" height="153"/>
+                                <accessibility key="accessibilityConfiguration" label="Stepquencer"/>
                             </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Stepquencer" borderStyle="roundedRect" minimumFontSize="17" id="38" translatesAutoresizingMaskIntoConstraints="NO" placeholder="Stepquencer" misplaced="YES" textAlignment="center">
+                                <rect key="frame" x="142" y="432" width="315" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="33"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <color key="backgroundColor" colorSpace="calibratedRGB" red="0.54117647058823526" green="0.42352941176470588" blue="0.7803921568627451" alpha="1"/>
+                            </textField>
                         </subviews>
-                        <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="23" firstAttribute="centerY" secondItem="yd7-JS-zBw" secondAttribute="centerY" priority="1" id="39"/>
-                            <constraint firstItem="23" firstAttribute="centerX" secondItem="yd7-JS-zBw" secondAttribute="centerX" priority="1" id="41"/>
+                            <constraint id="36" firstItem="35" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width"/>
+                            <constraint id="39" firstItem="38" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width"/>
                         </constraints>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XAI-xm-WK6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="349" y="339"/>
+            <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
     <resources>
-        <image name="Icon-60.png" width="180" height="180"/>
+        <image name="Icon-60.png" width="60" height="60"/>
+        <image name="Icon-Small-40.png" width="40" height="40"/>
+        <image name="Icon-Small.png" width="29" height="29"/>
+        <image name="settings.png" width="45" height="45"/>
+        <image name="play.png" width="45" height="45"/>
+        <image name="stop.png" width="45" height="45"/>
+        <image name="Snare.png" width="45" height="45"/>
+        <image name="Piano.png" width="45" height="45"/>
+        <image name="SlapBassLow.png" width="45" height="45"/>
+        <image name="Clap.png" width="45" height="45"/>
+        <image name="CrashCymbal.png" width="45" height="45"/>
+        <image name="RecordScratch.png" width="45" height="45"/>
+        <image name="YRM1xAtmosphere.png" width="45" height="45"/>
+        <image name="SoftBrass.png" width="45" height="45"/>
+        <image name="Organ.png" width="45" height="45"/>
+        <image name="SlapBassHigh.png" width="45" height="45"/>
+        <image name="BassDrum.png" width="45" height="45"/>
+        <image name="Cabasa.png" width="45" height="45"/>
+        <image name="HiHat.png" width="45" height="45"/>
+        <image name="Choir.png" width="45" height="45"/>
+        <image name="Conga.png" width="45" height="45"/>
+        <image name="SteelDrum.png" width="45" height="45"/>
+        <image name="sidewaysmusicnotes.png" width="64" height="64"/>
+        <image name="Image" width="64" height="64"/>
     </resources>
 </document>

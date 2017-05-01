@@ -9,18 +9,21 @@ namespace Stepquencer
     /// <summary>
     /// A grid that holds 4 boxviews, which can represent up to 4 instruments at a single pitch and time. 
     /// </summary>
-
     class MiniGrid : Grid
     {
-        private readonly static Color Grey = Color.FromHex("#606060");
+        //The color of the grid when it has no notes
+        private readonly static Color NoNotesColor = Color.FromHex("#606060");
 
+        //The BoxViews for each of the four possible notes on the grid
         private BoxView topLeft;
         private BoxView topRight;
         private BoxView bottomLeft;
         private BoxView bottomRight;
 
+        //The semitone shift of notes on this button
         public int semitoneShift;
 
+        //The event that is triggered when this grid is tapped on.
         public delegate void TapDelegate(MiniGrid tappedGrid);
         public event TapDelegate Tap;
 
@@ -32,17 +35,17 @@ namespace Stepquencer
             this.ColumnSpacing = 0;
             this.RowSpacing = 0;
             this.BackgroundColor = Color.Black;
-
+            //Using GridUnitType.Star means the squares will split the grid in half horizontally and vertically
             this.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             this.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Add in column definitions
             this.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             this.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });  // Add in row definitions
 
             // Add in boxviews
-            topLeft = new BoxView { BackgroundColor = Grey };
-            topRight = new BoxView { BackgroundColor = Grey, };
-            bottomLeft = new BoxView { BackgroundColor = Grey, };
-            bottomRight = new BoxView { BackgroundColor = Grey, };
+            topLeft = new BoxView { BackgroundColor = NoNotesColor };
+            topRight = new BoxView { BackgroundColor = NoNotesColor, };
+            bottomLeft = new BoxView { BackgroundColor = NoNotesColor, };
+            bottomRight = new BoxView { BackgroundColor = NoNotesColor, };
 
             this.Children.Add(topLeft, 0, 0);
             this.Children.Add(topRight, 1, 0);
@@ -53,7 +56,6 @@ namespace Stepquencer
             Grid.SetColumnSpan(topLeft, 2);
             Grid.SetRowSpan(topLeft, 2);
 
-
             // Give the grid a tapGesture recognizer
             TapGestureRecognizer tgr = new TapGestureRecognizer()
             {
@@ -62,6 +64,7 @@ namespace Stepquencer
                     Tap.Invoke(this);
                 })
             };
+            //Add recognizer to the grid itself and each of the boxes
             this.GestureRecognizers.Add(tgr);
             topLeft.GestureRecognizers.Add(tgr);
             topRight.GestureRecognizers.Add(tgr);
@@ -80,7 +83,7 @@ namespace Stepquencer
             //Figure out what colors are already on this grid
             foreach (BoxView box in this.Children)
             {
-                if (box.BackgroundColor != Grey)
+                if (box.BackgroundColor != NoNotesColor)
                 {
                     colorList.Add(box.BackgroundColor);	// Add the box's color to the array       
                 }
@@ -96,6 +99,7 @@ namespace Stepquencer
             {
                 colorList.Add(sidebarColor);
             }
+            //Update color layout
             SetColors(colorList);
 
             return !removeColor;
@@ -104,15 +108,14 @@ namespace Stepquencer
         /// <summary>
         /// Sets this grid's display to show the colors in <code>colors</code>
         /// </summary>
-        /// <param name="colors"></param>
         public void SetColors(List<Color> colors)
         {
             //Reset all of the boxes
             foreach (BoxView box in this.Children)
             {
-                if (box.BackgroundColor != Grey)
+                if (box.BackgroundColor != NoNotesColor)
                 {
-                    box.BackgroundColor = Grey;             // Default the box's color to grey   
+                    box.BackgroundColor = NoNotesColor;             // Default the box's color to grey   
                     Grid.SetRowSpan(box, 1);                // Default the box to span one row
                     Grid.SetColumnSpan(box, 1);             // Default the box to span one column               
                 }
@@ -120,7 +123,7 @@ namespace Stepquencer
                 box.IsVisible = false;
             }
 
-            //Sort colors so the same set of colors always looks the same
+            //Sort colors so the same set of colors is always displayed the same
             colors.Sort((c1, c2) => Math.Sign(c1.Hue - c2.Hue));
 
             if (colors.Count == 0)		// If the box is reverting to grey

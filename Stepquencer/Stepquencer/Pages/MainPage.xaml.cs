@@ -13,10 +13,11 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
-        const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
-        const int NumColumns = 16;                   // Number of columns of Minigrids
-        public const int NumInstruments = 4;               // Number of instruments on the sidebar
-        const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
+        const int NumRows = 25;                         // Number of rows of MiniGrids that users can tap and add sounds to
+        const int RowWithSemitoneShiftOfZero = 12;
+        const int NumColumns = 16;                      // Number of columns of Minigrids
+        public const int NumInstruments = 4;            // Number of instruments on the sidebar
+        const double brightnessIncrease = 0.25;		    // Amount to increase the red, green, and blue values of each button when it's highlighted
 
         public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
         RelativeLayout verticalBarArea;                 // Area on the left sie of the screen for the vertical scroll bar
@@ -24,26 +25,27 @@ namespace Stepquencer
         BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
         BoxView horizontalScrollBar;                    // Scroll bar to show position on horizontal scroll
 
-
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
-        public Song clearedSong;
+        public Song clearedSong;                        // Song object that is cleared when user presses "CLEAR ALL" 
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
-        public InstrumentButton selectedInstrButton;           // Currently selected sidebar button
+        public InstrumentButton selectedInstrButton;    // Currently selected sidebar button
 
         public Grid mastergrid;                         // Grid for whole screen
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
-        int miniGridWidth = 54;                              // width of each minigrid
-        int miniGridHeight = 54;                             // height of each minigrid
-        const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
+        int miniGridWidth = 68;                         // width of each minigrid
+        int miniGridHeight = 54;                        // height of each minigrid
+        const int stepGridSpacing = 4;                  // spacing between each minigrid on the stepgrid
 
         double scrollerActualWidth;
         double scrollerActualHeight;
 
-        BoxView highlight;                              // A transparent View object that takes up a whole column, moves to indicate beat
+        //We need to use multiple highlights because on android they can't be more than a certain height
+        int highlight2StartRow = 13;
+        BoxView[] highlights;                              // Transparent View objects that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
 
         public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
@@ -133,10 +135,12 @@ namespace Stepquencer
 
 
             // Initialize the highlight box
-            highlight = new BoxView() { Color = Color.White, Opacity = brightnessIncrease };
-            highlight.InputTransparent = true;
+            highlights = new BoxView[2];
+            for (int i = 0; i < 2; i++)
+            {
+                highlights[i] = new BoxView() { Color = Color.White, Opacity = brightnessIncrease, InputTransparent = true };
+            }
             player.BeatStarted += HighlightColumns;         // Add an event listener to keep highlight in time with beat
-
 
 
             //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
@@ -148,7 +152,7 @@ namespace Stepquencer
             mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(14, GridUnitType.Absolute) });  // spot for side scrollbar
 
 
-            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            // Make vertical scrollbar, size doesn't matter because constraints are used to size it later
             verticalScrollBar = new BoxView
             {
                 BackgroundColor = Color.FromHex("D3D3D3"),
@@ -157,7 +161,7 @@ namespace Stepquencer
             };
 
 
-            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            // Make vertical scrollbar, size doesn't matter because constraints are used to size it later
             horizontalScrollBar = new BoxView
             {
                 BackgroundColor = Color.FromHex("D3D3D3"),
@@ -311,7 +315,7 @@ namespace Stepquencer
             {
                 for (int j = 0; j < NumColumns; j++)
                 {
-                    int semitoneShift = (NumRows - 1) - i;
+                    int semitoneShift = RowWithSemitoneShiftOfZero - i;
                     MiniGrid miniGrid = new MiniGrid(semitoneShift);
                     miniGrid.Tap += OnMiniGridTapped;
                     stepgrid.Children.Add(miniGrid, j, i);
@@ -333,7 +337,7 @@ namespace Stepquencer
                     }
 
                     //Measure labels appear every 6 rows, 4 columns
-                    if ((i == 0 | i % 7 == 6) && j % 4 == 3)
+                    if ((i % 6 == 0) && (j % 4 == 3)) //See if this works
                     {
                         Label measureLabel = new Label
                         {
@@ -350,6 +354,7 @@ namespace Stepquencer
                 }
             }
         }
+
 
         /// <summary>
         /// Clears all colors/sounds from mastergrid. 
@@ -469,8 +474,10 @@ namespace Stepquencer
         /// </summary>
         private void StartPlayingSong()
         {
-            stepgrid.Children.Add(highlight, 0, 0);
-            Grid.SetRowSpan(highlight, NumRows);
+            stepgrid.Children.Add(highlights[0], 0, 0);
+            Grid.SetRowSpan(highlights[0], highlight2StartRow);
+            stepgrid.Children.Add(highlights[1], 0, highlight2StartRow);
+            Grid.SetRowSpan(highlights[1], NumRows - highlight2StartRow);
             player.BeginPlaying(song);
             playStopButton.Image = "stop.png";
         }
@@ -485,7 +492,10 @@ namespace Stepquencer
             {
                 player.StopPlaying();
                 playStopButton.Image = "play.png";
-                stepgrid.Children.Remove(highlight);
+                foreach (BoxView highlight in highlights)
+                {
+                    stepgrid.Children.Remove(highlight);
+                }
             }
         }
 
@@ -531,7 +541,10 @@ namespace Stepquencer
         {
             Device.BeginInvokeOnMainThread(delegate ()
             {
-                Grid.SetColumn(highlight, currentBeat);
+                for (int i = 0; i < highlights.Length; i++)
+                {
+                    Grid.SetColumn(highlights[i], currentBeat);
+                }
             });
         }
 

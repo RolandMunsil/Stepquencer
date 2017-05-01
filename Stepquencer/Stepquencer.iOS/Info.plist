@@ -27,11 +27,11 @@
 	<string>com.bpfm.Stepquencer</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen.storyboard</string>
 	<key>CFBundleName</key>
 	<string>Stepquencer</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>XSLaunchImageAssets</key>
+	<string>Assets.xcassets/Best launch image.launchimage</string>
 </dict>
 </plist>
