@@ -121,7 +121,7 @@ namespace Stepquencer
             changeInstrumentsButton.Image = "swapinstr.png";        // Accounts for smaller iPhone screens
 #endif
 #if __ANDROID__
-            changeinstrumentsButton.Text = "SWAP INSTRUMENTS";
+            changeInstrumentsButton.Text = "SWAP INSTRUMENTS";
 #endif
 
             if (mainpage.clearedSong == null)
