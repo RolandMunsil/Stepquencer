@@ -16,11 +16,11 @@ namespace Stepquencer
 
     public partial class MainPage : ContentPage
     {
-        const int NumRows = 25;                     // Number of rows of MiniGrids that users can tap and add sounds to
+        const int NumRows = 25;                         // Number of rows of MiniGrids that users can tap and add sounds to
         const int RowWithSemitoneShiftOfZero = 12;
-        const int NumColumns = 16;                   // Number of columns of Minigrids
-        public const int NumInstruments = 4;               // Number of instruments on the sidebar
-        const double brightnessIncrease = 0.25;		// Amount to increase the red, green, and blue values of each button when it's highlighted
+        const int NumColumns = 16;                      // Number of columns of Minigrids
+        public const int NumInstruments = 4;            // Number of instruments on the sidebar
+        const double brightnessIncrease = 0.25;		    // Amount to increase the red, green, and blue values of each button when it's highlighted
 
         public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
         RelativeLayout verticalBarArea;                 // Area on the left sie of the screen for the vertical scroll bar
@@ -28,21 +28,20 @@ namespace Stepquencer
         BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
         BoxView horizontalScrollBar;                    // Scroll bar to show position on horizontal scroll
 
-
         SongPlayer player;                              // Plays the notes loaded into the current Song object
         public Song song;                               // Array of HashSets of Songplayer notes that holds the current song
-        public Song clearedSong;
+        public Song clearedSong;                        // Song object that is cleared when user presses "CLEAR ALL" 
 
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
-        public InstrumentButton selectedInstrButton;           // Currently selected sidebar button
+        public InstrumentButton selectedInstrButton;    // Currently selected sidebar button
 
         public Grid mastergrid;                         // Grid for whole screen
         public Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
-        int miniGridWidth = 68;                              // width of each minigrid
-        int miniGridHeight = 54;                             // height of each minigrid
-        const int stepGridSpacing = 4;                            // spacing between each minigrid on the stepgrid
+        int miniGridWidth = 68;                         // width of each minigrid
+        int miniGridHeight = 54;                        // height of each minigrid
+        const int stepGridSpacing = 4;                  // spacing between each minigrid on the stepgrid
         double scrollerWidthShown;                      // width of the area of the scroller/stepgrid that is displayed on screen
         double scrollerHeightShown;                     // height of the area of the scroller/stepgrid that is displayed on screen
         double scrollerActualWidth;
@@ -143,7 +142,6 @@ namespace Stepquencer
             player.BeatStarted += HighlightColumns;         // Add an event listener to keep highlight in time with beat
 
 
-
             //Set up a master grid with 3 columns and 2 rows to eventually place stepgrid, sidebar, and scrollbars in.
             mastergrid = new Grid { ColumnSpacing = 2, RowSpacing = 2 };
             mastergrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14, GridUnitType.Absolute) });  //spot for up-down scrollbar
@@ -153,7 +151,7 @@ namespace Stepquencer
             mastergrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(14, GridUnitType.Absolute) });  // spot for side scrollbar
 
 
-            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            // Make vertical scrollbar, size doesn't matter because constraints are used to size it later
             verticalScrollBar = new BoxView
             {
                 BackgroundColor = Color.FromHex("D3D3D3"),
@@ -162,7 +160,7 @@ namespace Stepquencer
             };
 
 
-            //make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            // Make vertical scrollbar, size doesn't matter because constraints are used to size it later
             horizontalScrollBar = new BoxView
             {
                 BackgroundColor = Color.FromHex("D3D3D3"),
@@ -374,6 +372,7 @@ namespace Stepquencer
                 }
             }
         }
+
 
         /// <summary>
         /// Clears all colors/sounds from mastergrid. 
