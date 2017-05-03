@@ -41,19 +41,21 @@ namespace Stepquencer
         /// </summary>
         public void LoadSongUIElements()
         {
-            String[] songNames = Directory.GetFiles(FileUtilities.PathToSongDirectory);           // Get all the remaining files
+            // Get all the remaining files
+            String[] songNames = Directory.GetFiles(FileUtilities.PathToSongDirectory); 
 
-            if (songNames.Length == 0)      // If there are no saved songs, 
+            if (songNames.Length == 0)                                  // If there are no saved songs
             {
                 Label noSongsLabel = new Label
                 {
                     Text = "No saved songs",
                     FontSize = 40,
                     TextColor = Color.White,
-                    HorizontalTextAlignment = TextAlignment.Center,     //*
-                    VerticalTextAlignment = TextAlignment.Center,       //* Ensures that the label is in the very center of screen
-                    HorizontalOptions = LayoutOptions.FillAndExpand,    //*
-                    VerticalOptions = LayoutOptions.FillAndExpand       //*
+                    HorizontalTextAlignment = TextAlignment.Center,     //
+                    VerticalTextAlignment = TextAlignment.Center,       // Ensures that the label is in the 
+                                                                        // very center of screen
+                    HorizontalOptions = LayoutOptions.FillAndExpand,    //
+                    VerticalOptions = LayoutOptions.FillAndExpand       //
                 };
 
                 masterLayout.Children.Add(noSongsLabel);
@@ -68,22 +70,21 @@ namespace Stepquencer
                     songUI.Tap += OnSongTap;
                     songUI.DeleteClicked += delegate(LoadUIElement elem)          
                     {
-                        File.Delete(elem.filePath);             // Delete song file
-                        masterLayout.Children.Remove(elem);     // Refresh the page
+                        File.Delete(elem.filePath);                     // Delete song file
+                        masterLayout.Children.Remove(elem);             // Refresh the page
                     };
 
-                    masterLayout.Children.Add(songUI);          // Add UI element to the masterLayout
+                    masterLayout.Children.Add(songUI);                  // Add UI element to the masterLayout
                 }
             }
 
-            scroller.Content = masterLayout;            // Put updated masterLayout in scroller
-            Content = scroller;                         // Refresh the page content with the new scroller
+            scroller.Content = masterLayout;                            // Put updated masterLayout in scroller
+            Content = scroller;                                         // Refresh the page content with the new scroller
         }
 
 
-
         /// <summary>
-        /// Asynchronus function that returns user to main page
+        /// Asynchronous function that returns user to main page
         /// </summary>
         async void ReturnToMainPage()
         {
@@ -94,14 +95,16 @@ namespace Stepquencer
         /// <summary>
         /// Event handler for a SongUIElement being tapped
         /// </summary>
-        /// <param name="songUI">Song user interface.</param>
+        /// <param name="uiElement">Song user interface.</param>
         void OnSongTap(LoadUIElement uiElement)
         {
             mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
-            //Don't let users undo clear after loading a song
+
+            //Does not let users undo clear after loading a song
             mainpage.clearedSong = null;
             ReturnToMainPage();
         }
+
 
         /// <summary>
         /// Given the name of a song, deletes its corresponding file

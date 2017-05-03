@@ -52,6 +52,8 @@ namespace Stepquencer
 
         public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
 
+
+
         public MainPage()
         {
             InitializeComponent();
@@ -160,7 +162,7 @@ namespace Stepquencer
             };
 
 
-            // Make vertical scrollbar, size doesn't matter because constraints are used to size it later
+            // Make vertical scrollbar
             horizontalScrollBar = new BoxView
             {
                 BackgroundColor = Color.FromHex("D3D3D3"),
@@ -184,7 +186,6 @@ namespace Stepquencer
                 return parent.Height * parent.Height / scrollerActualHeight;
             }));
 
-
             horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) => {
                 return (0);
             }), Constraint.RelativeToParent((parent) => {
@@ -196,25 +197,21 @@ namespace Stepquencer
             }));
 
 
-            
-
-            //Add the Relative layouts that will hold the sidebars to the mastergrid
+            // Add the Relative layouts that will hold the sidebars to the mastergrid
             mastergrid.Children.Add(verticalBarArea, 0, 0); 
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
 
             // Add the scroller (which contains stepgrid) and sidebar to mastergrid
+            mastergrid.Children.Add(sidebar, 2, 0);             // Add sidebar to final column of mastergrid
+            Grid.SetRowSpan(sidebar, 2);                        // Make sidebar take up both rows in rightmost column
 
-
-            mastergrid.Children.Add(sidebar, 2, 0);  // Add sidebar to final column of mastergrid
-            Grid.SetRowSpan(sidebar, 2);  //make sidebar take up both rows in rightmost column
 
             // Initialize scrollview and put stepgrid inside it
             scroller = new ScrollView
             {
-                Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
+                Orientation = ScrollOrientation.Both            // Both vertical and horizontal orientation
             };
-            
 
             scroller.Content = stepgrid;
             mastergrid.Children.Add(scroller, 1, 0);
@@ -222,24 +219,31 @@ namespace Stepquencer
             scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
             scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
 
-            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
+            scroller.Scrolled += updateScrollBars;              // Scrolled event that calls method to update scrollbars
 
             Content = mastergrid;
-           
         }
 
-        private void getMiniGridDimensions()//Object o, EventArgs e)
+
+        /// <summary>
+        /// This method gets the mini grid dimensions and ??.
+        /// <summary>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
+        /// </summary>
+        private void getMiniGridDimensions()    
         {
             scrollerHeightShown = mastergrid.Height - horizontalBarArea.Height;
             miniGridHeight = (int)(scrollerHeightShown + stepGridSpacing) / 6 - stepGridSpacing;
             scrollerActualHeight = (miniGridHeight + stepGridSpacing) * NumRows - stepGridSpacing;
 
             scrollerWidthShown = mastergrid.Width - verticalBarArea.Width - sidebar.Width;
-            miniGridWidth = (int)(scrollerWidthShown + stepGridSpacing) / 8 - stepGridSpacing;  // stores a value for minigrid width that will give 8 columns of minigrids
+
+            // Stores a value for minigrid width that will give 8 columns of minigrids
+            miniGridWidth = (int)(scrollerWidthShown + stepGridSpacing) / 8 - stepGridSpacing;  
             scrollerActualWidth = (miniGridWidth + stepGridSpacing) * NumColumns - stepGridSpacing;
 
         }
-
 
         
         /// <summary>
@@ -247,21 +251,23 @@ namespace Stepquencer
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        public void updateScrollBars(Object o, ScrolledEventArgs e)//object sender, EventArgs e)
+        public void updateScrollBars(Object o, ScrolledEventArgs e)
         {
-            if (scroller.ScrollX != (double) 0)   //when scroller.ScrollX = 0, the code is really glitchy. Same goes for scroller.ScrollY
+            if (scroller.ScrollX != (double) 0)   
             {
                 horizontalBarArea.Children.Remove(horizontalScrollBar);
                 horizontalBarArea.Children.Add(horizontalScrollBar, Constraint.RelativeToParent((parent) =>
                 {
-                    return (parent.Width - parent.Width * parent.Width / scrollerActualWidth) * scroller.ScrollX / (scrollerActualWidth - parent.Width); // x location to place bar, updated by pos in scroll
+                    // x location to place bar, updated by pos in scroll
+                    return (parent.Width - parent.Width * parent.Width / scrollerActualWidth)
+                        * scroller.ScrollX / (scrollerActualWidth - parent.Width); 
                 }), Constraint.RelativeToParent((parent) =>
                 {
-                    return (0.1 * parent.Height - 1); // y location to place bar
+                    return (0.1 * parent.Height - 1);                         // Gets y location to place bar
                 }), Constraint.RelativeToParent((parent) => {
-                    return parent.Width * parent.Width / scrollerActualWidth; //width of bar
+                    return parent.Width * parent.Width / scrollerActualWidth; // Width of bar
                 }), Constraint.RelativeToParent((parent) => {
-                    return parent.Height * 0.8; //height of bar
+                    return parent.Height * 0.8;                               // Height of bar
                 }));
 
             }
@@ -284,7 +290,11 @@ namespace Stepquencer
 
         }
 
-
+        /// <summary>
+        /// Replaces the instruments in sidebar with new ones selected in ChangeInstrumentPage. 
+        /// For instance, 
+        /// </summary>
+        /// <param name="instruments">Instruments.</param>
         //When a new instrument is selected for a sidebar button, all sections of the
         //minigrids that correspond to that particular sidebar button will be changed
         //to the new instrument sound. For instance, if 'Clap' is selected to be in 

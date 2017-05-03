@@ -27,6 +27,7 @@ namespace Stepquencer
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
 
+
             // Initialize style for buttons on this page
             Style buttonStyle = new Style(typeof(Button))
             {
@@ -40,7 +41,6 @@ namespace Stepquencer
 
 
             // Initialize grid to hold tempo and slider
-
             Grid tempoGrid = new Grid { HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             tempoGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Column for tempo label should take up 1/6 of horizontal space
@@ -49,7 +49,6 @@ namespace Stepquencer
 
 
             // Initialize tempo label
-
             Label tempoLabel = new Label
             {
                 Text = "Tempo: ",
@@ -62,7 +61,6 @@ namespace Stepquencer
 
 
             // Initialize the BPM label
-
             bpmLabel = new Label
             {
                 Text = mainpage.song.Tempo + " BPM",
@@ -75,7 +73,6 @@ namespace Stepquencer
 
 
             // Initialize tempo slider
-
             tempoSlider = new Slider(MIN_BPM, MAX_BPM, mainpage.song.Tempo);  //*
             tempoSlider.HorizontalOptions = LayoutOptions.FillAndExpand;        //* Spacing/Alignment options
             tempoSlider.VerticalOptions = LayoutOptions.FillAndExpand;          //*
@@ -83,14 +80,12 @@ namespace Stepquencer
 
 
             // Add tempo label, BPM label and slider to tempoGrid
-
             tempoGrid.Children.Add(tempoLabel, 0, 0);
             tempoGrid.Children.Add(bpmLabel, 1, 0);
             tempoGrid.Children.Add(tempoSlider, 2, 0);
 
 
             // Initialize buttonGrid to hold all buttons 
-
             Grid buttonGrid = new Grid
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -106,7 +101,6 @@ namespace Stepquencer
 
 
             // Initialize buttons and add them to buttonGrid
-
             Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                       // Takes user to SavePage
             Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
             Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
