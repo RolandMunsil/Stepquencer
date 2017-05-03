@@ -13,6 +13,7 @@ namespace Stepquencer
     {
         const double MIN_BPM = 100;          // Minimum BPM user can change to
         const double MAX_BPM = 480;          // Maximum BPM user can go to
+        const double BPM_SLIDER_STEP = 10;
 
         private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
@@ -158,7 +159,7 @@ namespace Stepquencer
         /// </summary>
         private void OnSliderChanged(object sender, ValueChangedEventArgs e)
         {
-            int newTempo = (int)(Math.Round(e.NewValue / 20) * 20);          // Cast new BPM value to an int
+            int newTempo = (int)(Math.Round(e.NewValue / BPM_SLIDER_STEP) * BPM_SLIDER_STEP);          // Cast new BPM value to an int
             tempoSlider.Value = newTempo;
             bpmLabel.Text = newTempo + " BPM"; // Change the label to reflect the new BPM
             mainpage.song.Tempo = newTempo;        // Update the value stored by the mainpage
