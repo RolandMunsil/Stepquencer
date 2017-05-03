@@ -19,7 +19,7 @@ namespace Stepquencer
         public const int NumInstruments = 4;            // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		    // Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        public ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
+        ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
         RelativeLayout verticalBarArea;                 // Area on the left sie of the screen for the vertical scroll bar
         RelativeLayout horizontalBarArea;               // Area on the bottom of the screen for the horizontal scroll bar
         BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
@@ -32,8 +32,8 @@ namespace Stepquencer
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
         public InstrumentButton selectedInstrButton;    // Currently selected sidebar button
 
-        public Grid mastergrid;                         // Grid for whole screen
-        public Grid stepgrid;                           // Grid to hold MiniGrids
+        Grid mastergrid;                         // Grid for whole screen
+        Grid stepgrid;                           // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
         int miniGridWidth = 57;                         // width of each minigrid
@@ -184,7 +184,7 @@ namespace Stepquencer
             scroller.Content = stepgrid;
 
             mastergrid.Children.Add(scroller, 1, 0);
-            scroller.Scrolled += updateScrollBars;     //scrolled event that calls method to update scrollbars.
+            scroller.Scrolled += UpdateScrollBars;     //scrolled event that calls method to update scrollbars.
 
             verticalBarArea = new RelativeLayout();
             mastergrid.Children.Add(verticalBarArea, 0, 0);
@@ -192,14 +192,14 @@ namespace Stepquencer
             horizontalBarArea = new RelativeLayout();
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
-            drawScrollBar(horizontalScrollBar);
-            drawScrollBar(verticalScrollBar);
+            DrawScrollBar(horizontalScrollBar);
+            DrawScrollBar(verticalScrollBar);
 
             // Add the Relative layouts that will hold the sidebars to their proper positions in mastergrid
             mastergrid.Children.Add(verticalBarArea, 0, 0);
             mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
-            scroller.Scrolled += updateScrollBars;              // Scrolled event that calls method to update scrollbars
+            scroller.Scrolled += UpdateScrollBars;              // Scrolled event that calls method to update scrollbars
 
             mastergrid.Children.Add(sidebar, 2, 0);             // Add sidebar to final column of mastergrid
             Grid.SetRowSpan(sidebar, 2);                        //make sidebar take up both rows in rightmost column
@@ -213,16 +213,16 @@ namespace Stepquencer
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        public void updateScrollBars(Object o, ScrolledEventArgs e)
+        private void UpdateScrollBars(Object o, ScrolledEventArgs e)
         {
             if (scroller.ScrollX !=  0)   
             {
-                drawScrollBar(horizontalScrollBar);
+                DrawScrollBar(horizontalScrollBar);
             }
 
             if (scroller.ScrollY !=  0)
             {
-                drawScrollBar(verticalScrollBar);
+                DrawScrollBar(verticalScrollBar);
             }
 
         }
@@ -232,7 +232,7 @@ namespace Stepquencer
         /// </summary>
         /// <param name="scrollBar"></param>
         /// <param name="isVertical"></param>
-        private void drawScrollBar(BoxView scrollBar)
+        private void DrawScrollBar(BoxView scrollBar)
         {
             if (scrollBar == verticalScrollBar)
             {
@@ -331,16 +331,8 @@ namespace Stepquencer
 
                     if(j % 8 == 0)
                     {
-                        Label noteLabel = new Label
-                        {
-                            Text = Instrument.SemitoneShiftToString(semitoneShift),
-                            //VerticalTextAlignment = TextAlignment.Center,
-                            FontSize = 17,
-                            FontAttributes = FontAttributes.Bold,
-                            TextColor = new Color(0.18),
-                            Margin = new Thickness(4, 3, 0, 0),
-                            InputTransparent = true
-                        };
+                        Label noteLabel = MakeTextlessLabel();
+                        noteLabel.Text = Instrument.SemitoneShiftToString(semitoneShift);
 
                         stepgrid.Children.Add(noteLabel, j, i);
                     }
@@ -348,20 +340,31 @@ namespace Stepquencer
                     //Measure labels appear every 6 rows, 4 columns
                     if ((i % 6 == 0) && (j % 4 == 3)) //See if this works
                     {
-                        Label measureLabel = new Label
-                        {
-                            Text = (j+1).ToString(),
-                            FontSize = 17,
-                            FontAttributes = FontAttributes.Bold,
-                            TextColor = new Color(0.18),
-                            Margin = new Thickness(4, 3, 0, 0),
-                            InputTransparent = true
-                        };
+                        Label measureLabel = MakeTextlessLabel();
+                        measureLabel.Text = (j + 1).ToString();
 
                         stepgrid.Children.Add(measureLabel, j, i);
                     }  
                 }
             }
+        }
+
+        /// <summary>
+        /// Makes a textless label that can be used as either a notelabel or measurelabel for the stepgrid.
+        /// </summary>
+        /// <returns></returns>
+        private Label MakeTextlessLabel()
+        {
+            Label textlessLabel = new Label
+            {
+                //VerticalTextAlignment = TextAlignment.Center,
+                FontSize = 17,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = new Color(0.18),
+                Margin = new Thickness(4, 3, 0, 0),
+                InputTransparent = true
+            };
+            return textlessLabel;
         }
 
 
