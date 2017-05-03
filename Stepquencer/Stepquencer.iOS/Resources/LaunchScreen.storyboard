@@ -44,9 +44,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Icon-60.png" width="60" height="60"/>
-        <image name="Icon-Small-40.png" width="40" height="40"/>
-        <image name="Icon-Small.png" width="29" height="29"/>
         <image name="settings.png" width="45" height="45"/>
         <image name="play.png" width="45" height="45"/>
         <image name="stop.png" width="45" height="45"/>

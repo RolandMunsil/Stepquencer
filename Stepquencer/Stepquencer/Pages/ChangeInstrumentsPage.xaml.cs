@@ -111,7 +111,7 @@ namespace Stepquencer
                 }                                       //
 
                 InstrumentButton button = new InstrumentButton(Instrument.GetByName(nameAndColor.Key));     // Make a new InstrumentButton initialized with this instrument
-                button.HeightRequest = 60;                                                                  // Style choice
+                button.HeightRequest = 49;                                                                  // Style choice
                 button.BorderWidth = 0;
                 button.Clicked += OnInstrumentClicked;                                                      // Add event handler to button
 
