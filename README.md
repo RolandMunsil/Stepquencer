@@ -42,16 +42,8 @@ time to truly install the app.
 
 
 ## How to Install and Run on Android
-
-**Requirements**
-- Xamarin Studio (Mac) or Visual Studio (Other)
-
-**Steps**
-1. Start up your IDE and load in our files
-2. Connect your Android device via USB
-3. Go to the top left corner of the IDE window (near the play button) and ensure that:
-  * "Stepquencer.Droid" is selected
-  * "Debug" or "Release" is selected
-  * Your device is selected (not an emulator)
-4) Simply hit play and Stepquencer will install on your device
-  
+1. Install Xamarin Studio (Mac) or Visual Studio with Xamarin (Windows): https://www.xamarin.com/download.
+2. Once you've opened up our solution, running on the emulator should be easy - the emulator comes with Xamarin. Make sure Stepquencer.Droid > Debug > Android_Accelerated_x86 is selected on Mac, and on Windows it should be Debug > Any CPU > Android_Accelerated_x86. You may also need to set Stepquencer.Droid to be the startup project.
+3. To run on an android phone, you first need to enable debugging on your phone. Instructions can be found here: https://www.kingoapp.com/root-tutorials/how-to-enable-usb-debugging-mode-on-android.htm
+4. Now connect your phone to your computer with a USB cable. Your phone will ask if you want to allow USB debugging - hit OK.
+5. In your IDE, you should be able to select your phone to debug on - simply hit debug and it will build, deploy, and start debugging on your phone (If it doesn't show up, try restarting your IDE). Note that, at least on our phone, if you stop debugging the app will be uninstalled, so you need to disconnect your phone while debugging to get the app to stay. Also be aware that deploying can take a while.
