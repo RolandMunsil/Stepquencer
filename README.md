@@ -47,17 +47,17 @@ time to truly install the app.
 2. Once you've opened up our solution, running on the emulator should be easy - the emulator comes with Xamarin. Make sure Stepquencer.Droid > Debug > Android_Accelerated_x86 is selected on Mac, and on Windows it should be Debug > Any CPU > Android_Accelerated_x86. You may also need to set Stepquencer.Droid to be the startup project.
 3. To run on an android phone, you first need to enable debugging on your phone. Instructions can be found here: https://www.kingoapp.com/root-tutorials/how-to-enable-usb-debugging-mode-on-android.htm
 4. Now connect your phone to your computer with a USB cable. Your phone will ask if you want to allow USB debugging - hit OK.
-5. In your IDE, you should be able to select your phone to debug on - simply hit debug and it will build, deploy, and start debugging on your phone (If it doesn't show up, try restarting your IDE). Note that, at least on our phone, if you stop debugging the app will be uninstalled, so you need to disconnect your phone while debugging to get the app to stay. Also be aware that deploying can take a while.
+5. In your IDE, you should be able to select your phone to debug on - simply hit run and it will build, deploy, and start debugging on your phone (If it doesn't show up, try restarting your IDE). Note that, at least on our phone, if you stop debugging the app will be uninstalled, so you need to disconnect your phone while debugging to get the app to stay. Also be aware that deploying can take a while.
 
 ## Code structure
-The Stepquencer solution has 3 projects - Stepquencer, Stepquencer.Droid, and Stepquencer.iOS. Stepquencer contains code compiled for both platfoms, and the .Droid and .iOS contain platform-specific code. In our case, almost all of our code is in Stepquencer. The only things in the platform specific projects are app icons, splash screen stuff, and button images. (However, note that we *do* have platform-specific code - we'll get into that later)
+The Stepquencer solution has 3 projects - Stepquencer, Stepquencer.Droid, and Stepquencer.iOS. Stepquencer contains code compiled for both platfoms, and the .Droid and .iOS contain platform-specific code. In our case, almost all of our code is in Stepquencer. The only things in the platform specific projects are app icons, splash screen stuff, and button images. However, note that we *do* have platform-specific code, but we have in the main Stepquencer project. To separate the different platforms we use Xamarin's \_\_ANDROID\_\_ and \_\_IOS\_\_ defines to compile platform-specific sections of code within a single file.
 
 The layout of the Stepquencer project is as follows:
 
 ### Pages folder
-Contains all of the UI pages (e.g. more options page, change instruments page). Each page has a .xaml file which describes some properties of the page and a .xaml.cs file which contains code for that page. The .xaml file can be used to specify the layout of a page, but we mostly specified page layout in the code by adding elements to the page int the page's constructor.
+Contains all of the UI pages (e.g. more options page, change instruments page). Each page has a .xaml file which describes some properties of the page and a .xaml.cs file which contains code for that page. The .xaml file can be used to specify the layout of a page, but we mostly specified page layout in the code by adding elements to the page in the page's constructor.
 
-MainPage is the page that opens on startup. Because it's the first page, its' constructor is also where we do all of our startup things (like create the grid, load instrument information etc.).
+MainPage is the page that opens on startup. Because it's the first page, its constructor is also where we do all of our startup things (like create the grid, load instrument information, instantiate variables, etc.).
 
 ### UIElements folder
 This has all of our custom UI elements.
@@ -69,7 +69,7 @@ This constains all of the classes used to play audio. SongPlayer is the class th
 There is a WAV file for each instrument that is used to make all of the notes of an instrument. These are all embedded in the built app. The \_colors.txt file specifies the color used to represent an instrument - it is just a list in the format \<instrument name\>|\<hex code for color\>
 
 The remaining files are:
-   * App.xaml/App.xaml.cs - the class for the entire program. Pretty much all it does is create the MainPage and handle the app when the user leaves the app.
+   * App.xaml/App.xaml.cs - the class representing the entire program. Pretty much all it does is create the MainPage and stop the song when the user leaves the app.
    * CustomScrollViewRenderer.cs - used for scrollbar rendering
    * FileUtilities.cs - contains methods and variables to help load and save songs and embedded resources.
    * firsttimesong.txt - the song that the user sees the first time they open the app.
