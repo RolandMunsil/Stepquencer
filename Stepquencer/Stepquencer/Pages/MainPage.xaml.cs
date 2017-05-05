@@ -19,7 +19,7 @@ namespace Stepquencer
         public const int NumInstruments = 4;            // Number of instruments on the sidebar
         const double brightnessIncrease = 0.25;		    // Amount to increase the red, green, and blue values of each button when it's highlighted
 
-        ScrollView scroller;                     // ScrollView that will be used to scroll through stepgrid
+        ScrollView scroller;                            // ScrollView that will be used to scroll through stepgrid
         RelativeLayout verticalBarArea;                 // Area on the left sie of the screen for the vertical scroll bar
         RelativeLayout horizontalBarArea;               // Area on the bottom of the screen for the horizontal scroll bar
         BoxView verticalScrollBar;                      // Scroll bar to show position on vertical scroll
@@ -32,8 +32,8 @@ namespace Stepquencer
         public InstrumentButton[] instrumentButtons;    // An array of the instrument buttons on the sidebar
         public InstrumentButton selectedInstrButton;    // Currently selected sidebar button
 
-        Grid mastergrid;                         // Grid for whole screen
-        Grid stepgrid;                           // Grid to hold MiniGrids
+        Grid mastergrid;                                // Grid for whole screen
+        Grid stepgrid;                                  // Grid to hold MiniGrids
         Grid sidebar;                                   // Grid for sidebar
 
         int miniGridWidth = 57;                         // width of each minigrid
@@ -45,11 +45,12 @@ namespace Stepquencer
 
         //We need to use multiple highlights because on android they can't be more than a certain height
         int highlight2StartRow = 13;
-        BoxView[] highlights;                              // Transparent View objects that takes up a whole column, moves to indicate beat
+        BoxView[] highlights;                           // Transparent View objects that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
 
         public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
       
+
 
         public MainPage()
         {
@@ -206,6 +207,8 @@ namespace Stepquencer
 
             Content = mastergrid;
         }
+
+
     
         /// <summary>
         /// This method redraws the scrollbars when the scroller.Scrolled event is raised
@@ -225,6 +228,8 @@ namespace Stepquencer
             }
 
         }
+
+
 
         /// <summary>
         /// Determines the location to draw the scrollbars on the screen and draws them
@@ -267,6 +272,7 @@ namespace Stepquencer
         }
 
 
+
         /// <summary>
         /// Replaces the instruments in sidebar with new ones selected in ChangeInstrumentPage. 
         /// For instance, 
@@ -284,7 +290,7 @@ namespace Stepquencer
             for (int i = 0; i < instruments.Length; i++)                        //
             {                                                                   //
                 Instrument oldInstr = song.Instruments[i];                      //
-                Instrument newInstr = instruments[i];                           // Figure out which instruments have changed
+                Instrument newInstr = instruments[i];                           // Figures out which instruments change
                 if (oldInstr != newInstr)                                       //
                 {                                                               //
                     oldInstruments.Add(oldInstr);                               //
@@ -295,6 +301,7 @@ namespace Stepquencer
             song.ReplaceInstruments(oldInstruments, newInstruments);         
             SetSong(song);
         }
+
 
 
         /// <summary>
@@ -345,6 +352,8 @@ namespace Stepquencer
             }
         }
 
+
+
         /// <summary>
         /// Makes a textless label that can be used as either a notelabel or measurelabel for the stepgrid.
         /// </summary>
@@ -362,6 +371,7 @@ namespace Stepquencer
             };
             return textlessLabel;
         }
+
 
 
         /// <summary>
@@ -382,6 +392,7 @@ namespace Stepquencer
             SetSong(clearedSong);
             clearedSong = null;
         }
+
 
 
         /// <summary>
@@ -428,6 +439,8 @@ namespace Stepquencer
             }
         }
 
+
+
         /// <summary>
         /// Event handler for individual miniGrid (holding 1-4 sounds) in mastergrid
         /// </summary>
@@ -461,6 +474,7 @@ namespace Stepquencer
         }
 
 
+
         /// <summary>
         /// Event handler for the Play/Stop button
         /// </summary>
@@ -477,6 +491,7 @@ namespace Stepquencer
         }
 
 
+
         /// <summary>
         /// Starts playing the song
         /// </summary>
@@ -489,6 +504,7 @@ namespace Stepquencer
             player.BeginPlaying(song);
             playStopButton.Image = "stop.png";
         }
+
 
 
         /// <summary>
@@ -508,6 +524,7 @@ namespace Stepquencer
         }
 
 
+
         /// <summary>
         /// Event handler for the more options button. Sends user to more options page.
         /// </summary>
@@ -519,6 +536,7 @@ namespace Stepquencer
             }
             await Navigation.PushAsync(new MoreOptionsPage(this));
         }
+
 
 
         /// <summary>
@@ -542,6 +560,7 @@ namespace Stepquencer
         }            
 
 
+
         /// <summary>
         /// Highlights the current column (beat) and de-highlights the previous column so long as this isn't the first note played
         /// </summary>
@@ -555,6 +574,7 @@ namespace Stepquencer
                 }
             });
         }
+
 
 
         /// <summary>

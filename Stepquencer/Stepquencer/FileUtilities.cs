@@ -9,6 +9,7 @@ namespace Stepquencer
 {
     static class FileUtilities
     {
+        
         /// <summary>
         /// Used to get embedded resources
         /// </summary>
@@ -20,6 +21,7 @@ namespace Stepquencer
         private const String resourcePrefix = "Stepquencer.Droid.";
 #endif
 
+
         /// <summary>
         /// Loads a resource that has been embedded in the cross-platform Stepquencer project
         /// </summary>
@@ -27,6 +29,8 @@ namespace Stepquencer
         {
             return assembly.GetManifestResourceStream(resourcePrefix + resourceName);
         }
+
+
 
         /// <summary>
         /// The path to the directory where the user's songs are stored
@@ -39,6 +43,8 @@ namespace Stepquencer
             }
         }
 
+
+
         /// <summary>
         /// Given the name of a song, returns the full path to the song
         /// </summary>
@@ -46,6 +52,8 @@ namespace Stepquencer
         {
             return Path.Combine(PathToSongDirectory, $"{songName}.txt");
         }
+
+
 
         /// <summary>
         /// Given a file path, returns the name of the actual song
@@ -56,6 +64,8 @@ namespace Stepquencer
             int end = path.LastIndexOf('.');
             return path.Substring(start, end - start);
         }
+
+
 
         /// <summary>
         /// Loads a song from the local filesystem
@@ -68,6 +78,8 @@ namespace Stepquencer
                 return LoadSongFromStream(file.BaseStream);
             }
         }
+
+
 
         /// <summary>
         /// Loads a song from a stream
@@ -119,6 +131,8 @@ namespace Stepquencer
             loadedSong.Tempo = int.Parse(file.ReadLine());
             return loadedSong;
         }
+
+
 
         /// <summary>
         /// Saves a song to the user's local filesystem
