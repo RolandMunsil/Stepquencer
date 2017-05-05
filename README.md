@@ -5,7 +5,7 @@ By Gabriel Brown, Mani Diaz, Roland Munsil, and Paige Pfeiffer
 
 **Requirements**
 - A Mac
-- XCode
+- Xcode
 - Xamarin Studio
 
 **Steps**
@@ -20,25 +20,26 @@ By Gabriel Brown, Mani Diaz, Roland Munsil, and Paige Pfeiffer
    7. Review and accept what Apple throws at you
    8. Plug in the iOS device you wish to deploy to 
    9. Create a new **_Single-view iOS_** project in Xcode, and leave it blank
-   10. Under the *General > Identity section* of this new Xcode project, choose your bundle identifier 
+   10. Under the *General* section of your project window, look for the *Identity* heading and choose your bundle identifier 
    (something like com.YOURNAME.Stepquencer)
    11. Right below where you specify the bundle identifier, check the **_Automatically manage signin_** box
-   12. In Xcode, ensure that your device is selected and install this blank app with the correct bundle identifier
-3. Now go back to Xamarin Studio. Open up Info.plist under the Stepquencer.iOS project
-4. Ensure that the bundle identifier in Info.plist is the SAME AS the one you just specified in Xcode
-5. Right click on the Stepquencer.iOS project and click on "Options"
-6. Go to the section labeled "iOS Bundle Signing" and explicitly set YOUR **_signing identity_** and **_provisioning profile_**
-7. Go back to the solution, make sure that:
-   * "Stepquencer.iOS" is selected
-   * "Release | iPhone" is selected
-   * Your device is selected
-8. Now hit the play button, and it will attempt to install but fail because you have to give your account access.
-To remedy this:
+3. In Xcode, next to the build button in the top left corner, ensure that your device is selected and hit the build button
+4. Xcode will attempt to install but fail because you have to give your account access. To remedy this:
    * After having tried to install, go to **_Settings > General > Device Management_**
    * Click on your account name (should be your apple ID)
    * Trust your account
-9. After telling your iOS device that it can indeed trust your account, hit the play button in Xamarin Studio one more 
+5. After telling your iOS device that it can indeed trust your account, hit the play button in Xamarin Studio one more 
 time to truly install the app.
+6. Now go back to Xamarin Studio. Open up Info.plist under the Stepquencer.iOS project
+7. Ensure that the bundle identifier in Info.plist is the SAME AS the one you just specified in Xcode
+8. Right click on the "Stepquencer.iOS" project in the sidebar (NOT the plain "Stepquencer" project)
+9. Go to the section labeled "iOS Bundle Signing" and explicitly set YOUR **_signing identity_** and **_provisioning profile_**
+10. Go back to the solution, make sure that:
+    * "Stepquencer.iOS" is selected
+    * "Release | iPhone" is selected
+    * Your device is selected
+11. Now hit the play button, and it will attempt to install but fail because you have to give your account access.
+
 
 
 ## How to Install and Run on Android
