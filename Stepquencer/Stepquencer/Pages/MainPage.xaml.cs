@@ -186,6 +186,8 @@ namespace Stepquencer
             mastergrid.Children.Add(scroller, 1, 0);
             scroller.Scrolled += UpdateScrollBars;     //scrolled event that calls method to update scrollbars.
 
+
+            // Make the Relative layouts that will hold the sidebars and place them in their proper positions in mastergrid
             verticalBarArea = new RelativeLayout();
             mastergrid.Children.Add(verticalBarArea, 0, 0);
 
@@ -195,9 +197,6 @@ namespace Stepquencer
             DrawScrollBar(horizontalScrollBar);
             DrawScrollBar(verticalScrollBar);
 
-            // Add the Relative layouts that will hold the sidebars to their proper positions in mastergrid
-            mastergrid.Children.Add(verticalBarArea, 0, 0);
-            mastergrid.Children.Add(horizontalBarArea, 1, 1);
 
             scroller.Scrolled += UpdateScrollBars;              // Scrolled event that calls method to update scrollbars
 
@@ -215,7 +214,7 @@ namespace Stepquencer
         /// <param name="e"></param>
         private void UpdateScrollBars(Object o, ScrolledEventArgs e)
         {
-            if (scroller.ScrollX !=  0)   
+            if (scroller.ScrollX !=  0)   //when scroller.ScrollX == 0 there is some odd, glitchy, jumpy behavior with scrollbars.
             {
                 DrawScrollBar(horizontalScrollBar);
             }
@@ -239,9 +238,6 @@ namespace Stepquencer
                 verticalBarArea.Children.Remove(scrollBar);
                 verticalBarArea.Children.Add(scrollBar, Constraint.RelativeToParent((parent)=>
                 {
-
-             
-                    
                     return 0.1 * parent.Width + 1; // x location to place bar
                 }), Constraint.RelativeToParent((parent) =>
                 {
