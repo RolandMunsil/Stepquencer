@@ -73,3 +73,6 @@ The remaining files are:
    * CustomScrollViewRenderer.cs - used for scrollbar rendering
    * FileUtilities.cs - contains methods and variables to help load and save songs and embedded resources.
    * firsttimesong.txt - the song that the user sees the first time they open the app.
+
+## Bugs and stuff
+We tracked our bugs and TODOs on trello: https://trello.com/b/XU3SLcQ3/stepquencer
