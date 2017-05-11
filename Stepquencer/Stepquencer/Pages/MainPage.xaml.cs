@@ -552,12 +552,17 @@ namespace Stepquencer
             }
             if (button != selectedInstrButton)
             {
-                //Remove border fom previously selected instrument
-                selectedInstrButton.Selected = false;
-                button.Selected = true;             //Change border highlight to yellow
-                selectedInstrButton = button;		//Set this button to be the currently selected button
+                SetSelectedSidebarButton(button);
             }
-        }            
+        }
+
+        public void SetSelectedSidebarButton(InstrumentButton button)
+        {
+            //Remove border fom previously selected instrument
+            selectedInstrButton.Selected = false;
+            button.Selected = true;             //Change border highlight to yellow
+            selectedInstrButton = button;       //Set this button to be the currently selected button
+        }
 
 
 
