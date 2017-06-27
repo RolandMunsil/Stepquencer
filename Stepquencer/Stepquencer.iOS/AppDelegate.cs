@@ -25,6 +25,8 @@ namespace Stepquencer.iOS
 			global::Xamarin.Forms.Forms.Init ();
 			LoadApplication (new Stepquencer.App ());
 
+            UIApplication.SharedApplication.StatusBarHidden = true;
+
 			return base.FinishedLaunching (app, options);
 		}
 	}

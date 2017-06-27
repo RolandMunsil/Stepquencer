@@ -25,8 +25,10 @@ namespace Stepquencer
             this.mainpage = passedpage;         // Need to pass in main page and song in order to change them on this page
 
             NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
+            NavigationPage.SetHasBackButton(this, false);
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
+            ToolbarItems.Add(new ToolbarItem("About", "info-button.png", OnAboutClicked));    // Add button to info page on navigation bar
 
 
             // Initialize style for buttons on this page
@@ -205,6 +207,12 @@ namespace Stepquencer
         async void OnChangeInstrumentsClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ChangeInstrumentsPage(this.mainpage));
+        }
+
+
+        async void OnAboutClicked()
+        {
+            await Navigation.PushAsync(new InfoPage());
         }
     }
 }
