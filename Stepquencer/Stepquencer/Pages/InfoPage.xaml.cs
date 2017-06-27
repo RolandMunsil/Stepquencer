@@ -10,10 +10,15 @@ namespace Stepquencer
         public InfoPage()
         {
 
-            Label infoLabel = new Label {Text = "Info page!"};
+            LinkLabel infoLabel = new LinkLabel
+            {
+                Text = "Link to Freepik's website",
+                LinkText = "http://www.freepik.com/",
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center
+            };
 
             this.Content = infoLabel;
-
         }
     }
 }
