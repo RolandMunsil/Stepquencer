@@ -83,6 +83,7 @@ namespace Stepquencer
         }
 
 
+
         /// <summary>
         /// Asynchronous function that returns user to main page
         /// </summary>
@@ -90,6 +91,7 @@ namespace Stepquencer
         {
             await Navigation.PopToRootAsync();
         }
+
 
 
         /// <summary>
@@ -104,6 +106,7 @@ namespace Stepquencer
             mainpage.clearedSong = null;
             ReturnToMainPage();
         }
+
 
 
         /// <summary>

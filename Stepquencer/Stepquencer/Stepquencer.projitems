@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum2.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)firsttimesong.txt" />
