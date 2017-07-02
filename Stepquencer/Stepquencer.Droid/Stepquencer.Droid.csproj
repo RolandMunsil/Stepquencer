@@ -140,10 +140,14 @@
     <AndroidResource Include="Resources\Drawable\Icon.png" />
     <AndroidResource Include="Resources\Drawable\Snare.png" />
     <AndroidResource Include="Resources\Drawable\YRM1xAtmosphere.png" />
-    <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
+    <AndroidResource Include="Resources\Drawable\SlapBassLow%28old%29.png" />
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
     <AndroidResource Include="Resources\drawable\NewIcon4.png" />
     <AndroidResource Include="Resources\Drawable\info-button.png" />
+    <AndroidResource Include="Resources\Drawable\SteelDrum2.png" />
+    <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
+    <AndroidResource Include="Resources\Drawable\Choir.png" />
+    <AndroidResource Include="Resources\Drawable\SoftBrass.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
@@ -161,7 +165,7 @@
     <AndroidResource Include="Resources\Drawable\SlapBassHigh.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\SoftBrass.png" />
+    <AndroidResource Include="Resources\Drawable\SoftBrass%28old%29.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\BassDrum.png" />
@@ -185,7 +189,7 @@
     <AndroidResource Include="Resources\Drawable\Piano.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Choir.png" />
+    <AndroidResource Include="Resources\Drawable\Choir%28old%29.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\Conga.png" />
