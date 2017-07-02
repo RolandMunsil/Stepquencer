@@ -18,8 +18,16 @@ namespace Stepquencer
             {
                 while (stream.Peek() != -1)
                 {
-                    String[] parts = stream.ReadLine().Split('|');
-                    pageLayout.Children.Add(new LinkLabel(parts[0], parts[1]));
+                    String line = stream.ReadLine();
+                    if (line == "")
+                    {
+                        pageLayout.Children.Add(new Label());
+                    }
+                    else
+                    {
+                        String[] parts = line.Split('|');
+                        pageLayout.Children.Add(new LinkLabel(parts[0], parts[1]));
+                    }
                 }
             }
 

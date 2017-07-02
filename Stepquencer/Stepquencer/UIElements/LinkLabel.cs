@@ -14,8 +14,14 @@ namespace Stepquencer
         /// </summary>
         public LinkLabel(String text, String link) : base()
         {
-            this.Text = text;
-            this.TextColor = Color.Blue;    // Default to traditional link color
+            //this.Text = text;
+            //this.TextColor = Color.Blue;    // Default to traditional link color
+
+            FormattedString fString = new FormattedString();
+            fString.Spans.Add(new Span() { Text = $"{text} (" });
+            fString.Spans.Add(new Span() { Text = link, ForegroundColor = Color.Teal });
+            fString.Spans.Add(new Span() { Text = ")" });
+            this.FormattedText = fString;
 
             this.gestureRecognizer = new TapGestureRecognizer();
             gestureRecognizer.Tapped += (sender, e) =>
