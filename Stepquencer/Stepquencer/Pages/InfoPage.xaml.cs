@@ -22,6 +22,18 @@ namespace Stepquencer
                 pageLayout.Children.Add(label);
             }
 
+            pageLayout.Children.Add(new LinkLabel()
+            {
+                Text = "All sounds except clap are from the soundfont \"SGM - V2.01\" by David Shan",
+                LinkText = "http://www.geocities.jp/shansoundfont/"
+            });
+
+            pageLayout.Children.Add(new LinkLabel()
+            {
+                Text = "Clap sound is \"Clap-Clean Reverb\" by Freesound user young_daddy",
+                LinkText = "http://freesound.org/people/young_daddy/"
+            });
+
             this.Content = pageLayout;
         }
 
