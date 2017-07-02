@@ -54,7 +54,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IOSDebugOverWiFi>false</IOSDebugOverWiFi>
-    <MtouchExtraArgs></MtouchExtraArgs>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
     <CodesignProvision>iOS Team Provisioning Profile: com.bpfm-.Stepquencer</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -107,35 +108,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\settings.png" />
-    <BundleResource Include="Resources\play.png" />
-    <BundleResource Include="Resources\stop.png" />
-    <BundleResource Include="Resources\Snare.png" />
-    <BundleResource Include="Resources\Piano.png" />
-    <BundleResource Include="Resources\SlapBassLow%28old%29.png" />
+    <BundleResource Include="Resources\Cabasa.png" />
     <BundleResource Include="Resources\Clap.png" />
     <BundleResource Include="Resources\CrashCymbal.png" />
-    <BundleResource Include="Resources\RecordScratch.png" />
-    <BundleResource Include="Resources\YRM1xAtmosphere.png" />
-    <BundleResource Include="Resources\SoftBrass%28old%29.png" />
-    <BundleResource Include="Resources\Organ.png" />
-    <BundleResource Include="Resources\SlapBassHigh.png" />
-    <BundleResource Include="Resources\BassDrum.png" />
-    <BundleResource Include="Resources\Cabasa.png" />
     <BundleResource Include="Resources\HiHat.png" />
-    <BundleResource Include="Resources\Choir%28old%29.png" />
+    <BundleResource Include="Resources\Piano.png" />
+    <BundleResource Include="Resources\RecordScratch.png" />
+    <BundleResource Include="Resources\settings.png" />
+    <BundleResource Include="Resources\play.png" />
+    <BundleResource Include="Resources\SlapBassHigh.png" />
+    <BundleResource Include="Resources\SlapBassLow.png" />
+    <BundleResource Include="Resources\SteelDrum.png" />
+    <BundleResource Include="Resources\stop.png" />
     <BundleResource Include="Resources\LaunchScreen.storyboard" />
-
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\swapinstr.png" />
-    <BundleResource Include="Resources\SlapBassLow.png" />
-    <BundleResource Include="Resources\Choir.png" />
-    <BundleResource Include="Resources\Conga.png" />
-    <BundleResource Include="Resources\SoftBrass.png" />
-
     <BundleResource Include="Resources\infobutton.png" />
-
-    <BundleResource Include="Resources\SteelDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -156,25 +144,75 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-60%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 2.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green29.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green58.png" />
-    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Image.imageset\sidewaysmusicnotes.png" />
-    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon80x80.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120 2.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon180x180.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon76x76.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon152x152.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon167x167.png" />
-    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage640x1136.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Icon-60%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon 2.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green29.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\green58.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Image.imageset\sidewaysmusicnotes.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon80x80.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120 2.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon180x180.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon76x76.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon152x152.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon167x167.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage640x1136.png">
+      <InProject>false</InProject>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets.xcassets\Best launch image.launchimage\" />
+    <BundleResource Include="Resources\Atmosphere.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\BalladSnare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\ChoirAah.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\CongaHi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\KickDrum.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\PipeOrgan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\SynthBrass.png" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

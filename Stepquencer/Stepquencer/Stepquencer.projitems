@@ -68,35 +68,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)_iconAuthors.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Snare.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BassDrum.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Conga.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\YRM1xAtmosphere.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassHigh.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassLow.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SoftBrass.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\_colors.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Cabasa.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\CrashCymbal.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Organ.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Piano.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\RecordScratch.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Choir.wav" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)firsttimesong.txt" />
@@ -105,5 +77,23 @@
     <Folder Include="$(MSBuildThisFileDirectory)Pages\" />
     <Folder Include="$(MSBuildThisFileDirectory)UIElements\" />
     <Folder Include="$(MSBuildThisFileDirectory)Audio\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Atmosphere.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\BalladSnare.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Cabasa.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\ChoirAah.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Clap.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\CongaHi.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\CrashCymbal.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\HiHat.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\KickDrum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Piano.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\PipeOrgan.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\RecordScratch.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassHigh.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SlapBassLow.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SteelDrum.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\SynthBrass.wav" />
   </ItemGroup>
 </Project>

@@ -137,63 +137,47 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Icon.png" />
-    <AndroidResource Include="Resources\Drawable\Snare.png" />
-    <AndroidResource Include="Resources\Drawable\YRM1xAtmosphere.png" />
-    <AndroidResource Include="Resources\Drawable\SlapBassLow%28old%29.png" />
+    <AndroidResource Include="Resources\Drawable\Cabasa.png" />
+    <AndroidResource Include="Resources\Drawable\ChoirAah.png" />
+    <AndroidResource Include="Resources\Drawable\Clap.png" />
+    <AndroidResource Include="Resources\Drawable\CrashCymbal.png" />
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
+    <AndroidResource Include="Resources\Drawable\Icon.png" />
+    <AndroidResource Include="Resources\Drawable\KickDrum.png" />
     <AndroidResource Include="Resources\drawable\NewIcon4.png" />
-
-    <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
-    <AndroidResource Include="Resources\Drawable\Choir.png" />
-    <AndroidResource Include="Resources\Drawable\SoftBrass.png" />
     <AndroidResource Include="Resources\Drawable\infobutton.png" />
-    <AndroidResource Include="Resources\Drawable\SteelDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\Piano.png" />
     <AndroidResource Include="Resources\Drawable\play.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\RecordScratch.png" />
+    <AndroidResource Include="Resources\Drawable\SlapBassHigh.png" />
+    <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
+    <AndroidResource Include="Resources\Drawable\SteelDrum.png" />
     <AndroidResource Include="Resources\Drawable\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\settings.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\SlapBassHigh.png" />
+    <AndroidResource Include="Resources\Drawable\Atmosphere.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\SoftBrass%28old%29.png" />
+    <AndroidResource Include="Resources\Drawable\BalladSnare.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\BassDrum.png" />
+    <AndroidResource Include="Resources\Drawable\CongaHi.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Clap.png" />
+    <AndroidResource Include="Resources\Drawable\PipeOrgan.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\RecordScratch.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Cabasa.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\CrashCymbal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Organ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Piano.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Choir%28old%29.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Conga.png" />
+    <AndroidResource Include="Resources\Drawable\SynthBrass.png" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
