@@ -124,15 +124,10 @@
     <BundleResource Include="Resources\Cabasa.png" />
     <BundleResource Include="Resources\HiHat.png" />
     <BundleResource Include="Resources\Choir%28old%29.png" />
-    <BundleResource Include="Resources\SteelDrum.png" />
-
     <BundleResource Include="Resources\LaunchScreen.storyboard" />
 
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\swapinstr.png" />
-    <BundleResource Include="Resources\SteelDrum2.png" />
-
-
     <BundleResource Include="Resources\SlapBassLow.png" />
     <BundleResource Include="Resources\Choir.png" />
     <BundleResource Include="Resources\Conga.png" />
@@ -140,6 +135,7 @@
 
     <BundleResource Include="Resources\infobutton.png" />
 
+    <BundleResource Include="Resources\SteelDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -144,11 +144,11 @@
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
     <AndroidResource Include="Resources\drawable\NewIcon4.png" />
 
-    <AndroidResource Include="Resources\Drawable\SteelDrum2.png" />
     <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
     <AndroidResource Include="Resources\Drawable\Choir.png" />
     <AndroidResource Include="Resources\Drawable\SoftBrass.png" />
     <AndroidResource Include="Resources\Drawable\infobutton.png" />
+    <AndroidResource Include="Resources\Drawable\SteelDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
@@ -194,9 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\Conga.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\SteelDrum.png" />
   </ItemGroup>
   <Import Project="..\Stepquencer\Stepquencer.projitems" Label="Shared" Condition="Exists('..\Stepquencer\Stepquencer.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
