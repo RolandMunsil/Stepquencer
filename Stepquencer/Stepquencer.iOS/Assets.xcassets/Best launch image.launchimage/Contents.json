@@ -55,7 +55,7 @@
       "minimum-system-version": "7.0",
       "orientation": "portrait",
       "extent": "full-screen",
-      "filename": "jkjkjk640x1136.png",
+      "filename": "LaunchImage640x1136.png",
       "size": "320x568",
       "subtype": "retina4",
       "scale": "2x",
@@ -110,7 +110,7 @@
     {
       "orientation": "portrait",
       "extent": "full-screen",
-      "filename": "jkjkjk.png",
+      "filename": "LaunchImage640x1136.png",
       "size": "320x568",
       "subtype": "retina4",
       "scale": "2x",

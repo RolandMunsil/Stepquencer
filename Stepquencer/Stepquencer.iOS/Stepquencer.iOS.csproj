@@ -164,7 +164,6 @@
     <ImageAsset Include="Assets.xcassets\Image.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Image.imageset\sidewaysmusicnotes.png" />
     <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\jkjkjk.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon80x80.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon120x120 2.png" />
@@ -172,7 +171,7 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon76x76.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon152x152.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon167x167.png" />
-    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\jkjkjk640x1136.png" />
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage640x1136.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets.xcassets\Best launch image.launchimage\" />
