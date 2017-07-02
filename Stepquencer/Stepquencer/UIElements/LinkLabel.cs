@@ -46,7 +46,7 @@ namespace Stepquencer
         /// <param name="author">Author.</param>
         public LinkLabel(Author author)
         {
-            String text = author.HasMultipleIcons ? "Icons made by" : "Icon made by ";
+            String text = author.HasMultipleIcons ? "Icons made by " : "Icon made by ";
             text += author.Name;
 
             this.Text = text;

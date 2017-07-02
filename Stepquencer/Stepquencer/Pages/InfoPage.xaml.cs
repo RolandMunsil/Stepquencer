@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Xamarin.Forms;
 
@@ -44,10 +45,35 @@ namespace Stepquencer
         private List<LinkLabel> ConstructLabels()
         {
             List<LinkLabel> linkLabels = new List<LinkLabel>();
+            //Author prevAuthor = new Author();
 
-            foreach (Author author in authors)
+
+            // Add an affiliate link for the first author
+            Author firstAuthor = authors.ElementAt(0);
+
+            LinkLabel firstAffiliate = new LinkLabel();
+            //firstAffiliate.Text = firstAuthor.Name.Equals(firstAuthor.AffiliateName) ? firstAuthor.Name : firstAuthor.AffiliateName;
+            //firstAffiliate.TextColor = Color.White;
+            // Other style settings
+            //linkLabels.Add(firstAffiliate);
+
+            for (int i = 0; i < authors.Count; i++)
             {
-                linkLabels.Add(new LinkLabel(author));
+                Author currentAuthor = authors.ElementAt(i);
+                /*
+                if (i > 0 && !prevAuthor.AffiliateLink.Equals(currentAuthor.AffiliateLink))     // If current author is affiliated with different site/group
+                {
+                    LinkLabel affiliateLabel = new LinkLabel();
+                    affiliateLabel.Text = currentAuthor.AffiliateName;
+                    affiliateLabel.TextColor = Color.White;
+                    //Other style choices
+                    linkLabels.Add(affiliateLabel);
+                }
+                */
+
+
+                linkLabels.Add(new LinkLabel(currentAuthor));
+                //prevAuthor = currentAuthor;
             }
 
             return linkLabels;
@@ -66,7 +92,7 @@ namespace Stepquencer
                 while (stream.Peek() != -1) //While there are no more lines left to read
                 {
                     string[] authorInfo = stream.ReadLine().Split('|');
-                    if (authorInfo.Length< 4)
+                    if (authorInfo.Length < 4)
                     {
                         authors.Add(new Author(authorInfo[0], authorInfo[1], authorInfo[2]));
                     }
