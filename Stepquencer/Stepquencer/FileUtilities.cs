@@ -89,6 +89,11 @@ namespace Stepquencer
             //Use StreamReader because the songs are in text foma
             StreamReader file = new StreamReader(stream);
 
+            if(file.ReadLine() != "VERSION 1")
+            {
+                throw new FileLoadException("Save file is in an invalid format");
+            }
+
             //The first line of a song file contains the number of beats
             //and the song's instruments. It usually looks something like
             //16 beats|Snare|BassDrum|Piano|Clap
@@ -143,6 +148,8 @@ namespace Stepquencer
 
             using (StreamWriter file = File.CreateText(filePath))
             {
+                file.WriteLine("VERSION 1");
+
                 //Format instrument names like so:
                 //Instrument1|Instrument2|Instrument3|etc.
                 String instrumentNames = String.Join("|", songToSave.Instruments.Select(instr => instr.name));
