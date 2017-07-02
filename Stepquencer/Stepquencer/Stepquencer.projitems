@@ -39,7 +39,6 @@
       <DependentUpon>InfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UIElements\LinkLabel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Author.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml">
@@ -65,7 +64,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)_iconAuthors.txt" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)credits.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\_colors.txt" />
