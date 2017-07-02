@@ -64,7 +64,7 @@ namespace Stepquencer
                 instrumentSlotLayout.Children.Add(button);      // Add to layout
                 selectedInstruments.Add(button.Instrument);     // Keep track of what colors are selected
 
-                if (sideButton.Equals(mainpage.selectedInstrButton))
+                if (sideButton.Selected)
                 {                                   //
                     selectedSlot = button;          // Makes sure previously selected slot is selected
                     button.Selected = true;         //
@@ -215,9 +215,9 @@ namespace Stepquencer
         /// <summary>
         /// Cancels the request to change instruments and sends user back to MoreOptions page
         /// </summary>
-        async void OnCancelClicked(Object sender, EventArgs e)
+        void OnCancelClicked(Object sender, EventArgs e)
         {
-            await Navigation.PopToRootAsync();
+            ReturnToMainPage();
         }
 
 
@@ -251,15 +251,26 @@ namespace Stepquencer
                 mainpage.ReplaceInstruments(instruments);
             });
 
-            returnToMainPage();                             
+            ReturnToMainPage();                             
         }
 
 
         /// <summary>
         /// Returns to main page.
         /// </summary>
-        async void returnToMainPage()
+        async void ReturnToMainPage()
         {
+            Device.BeginInvokeOnMainThread(delegate
+            {
+                foreach (InstrumentButton btn in mainpage.instrumentButtons)
+                {
+                    if (btn.Instrument == selectedSlot.Instrument)
+                    {
+                        mainpage.SetSelectedSidebarButton(btn);
+                        break;
+                    }
+                }
+            });
             await Navigation.PopToRootAsync();
         }
 

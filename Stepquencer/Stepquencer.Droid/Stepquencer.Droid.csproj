@@ -143,11 +143,12 @@
     <AndroidResource Include="Resources\Drawable\SlapBassLow%28old%29.png" />
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
     <AndroidResource Include="Resources\drawable\NewIcon4.png" />
-    <AndroidResource Include="Resources\Drawable\info-button.png" />
+
     <AndroidResource Include="Resources\Drawable\SteelDrum2.png" />
     <AndroidResource Include="Resources\Drawable\SlapBassLow.png" />
     <AndroidResource Include="Resources\Drawable\Choir.png" />
     <AndroidResource Include="Resources\Drawable\SoftBrass.png" />
+    <AndroidResource Include="Resources\Drawable\infobutton.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />

@@ -28,7 +28,7 @@ namespace Stepquencer
             //NavigationPage.SetHasBackButton(this, false);
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
-            ToolbarItems.Add(new ToolbarItem("About", "info-button.png", OnAboutClicked));    // Add button to info page on navigation bar
+            ToolbarItems.Add(new ToolbarItem("About", "infobutton.png", OnAboutClicked));    // Add button to info page on navigation bar
 
 
             // Initialize style for buttons on this page

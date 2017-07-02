@@ -130,15 +130,16 @@
 
     <BundleResource Include="Resources\Icon-Small%402x.png" />
     <BundleResource Include="Resources\swapinstr.png" />
-
-    <BundleResource Include="Resources\info-button.png" />
-
     <BundleResource Include="Resources\SteelDrum2.png" />
+
 
     <BundleResource Include="Resources\SlapBassLow.png" />
     <BundleResource Include="Resources\Choir.png" />
     <BundleResource Include="Resources\Conga.png" />
     <BundleResource Include="Resources\SoftBrass.png" />
+
+    <BundleResource Include="Resources\infobutton.png" />
+
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
