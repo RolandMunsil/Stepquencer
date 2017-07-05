@@ -19,6 +19,8 @@ namespace Stepquencer
         private Grid allInstruments;                      // Displays all instrument icons in a grid 
         private InstrumentButton selectedSlot;            // Currently selected instrument  
 
+        private Button doneButton;
+
         public ChangeInstrumentsPage(MainPage mainpage)
         {
             this.mainpage = mainpage;
@@ -151,10 +153,10 @@ namespace Stepquencer
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
-            Button doneButton = new Button
+            doneButton = new Button
             {
                 Text = "DONE",
-                TextColor = Color.White,
+                TextColor = Color.Gray,
                 BackgroundColor = Color.FromHex("#252525"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -208,6 +210,7 @@ namespace Stepquencer
                 selectedInstruments.Remove(selectedSlot.Instrument);        // Remove current instrument from list of instruments selected
                 selectedSlot.Instrument = clickedButton.Instrument;         // Set slot to hold the new instrument
                 selectedInstruments.Add(selectedSlot.Instrument);           // Update the list of colors selected
+                doneButton.TextColor = Color.White;                       // Make sure cancel button is no longer gray
             }
         }
 
@@ -222,7 +225,6 @@ namespace Stepquencer
 
 
 
-
         /// <summary>
         /// Switches the instruments used by main page then sends user back
         /// </summary>
@@ -230,28 +232,28 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         public void OnDoneClicked(Object sender, EventArgs e)
         {
-            // TODO: Warn the user about how things will change
+            // TODO: perhaps warn user how things will change if it's their first time?
 
-            //DisplayAlert("Not Enough Instruments!", "You need to select at least 4 instruments", "Dismiss");
-
-
-            // Switch the instruments being used by the main page
-
-            Instrument[] instruments = new Instrument[MainPage.NumInstruments];                       //
-            int index = 0;                                                      //
-            foreach (InstrumentButton button in instrumentSlotLayout.Children)  //
-            {                                                                   // Gather up current selected instruments in an array
-                instruments[index] = button.Instrument;                         //
-                index++;                                                        //
-            }                                                                   //
-
-            // Set up the main page for user's return and go back
-            Device.BeginInvokeOnMainThread( delegate 
+            if (doneButton.TextColor.Equals(Color.White))
             {
-                mainpage.ReplaceInstruments(instruments);
-            });
+                // Switch the instruments being used by the main page
 
-            ReturnToMainPage();                             
+                Instrument[] instruments = new Instrument[MainPage.NumInstruments];
+                int index = 0;                                                      //
+                foreach (InstrumentButton button in instrumentSlotLayout.Children)  //
+                {                                                                   // Gather up current selected instruments in an array
+                    instruments[index] = button.Instrument;                         //
+                    index++;                                                        //
+                }                                                                   //
+
+                // Set up the main page for user's return and go back
+                Device.BeginInvokeOnMainThread(delegate
+               {
+                   mainpage.ReplaceInstruments(instruments);
+               });
+
+                ReturnToMainPage();
+            }
         }
 
 

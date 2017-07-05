@@ -41,7 +41,7 @@ namespace Stepquencer
             };
 
 
-            // Initialize songTitleEntry
+            // Initialize text entry box
             songTitleEntry = new Entry
             {
                 Placeholder = "Enter song title",
@@ -50,6 +50,7 @@ namespace Stepquencer
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 WidthRequest = 300
             };
+            songTitleEntry.TextChanged += (sender, e) => OnTextChanged();
 
 
             // Initialize buttonLayout
@@ -71,7 +72,7 @@ namespace Stepquencer
             cancelButton = new Button
             {
                 Text = "CANCEL",
-                TextColor = Color.White,
+                TextColor = Color.Gray,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -98,7 +99,11 @@ namespace Stepquencer
         }
 
 
-
+        /// <summary>
+        /// Event Handler for both cancel button and save button
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
         async void OnButtonClicked(Object sender, EventArgs e)
         {
             Button buttonPressed = (Button)sender;
@@ -139,6 +144,21 @@ namespace Stepquencer
                     FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
                     await Navigation.PopToRootAsync();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the cancel button is grayed out if no song name has been entered
+        /// </summary>
+        private void OnTextChanged()
+        {
+            if (songTitleEntry.Text.Equals(""))
+            {
+                cancelButton.TextColor = Color.Gray;
+            }
+            else
+            {
+                cancelButton.TextColor = Color.White;
             }
         }
     }
