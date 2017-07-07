@@ -57,6 +57,7 @@ namespace Stepquencer
             InitializeComponent();
             BackgroundColor = Color.FromHex("#000000");         //* Set page style 
             NavigationPage.SetHasNavigationBar(this, false);    //*
+            DependencyService.Get<IStatusBar>().HideStatusBar();    // Make sure status bar is hidden
 
             MakeStepGrid();
 

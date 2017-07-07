@@ -39,6 +39,7 @@
       <DependentUpon>InfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UIElements\LinkLabel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IStatusBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml">

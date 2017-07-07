@@ -106,6 +106,7 @@
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <None Include="packages.config" />
+    <Compile Include="iOSStatusBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Cabasa.png" />
