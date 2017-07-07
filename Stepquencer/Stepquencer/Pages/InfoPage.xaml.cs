@@ -12,6 +12,8 @@ namespace Stepquencer
         public InfoPage()
         {
             this.BackgroundColor = Color.Black;
+            this.Title = "Credits";
+            ScrollView scroller = new ScrollView { Orientation = ScrollOrientation.Vertical };
             StackLayout pageLayout = new StackLayout { Orientation = StackOrientation.Vertical };
 
             using (StreamReader stream = new StreamReader(FileUtilities.LoadEmbeddedResource("credits.txt")))
@@ -31,7 +33,8 @@ namespace Stepquencer
                 }
             }
 
-            this.Content = pageLayout;
+            scroller.Content = pageLayout;
+            this.Content = scroller;
         }
     }
 }

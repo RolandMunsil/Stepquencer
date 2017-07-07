@@ -18,9 +18,9 @@ namespace Stepquencer
             //this.TextColor = Color.Blue;    // Default to traditional link color
 
             FormattedString fString = new FormattedString();
-            fString.Spans.Add(new Span() { Text = $"{text} (" });
+            fString.Spans.Add(new Span() { Text = $"{text} (" , ForegroundColor = Color.White});
             fString.Spans.Add(new Span() { Text = link, ForegroundColor = Color.Teal });
-            fString.Spans.Add(new Span() { Text = ")" });
+            fString.Spans.Add(new Span() { Text = ")" , ForegroundColor = Color.White});
             this.FormattedText = fString;
 
             this.gestureRecognizer = new TapGestureRecognizer();
