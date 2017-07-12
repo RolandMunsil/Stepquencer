@@ -144,9 +144,9 @@
     <AndroidResource Include="Resources\Drawable\CrashCymbal.png" />
     <AndroidResource Include="Resources\Drawable\HiHat.png" />
     <AndroidResource Include="Resources\Drawable\Icon.png" />
-    <AndroidResource Include="Resources\Drawable\KickDrum.png" />
     <AndroidResource Include="Resources\drawable\NewIcon4.png" />
     <AndroidResource Include="Resources\Drawable\infobutton.png" />
+    <AndroidResource Include="Resources\Drawable\KickDrum.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
