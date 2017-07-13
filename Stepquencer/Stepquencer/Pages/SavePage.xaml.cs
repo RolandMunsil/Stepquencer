@@ -63,7 +63,7 @@ namespace Stepquencer
             saveButton = new Button
             {
                 Text = "SAVE",
-                TextColor = Color.White,
+                TextColor = Color.Gray,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -72,7 +72,7 @@ namespace Stepquencer
             cancelButton = new Button
             {
                 Text = "CANCEL",
-                TextColor = Color.Gray,
+                TextColor = Color.White,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -115,10 +115,10 @@ namespace Stepquencer
             else
             {
                 char[] invalidChars = Path.GetInvalidFileNameChars();
-                if (songTitleEntry.Text.IndexOfAny(invalidChars) >= 0)
+                if (songTitleEntry.Text.Equals("") || songTitleEntry.Text.IndexOfAny(invalidChars) >= 0)
                 {
                     await DisplayAlert("Invalid filename!",
-                        $"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}",
+                        $"Filename cannot be empty or contain any of the following characters: {String.Join("", invalidChars)}",
                          "OK");
                 }
                 else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
@@ -126,7 +126,7 @@ namespace Stepquencer
                     //DisplayAlert returns boolean value
                     var answer = await DisplayAlert("Overwrite Warning", "A song with this name already exists. Do you want to overwrite it?", "Overwrite", "Cancel");
                     //If user presses "OK"
-                    if (answer.Equals(true))                           
+                    if (answer.Equals(true))
                     {
                         //Delete old song first
                         File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
@@ -154,11 +154,11 @@ namespace Stepquencer
         {
             if (songTitleEntry.Text.Equals(""))
             {
-                cancelButton.TextColor = Color.Gray;
+                saveButton.TextColor = Color.Gray;
             }
             else
             {
-                cancelButton.TextColor = Color.White;
+                saveButton.TextColor = Color.White;
             }
         }
     }
