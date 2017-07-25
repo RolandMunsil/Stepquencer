@@ -7,7 +7,6 @@
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
-		<integer>2</integer>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -25,8 +24,6 @@
 	<string>7.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>Stepquencer</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.bpfm-.Stepquencer</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>CFBundleName</key>
@@ -37,5 +34,7 @@
 	<string>Assets.xcassets/Best launch image.launchimage</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>CFBundleIdentifier</key>
+	<string>com.rmpg.stepquencer</string>
 </dict>
 </plist>
