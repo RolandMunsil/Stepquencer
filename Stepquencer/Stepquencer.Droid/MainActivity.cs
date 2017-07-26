@@ -18,9 +18,11 @@ namespace Stepquencer.Droid
     {
         protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(bundle);
+            App.screenWidth = (int)(Resources.DisplayMetrics.WidthPixels / Resources.DisplayMetrics.Density);   // Get device screen width
 
+            base.OnCreate(bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
+               
             LoadApplication(new Stepquencer.App());
         }
     }

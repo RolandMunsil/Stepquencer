@@ -22,10 +22,12 @@ namespace Stepquencer.iOS
 		//
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
+            App.screenWidth = (int)UIScreen.MainScreen.Bounds.Width;    // Get width of screen
+
 			global::Xamarin.Forms.Forms.Init ();
 			LoadApplication (new Stepquencer.App ());
 
-            UIApplication.SharedApplication.StatusBarHidden = true;
+            UIApplication.SharedApplication.StatusBarHidden = true;     // Initialize status bar to be hidden
 
 			return base.FinishedLaunching (app, options);
 		}
