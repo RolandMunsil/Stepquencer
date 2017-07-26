@@ -181,6 +181,7 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon100x100.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon72x72.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\NewIcon144x144.png" />
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage 2048x1536.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets.xcassets\Best launch image.launchimage\" />

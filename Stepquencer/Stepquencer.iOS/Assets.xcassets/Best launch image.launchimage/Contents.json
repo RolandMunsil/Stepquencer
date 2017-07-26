@@ -89,6 +89,7 @@
       "minimum-system-version": "7.0",
       "orientation": "landscape",
       "extent": "full-screen",
+      "filename": "LaunchImage 2048x1536.png",
       "size": "1024x768",
       "scale": "2x",
       "idiom": "ipad"
@@ -168,6 +169,7 @@
     {
       "orientation": "landscape",
       "extent": "full-screen",
+      "filename": "LaunchImage 2048x1536.png",
       "size": "1024x768",
       "scale": "2x",
       "idiom": "ipad"
