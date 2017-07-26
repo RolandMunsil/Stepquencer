@@ -33,6 +33,14 @@ namespace Stepquencer
                 }
             }
 
+            pageLayout.Children.Add(new Label
+            {
+                Text = "\nMade by Gabriel Brown, Roland Munsil, Paige Pfeiffer, and Mani Diaz\n© 2017 Gabriel Brown",
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.Center
+            });
+
             scroller.Content = pageLayout;
             this.Content = scroller;
         }

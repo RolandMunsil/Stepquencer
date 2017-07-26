@@ -8,6 +8,3 @@ Organ icon from Icons8.com|https://icons8.com/
 
 All sounds except clap are from the soundfont "SGM - V2.01" by David Shan|http://www.geocities.jp/shansoundfont/
 Clap sound is "Clap-Clean Reverb" by Freesound user young_daddy|http://freesound.org/people/young_daddy/
-
-Made by Gabriel Brown, Roland Munsil, Paige Pfeiffer, and Mani Diaz
-© 2017 Gabriel Brown
