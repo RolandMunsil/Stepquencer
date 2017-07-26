@@ -13,6 +13,7 @@ namespace Stepquencer
 
         private MainPage mainpage;
         public static int screenWidth;
+        public static bool isTablet;    // Based on TABLET_THRESHOLD
 
         public App ()
         {
@@ -28,6 +29,7 @@ namespace Stepquencer
         protected override void OnStart ()
         {
             // Handle when app starts
+            isTablet = screenWidth > TABLET_THRESHOLD;
             if (mainpage.firstTime) { mainpage.displayInstructions(); }
         }
 

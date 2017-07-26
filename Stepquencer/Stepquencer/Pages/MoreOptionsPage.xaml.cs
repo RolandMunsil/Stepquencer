@@ -30,7 +30,7 @@ namespace Stepquencer
             ToolbarItems.Add(new ToolbarItem("About", "infobutton.png", OnAboutClicked));    // Add button to info page on navigation bar
 
             DependencyService.Get<IStatusBar>().HideStatusBar();    // Make sure status bar is hidden
-
+            int fontSize = App.isTablet ? 40 : 20;                  // Sets default font size based on whether device is tablet or phone
 
             // Initialize style for buttons on this page
             Style buttonStyle = new Style(typeof(Button))
@@ -39,7 +39,7 @@ namespace Stepquencer
                 {
                     new Setter { Property = Button.TextColorProperty, Value = Color.White },        // Buttons will have white text,
                     new Setter { Property = Button.BackgroundColorProperty, Value = Color.Black },  // a black background,
-                    new Setter { Property = Button.FontSizeProperty, Value = 20 }                   // and a font size of 20
+                    new Setter { Property = Button.FontSizeProperty, Value = fontSize }             // and a font size based on the type of device
                 }
             };
 
