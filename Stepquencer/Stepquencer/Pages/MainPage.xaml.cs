@@ -42,6 +42,8 @@ namespace Stepquencer
 
         double scrollerActualWidth;
         double scrollerActualHeight;
+        double startScale;                              // Used for pinch gestures
+        double currentScale;                            //
 
         //We need to use multiple highlights because on android they can't be more than a certain height
         int highlight2StartRow = 13;
@@ -60,6 +62,10 @@ namespace Stepquencer
             DependencyService.Get<IStatusBar>().HideStatusBar(); // Make sure status bar is hidden
 
             MakeStepGrid();
+
+            PinchGestureRecognizer pinchRecognizer = new PinchGestureRecognizer();  //
+            pinchRecognizer.PinchUpdated += HandlePinch;                            // Handle when user pinches
+            stepgrid.GestureRecognizers.Add(pinchRecognizer);                       //
 
             // Initialize the SongPlayer
             player = new SongPlayer();
@@ -183,6 +189,7 @@ namespace Stepquencer
             {
                 Orientation = ScrollOrientation.Both  //Both vertical and horizontal orientation
             };
+
             scroller.Content = stepgrid;
 
             mastergrid.Children.Add(scroller, 1, 0);
@@ -589,6 +596,35 @@ namespace Stepquencer
         public async void displayInstructions()
         {
             await DisplayAlert("Welcome to Stepquencer!", "Tap on a square to place a sound, and hit play to hear your masterpiece.", "Get Started");
+        }
+
+
+        /// <summary>
+        /// Handles when user pinches stepgrid. Should scale it accordingly (to create zoom effect)
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void HandlePinch(object sender, PinchGestureUpdatedEventArgs e)
+        {
+
+            // TODO: figure what other types of bounds are needed
+            if (e.Status == GestureStatus.Started) {
+                // Store the current scale factor applied to the wrapped user interface element
+                startScale = Content.Scale;
+            }
+            if (e.Status == GestureStatus.Running)
+            {
+                // Calculate the scale factor to be applied.
+                currentScale += (e.Scale - 1) * startScale;
+                currentScale = Math.Max(0.5, currentScale);
+                currentScale = Math.Min(1, currentScale);
+
+
+                stepgrid.Scale = currentScale;                                      // Apply scale factor
+                //stepGridScaler.WidthRequest = stepgrid.Width * currentScale;
+                //stepGridScaler.HeightRequest = stepgrid.Height * currentScale;
+                scroller.ScrollToAsync(stepgrid, ScrollToPosition.Center, false);   // Scroll so stepgrid is in center
+            }
         }
     }
 }
