@@ -13,7 +13,7 @@ namespace Stepquencer
         private Entry songTitleEntry;               // Input Box for name of user's song
         private Button saveButton, cancelButton;    // Buttons to let user save or go back
 
-
+        private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
         public SavePage(MainPage mainpage)
         {
             this.mainpage = mainpage;                           // Need to pass in main page in order to change it on this page
@@ -35,7 +35,7 @@ namespace Stepquencer
                 Text = "Song Title",
                 TextColor = Color.White,
                 BackgroundColor = Color.FromHex("#2C2C2C"),
-                FontSize = 40,
+                FontSize = fontSize * 2,
                 HorizontalOptions = LayoutOptions.CenterAndExpand,
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
@@ -64,6 +64,7 @@ namespace Stepquencer
             {
                 Text = "SAVE",
                 TextColor = Color.Gray,
+                FontSize = fontSize,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -73,6 +74,7 @@ namespace Stepquencer
             {
                 Text = "CANCEL",
                 TextColor = Color.White,
+                FontSize = fontSize,
                 BackgroundColor = Color.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand

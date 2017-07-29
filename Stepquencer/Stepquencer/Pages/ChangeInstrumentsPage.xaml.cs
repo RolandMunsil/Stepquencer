@@ -20,6 +20,7 @@ namespace Stepquencer
         private InstrumentButton selectedSlot;            // Currently selected instrument  
 
         private Button doneButton;
+        private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
 
         public ChangeInstrumentsPage(MainPage mainpage)
         {
@@ -149,6 +150,7 @@ namespace Stepquencer
             {
                 Text = "CANCEL",
                 TextColor = Color.White,
+                FontSize = fontSize,
                 BackgroundColor = Color.FromHex("#252525"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -157,6 +159,7 @@ namespace Stepquencer
             {
                 Text = "DONE",
                 TextColor = Color.Gray,
+                FontSize = fontSize,
                 BackgroundColor = Color.FromHex("#252525"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand

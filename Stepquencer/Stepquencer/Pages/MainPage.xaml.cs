@@ -43,7 +43,11 @@ namespace Stepquencer
         double scrollerActualWidth;
         double scrollerActualHeight;
         double startScale;                              // Used for pinch gestures
-        double currentScale;                            //
+        double currentScale = 1;                        //
+        double leftLimit;
+        double rightLimit;
+        double downLimit;
+        double upLimit;
 
         //We need to use multiple highlights because on android they can't be more than a certain height
         int highlight2StartRow = 13;
@@ -51,8 +55,6 @@ namespace Stepquencer
         Button playStopButton;                          // Button to play and stop the music.
 
         public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
-      
-
 
         public MainPage()
         {
@@ -63,9 +65,9 @@ namespace Stepquencer
 
             MakeStepGrid();
 
-            PinchGestureRecognizer pinchRecognizer = new PinchGestureRecognizer();  //
-            pinchRecognizer.PinchUpdated += HandlePinch;                            // Handle when user pinches
-            stepgrid.GestureRecognizers.Add(pinchRecognizer);                       //
+            //PinchGestureRecognizer pinchRecognizer = new PinchGestureRecognizer();  //
+            //pinchRecognizer.PinchUpdated += HandlePinch;                            // Handle when user pinches
+            //stepgrid.GestureRecognizers.Add(pinchRecognizer);                       //
 
             // Initialize the SongPlayer
             player = new SongPlayer();
@@ -193,8 +195,6 @@ namespace Stepquencer
             scroller.Content = stepgrid;
 
             mastergrid.Children.Add(scroller, 1, 0);
-            scroller.Scrolled += UpdateScrollBars;     //scrolled event that calls method to update scrollbars.
-
 
             // Make the Relative layouts that will hold the sidebars and place them in their proper positions in mastergrid
             verticalBarArea = new RelativeLayout();
@@ -207,7 +207,8 @@ namespace Stepquencer
             DrawScrollBar(verticalScrollBar);
 
 
-            scroller.Scrolled += UpdateScrollBars;              // Scrolled event that calls method to update scrollbars
+            //scroller.Scrolled += UpdateScrollBars;              // Scrolled event that calls method to update scrollbars
+            scroller.Scrolled += BoundedScroll;
 
             mastergrid.Children.Add(sidebar, 2, 0);             // Add sidebar to final column of mastergrid
             Grid.SetRowSpan(sidebar, 2);                        //make sidebar take up both rows in rightmost column
@@ -217,13 +218,46 @@ namespace Stepquencer
         }
 
 
+        private void BoundedScroll(Object o, ScrolledEventArgs e)
+        {
+            UpdateScrollBars();
+
+            //leftLimit = ((stepgrid.Width / 2) - (stepgrid.Width * stepgrid.Scale / 2));      //
+            //rightLimit = (stepgrid.Width / 2) + (stepgrid.Width * stepgrid.Scale / 2) - scroller.Width;     // Might not want to declare
+            //downLimit = ((stepgrid.Height / 2) - (stepgrid.Height * stepgrid.Scale / 2));    // new ones every time?
+            //upLimit = (stepgrid.Height / 2) + (stepgrid.Height * stepgrid.Scale / 2) - scroller.Height;    //
+
+            //if (leftLimit > rightLimit)
+            //{
+            //    leftLimit = rightLimit - (leftLimit - rightLimit);  // If floating point conversion errors put leftlimit to the right of rightlimit, set it back
+            //}
+            //if (downLimit > upLimit)
+            //{
+            //    downLimit = upLimit - (downLimit - upLimit);
+            //}
+
+            //double newX = Clamp(scroller.ScrollX, leftLimit, rightLimit);
+            //double newY = Clamp(scroller.ScrollY, downLimit, upLimit);
+
+            //System.Diagnostics.Debug.WriteLine("\nScrollX: " + scroller.ScrollX + " ScrollY: " + scroller.ScrollY);
+            //System.Diagnostics.Debug.WriteLine("leftLimit: " + leftLimit + " rightLimit: " + rightLimit);
+            //System.Diagnostics.Debug.WriteLine("downLimit: " + downLimit + " uplimit: " + upLimit);
+            //System.Diagnostics.Debug.WriteLine("width: " + stepgrid.Width + " height: " + stepgrid.Height);
+            //System.Diagnostics.Debug.WriteLine("currentScale: " + currentScale + "\n");
+
+            //if (scroller.ScrollX < leftLimit || scroller.ScrollY < downLimit || scroller.ScrollX > rightLimit || scroller.ScrollY > upLimit)
+            //{
+            //    scroller.ScrollToAsync(newX, newY, false);   // might want to make false
+            //}
+        }
+
     
         /// <summary>
         /// This method redraws the scrollbars when the scroller.Scrolled event is raised
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        private void UpdateScrollBars(Object o, ScrolledEventArgs e)
+        private void UpdateScrollBars()
         {
             if (scroller.ScrollX !=  0)   //when scroller.ScrollX == 0 there is some odd, glitchy, jumpy behavior with scrollbars.
             {
@@ -246,6 +280,8 @@ namespace Stepquencer
         /// <param name="isVertical"></param>
         private void DrawScrollBar(BoxView scrollBar)
         {
+            //TODO: make sure it takes scale into account and adjusts size
+
             if (scrollBar == verticalScrollBar)
             {
                 verticalBarArea.Children.Remove(scrollBar);
@@ -619,12 +655,26 @@ namespace Stepquencer
                 currentScale = Math.Max(0.5, currentScale);
                 currentScale = Math.Min(1, currentScale);
 
+                System.Diagnostics.Debug.WriteLine("Pinch event scale: " + e.Scale);
 
-                stepgrid.Scale = currentScale;                                      // Apply scale factor
-                //stepGridScaler.WidthRequest = stepgrid.Width * currentScale;
-                //stepGridScaler.HeightRequest = stepgrid.Height * currentScale;
-                scroller.ScrollToAsync(stepgrid, ScrollToPosition.Center, false);   // Scroll so stepgrid is in center
+                stepgrid.Scale = currentScale;  // Apply scale factor
+
+                //scroller.ScrollToAsync(stepgrid, ScrollToPosition.Center, false);   // Scroll so stepgrid is in center
+                scroller.ScrollToAsync(e.ScaleOrigin.X, e.ScaleOrigin.Y, false);
             }
+        }
+
+        /// <summary>
+        /// Returns a version of the given value restricted between low and high
+        /// </summary>
+        /// <returns>The clamp.</returns>
+        /// <param name="val">Value.</param>
+        /// <param name="low">Low.</param>
+        /// <param name="high">High.</param>
+        private double Clamp(double val, double low, double high)
+        {
+            val = (val < low) ? low : ((val > high) ? high : val);
+            return val;
         }
     }
 }

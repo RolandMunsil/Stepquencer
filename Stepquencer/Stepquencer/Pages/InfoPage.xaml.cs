@@ -13,7 +13,12 @@ namespace Stepquencer
         {
             this.BackgroundColor = Color.Black;
             this.Title = "Credits";
-            ScrollView scroller = new ScrollView { Orientation = ScrollOrientation.Vertical };
+            ScrollView scroller = new ScrollView 
+            { 
+                Orientation = ScrollOrientation.Vertical, 
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
             StackLayout pageLayout = new StackLayout { Orientation = StackOrientation.Vertical };
 
             using (StreamReader stream = new StreamReader(FileUtilities.LoadEmbeddedResource("credits.txt")))

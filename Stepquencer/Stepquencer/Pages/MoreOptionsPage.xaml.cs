@@ -31,6 +31,7 @@ namespace Stepquencer
 
             DependencyService.Get<IStatusBar>().HideStatusBar();    // Make sure status bar is hidden
             int fontSize = App.isTablet ? 40 : 20;                  // Sets default font size based on whether device is tablet or phone
+            //System.Diagnostics.Debug.WriteLine("isTAblet: " + App.isTablet);
 
             // Initialize style for buttons on this page
             Style buttonStyle = new Style(typeof(Button))
@@ -51,13 +52,13 @@ namespace Stepquencer
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }); // Column for slider should take up 2/3 of horizontal space
 
-
+            //fontSize = 21;
             // Initialize tempo label
             Label tempoLabel = new Label
             {
                 Text = "Tempo: ",
                 TextColor = Color.White,
-                FontSize = 24,
+                FontSize = fontSize + 4,
                 HorizontalTextAlignment = TextAlignment.Center,     //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
                 HorizontalOptions = LayoutOptions.EndAndExpand      //* 
@@ -69,7 +70,7 @@ namespace Stepquencer
             {
                 Text = mainpage.song.Tempo + " BPM",
                 TextColor = Color.White,
-                FontSize = 20,
+                FontSize = fontSize,
                 HorizontalTextAlignment = TextAlignment.End,        //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
                 HorizontalOptions = LayoutOptions.CenterAndExpand   //*
