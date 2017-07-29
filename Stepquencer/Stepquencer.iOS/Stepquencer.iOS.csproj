@@ -136,6 +136,22 @@
     <BundleResource Include="Resources\CongaHi.png" />
     <BundleResource Include="Resources\KickDrum.png" />
     <BundleResource Include="Resources\SynthBrass.png" />
+    <BundleResource Include="Resources\Piano_Tab.png" />
+    <BundleResource Include="Resources\BalladSnare_Tab.png" />
+    <BundleResource Include="Resources\Atmosphere_Tab.png" />
+    <BundleResource Include="Resources\KickDrum_Tab.png" />
+    <BundleResource Include="Resources\Cabasa_Tab.png" />
+    <BundleResource Include="Resources\ChoirAah_Tab.png" />
+    <BundleResource Include="Resources\Clap_Tab.png" />
+    <BundleResource Include="Resources\CongaHi_Tab.png" />
+    <BundleResource Include="Resources\CrashCymbal_Tab.png" />
+    <BundleResource Include="Resources\SlapBassLow_Tab.png" />
+    <BundleResource Include="Resources\SteelDrum_Tab.png" />
+    <BundleResource Include="Resources\SlapBassHigh_Tab.png" />
+    <BundleResource Include="Resources\HiHat_Tab.png" />
+    <BundleResource Include="Resources\SynthBrass_Tab.png" />
+    <BundleResource Include="Resources\PipeOrgan_Tab.png" />
+    <BundleResource Include="Resources\RecordScratch_Tab.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

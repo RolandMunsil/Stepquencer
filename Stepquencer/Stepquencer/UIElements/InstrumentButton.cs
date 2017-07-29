@@ -22,7 +22,7 @@ namespace Stepquencer
             set
             {
                 this.instrument = value;
-                this.Image = $"{instrument.name}.png";
+                this.Image = App.isTablet ? $"{instrument.name}_Tab.png" : $"{instrument.name}.png";
                 this.BackgroundColor = instrument.color;
             }
         }

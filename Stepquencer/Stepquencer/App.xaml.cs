@@ -17,7 +17,7 @@ namespace Stepquencer
 
         public App ()
         {
-            
+            isTablet = screenWidth > TABLET_THRESHOLD;
             mainpage = new MainPage();
             MainPage = new NavigationPage(mainpage) 
             {
@@ -29,7 +29,6 @@ namespace Stepquencer
         protected override void OnStart ()
         {
             // Handle when app starts
-            isTablet = screenWidth > TABLET_THRESHOLD;
             if (mainpage.firstTime) { mainpage.displayInstructions(); }
         }
 
