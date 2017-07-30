@@ -16,17 +16,17 @@
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>MinimumOSVersion</key>
 	<string>7.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>Stepquencer</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleName</key>
 	<string>Stepquencer</string>
 	<key>XSAppIconAssets</key>
@@ -36,6 +36,8 @@
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>CFBundleIdentifier</key>
-	<string>com.rmpg.stepquencer</string>
+	<string>com.bpfm-.Stepquencer</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 </dict>
 </plist>

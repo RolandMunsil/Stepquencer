@@ -70,7 +70,7 @@
     <CodesignKey>iPhone Developer: tomoe97@comcast.net (7RB5E7JE37)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodesignProvision></CodesignProvision>
+    <CodesignProvision>iOS Team Provisioning Profile: com.bpfm-.Stepquencer</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
