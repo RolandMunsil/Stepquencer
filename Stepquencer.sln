@@ -93,9 +93,13 @@ Global
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.TextStylePolicy = $1
-		$1.FileWidth = 120
-		$1.inheritsSet = VisualStudio
-		$1.inheritsScope = text/plain
 		$1.scope = text/plain
+		$1.TabsToSpaces = True
+		$0.TextStylePolicy = $2
+		$2.TabsToSpaces = True
+		$2.scope = text/x-csharp
+		$2.inheritsSet = null
+		$0.CSharpFormattingPolicy = $3
+		$3.scope = text/x-csharp
 	EndGlobalSection
 EndGlobal
