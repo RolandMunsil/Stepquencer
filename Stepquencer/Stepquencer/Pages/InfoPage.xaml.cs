@@ -15,11 +15,9 @@ namespace Stepquencer
             this.Title = "Credits";
             ScrollView scroller = new ScrollView 
             { 
-                Orientation = ScrollOrientation.Vertical, 
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
+                Orientation = ScrollOrientation.Vertical
             };
-            StackLayout pageLayout = new StackLayout { Orientation = StackOrientation.Vertical };
+            StackLayout musicCreditsLayout = new StackLayout { Orientation = StackOrientation.Vertical};
 
             using (StreamReader stream = new StreamReader(FileUtilities.LoadEmbeddedResource("credits.txt")))
             {
@@ -28,25 +26,32 @@ namespace Stepquencer
                     String line = stream.ReadLine();
                     if (line == "")
                     {
-                        pageLayout.Children.Add(new Label());
+                        musicCreditsLayout.Children.Add(new Label());
                     }
                     else
                     {
                         String[] parts = line.Split('|');
-                        pageLayout.Children.Add(new LinkLabel(parts[0], parts[1]));
+
+                        LinkLabel label = new LinkLabel(parts[0], parts[1]);
+                        //label.HorizontalOptions = LayoutOptions.Center;
+                        musicCreditsLayout.Children.Add(label);
                     }
                 }
             }
 
-            pageLayout.Children.Add(new Label
+			Label ourCredit = new Label
             {
                 Text = "\nMade by Gabriel Brown, Roland Munsil, Paige Pfeiffer, and Mani Diaz\n© 2017 Gabriel Brown",
                 TextColor = Color.White,
                 HorizontalTextAlignment = TextAlignment.Center,
-                HorizontalOptions = LayoutOptions.Center
-            });
+                VerticalTextAlignment = TextAlignment.End,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.End
+            };
 
-            scroller.Content = pageLayout;
+            musicCreditsLayout.Children.Add(ourCredit);
+
+            scroller.Content = musicCreditsLayout;
             this.Content = scroller;
         }
     }

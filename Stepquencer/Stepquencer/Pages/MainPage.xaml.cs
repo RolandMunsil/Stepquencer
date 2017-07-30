@@ -53,8 +53,10 @@ namespace Stepquencer
         int highlight2StartRow = 13;
         BoxView[] highlights;                           // Transparent View objects that takes up a whole column, moves to indicate beat
         Button playStopButton;                          // Button to play and stop the music.
+        string playImageName;                               // Name of play button image file (depends on whether or not device is tablet)
+        string stopImageName;                               // Name of stop button image file (depends on whether or not device is tablet)
 
-        public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
+		public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
 
         public MainPage()
         {
@@ -89,61 +91,9 @@ namespace Stepquencer
                 firstTime = false;
             }
 
-
-            // Make the sidebar
-            sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
-
-            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            for (int i = 0; i < NumInstruments + 2; i++)
-            {
-                sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            }
-
-
-            // Fill sidebar with buttons and put them in the instrumentButtons array
-            instrumentButtons = new InstrumentButton[song.Instruments.Length];
-            for (int i = 0; i < song.Instruments.Length; i++)
-            {
-                InstrumentButton button = new InstrumentButton(song.Instruments[i]);   // Make a new button
-
-                if (i == 0)                         //* 
-                {                                   //*
-                    button.Selected = true;         //* Initialize first sidebar button to be highlighted
-                    selectedInstrButton = button;   //*
-                }                                   //*
-                button.Clicked += OnSidebarClicked; // Add button to an event handler                                 
-
-
-                sidebar.Children.Add(button, 0, i + 1);    // Add button to sidebar
-                instrumentButtons[i] = button;           // and instrumentButtons  
-
-            }
-
-
-            // Add a button to get to the MoreOptionsPage
-            Button moreOptionsButton = new Button
-            {
-                BackgroundColor = Color.Black,
-                Font = Font.SystemFontOfSize(40),
-                Image = "settings.png",
-                TextColor = Color.White
-            };
-            sidebar.Children.Add(moreOptionsButton, 0, 0);
-            moreOptionsButton.Clicked += OnMoreOptionsClicked;
-
-
-            // Add a button to play/stop the SongPlayer
-            playStopButton = new Button
-            {
-                BackgroundColor = Color.Black,
-                Font = Font.SystemFontOfSize(40),
-                TextColor = Color.White,
-                BorderRadius = 0,
-            };
-            playStopButton.Image = "play.png";              //* Initialize playStop button as
-            sidebar.Children.Add(playStopButton, 0, 5);     //* stopped, add it to the sidebar,
-            playStopButton.Clicked += OnPlayStopClicked;    //* and add an event listener
-
+            playImageName = App.isTablet ? "play_Tab.png" : "play.png";
+            stopImageName = App.isTablet ? "stop_Tab.png" : "stop.png";
+            MakeSideBar();
 
             // Initialize the highlight box
             highlights = new BoxView[2];
@@ -396,7 +346,62 @@ namespace Stepquencer
             }
         }
 
+        private void MakeSideBar()
+        {
+            // Make the sidebar
+            sidebar = new Grid { ColumnSpacing = 1, RowSpacing = 1 };
 
+            sidebar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            for (int i = 0; i < NumInstruments + 2; i++)
+            {
+                sidebar.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            }
+
+
+            // Fill sidebar with buttons and put them in the instrumentButtons array
+            instrumentButtons = new InstrumentButton[song.Instruments.Length];
+            for (int i = 0; i < song.Instruments.Length; i++)
+            {
+                InstrumentButton button = new InstrumentButton(song.Instruments[i]);   // Make a new button
+
+                if (i == 0)                         //* 
+                {                                   //*
+                    button.Selected = true;         //* Initialize first sidebar button to be highlighted
+                    selectedInstrButton = button;   //*
+                }                                   //*
+                button.Clicked += OnSidebarClicked; // Add button to an event handler                                 
+
+
+                sidebar.Children.Add(button, 0, i + 1);    // Add button to sidebar
+                instrumentButtons[i] = button;           // and instrumentButtons  
+
+            }
+
+
+            // Add a button to get to the MoreOptionsPage
+            Button moreOptionsButton = new Button
+            {
+                BackgroundColor = Color.Black,
+                Font = Font.SystemFontOfSize(40),
+                Image = App.isTablet ? "settings_Tab.png" : "settings.png",
+                TextColor = Color.White
+            };
+            sidebar.Children.Add(moreOptionsButton, 0, 0);
+            moreOptionsButton.Clicked += OnMoreOptionsClicked;
+
+
+            // Add a button to play/stop the SongPlayer
+            playStopButton = new Button
+            {
+                BackgroundColor = Color.Black,
+                Font = Font.SystemFontOfSize(40),
+                TextColor = Color.White,
+                BorderRadius = 0,
+            };
+            playStopButton.Image = playImageName;              //* Initialize playStop button as
+            sidebar.Children.Add(playStopButton, 0, 5);     //* stopped, add it to the sidebar,
+            playStopButton.Clicked += OnPlayStopClicked;    //* and add an event listener
+        }
 
         /// <summary>
         /// Makes a textless label that can be used as either a notelabel or measurelabel for the stepgrid.
@@ -546,7 +551,7 @@ namespace Stepquencer
             stepgrid.Children.Add(highlights[1], 0, highlight2StartRow);
             Grid.SetRowSpan(highlights[1], NumRows - highlight2StartRow);
             player.BeginPlaying(song);
-            playStopButton.Image = "stop.png";
+            playStopButton.Image = stopImageName;
         }
 
 
@@ -559,7 +564,7 @@ namespace Stepquencer
             if (player.IsPlaying)
             {
                 player.StopPlaying();
-                playStopButton.Image = "play.png";
+                playStopButton.Image = playImageName;
                 foreach (BoxView highlight in highlights)
                 {
                     stepgrid.Children.Remove(highlight);

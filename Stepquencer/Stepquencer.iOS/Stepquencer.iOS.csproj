@@ -27,7 +27,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Distribution: Gabriel Brown (BEGJPU5RG6)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -39,6 +39,7 @@
     <MtouchArch>i386, x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodesignKey>iPhone Distribution: Gabriel Brown (BEGJPU5RG6)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,10 +67,10 @@
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Distribution: Gabriel Brown (BEGJPU5RG6)</CodesignKey>
+    <CodesignKey>iPhone Developer: tomoe97@comcast.net (7RB5E7JE37)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodesignProvision>Team StepQ</CodesignProvision>
+    <CodesignProvision></CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -152,6 +153,9 @@
     <BundleResource Include="Resources\SynthBrass_Tab.png" />
     <BundleResource Include="Resources\PipeOrgan_Tab.png" />
     <BundleResource Include="Resources\RecordScratch_Tab.png" />
+    <BundleResource Include="Resources\play_Tab.png" />
+    <BundleResource Include="Resources\settings_Tab.png" />
+    <BundleResource Include="Resources\stop_Tab.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
