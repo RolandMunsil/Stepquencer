@@ -202,6 +202,8 @@ namespace Stepquencer
             if (mainpage.clearedSong != null)
             {
                 mainpage.UndoClear();
+                bpmLabel.Text = "";     // Makes for smoother transition
+                tempoSlider.Value = mainpage.song.Tempo;
                 undoClearButton.TextColor = Color.Gray;
             }
         }
