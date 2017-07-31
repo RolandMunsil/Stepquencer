@@ -1,6 +1,7 @@
 ﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Xamarin.Forms;
 
@@ -58,7 +59,7 @@ namespace Stepquencer
 
 		public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
 
-        public MainPage()
+        public MainPage(String songStringFromUrl = null)
         {
             InitializeComponent();
             BackgroundColor = Color.FromHex("#000000");          //* Set page style 
@@ -89,6 +90,14 @@ namespace Stepquencer
             {
                 song = new Song(NumColumns, startSong.Instruments, startSong.Tempo);
                 firstTime = false;
+            }
+
+            if(songStringFromUrl != null)
+            {
+                firstTime = false;
+
+                song = FileUtilities.GetSongFromSongString(songStringFromUrl);
+                UpdateStepGridToMatchSong();
             }
 
             playImageName = App.isTablet ? "play_Tab.png" : "play.png";

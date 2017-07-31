@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -148,24 +149,64 @@ namespace Stepquencer
 
             using (StreamWriter file = File.CreateText(filePath))
             {
-                file.WriteLine("VERSION 1");
-
-                //Format instrument names like so:
-                //Instrument1|Instrument2|Instrument3|etc.
-                String instrumentNames = String.Join("|", songToSave.Instruments.Select(instr => instr.name));
-                file.WriteLine($"{songToSave.BeatCount} total beats|{instrumentNames}");
-
-                for (int i = 0; i < songToSave.BeatCount; i++)
-                {
-                    Instrument.Note[] notes = songToSave.NotesAtBeat(i);
-                    file.WriteLine($"Beat {i}|{notes.Length}");
-                    foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
-                    {
-                        file.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
-                    }
-                }
-                file.WriteLine(songToSave.Tempo);
+                WriteSongToStream(songToSave, file);
             }
+        }
+
+        public static void WriteSongToStream(Song songToSave, StreamWriter stream)
+        {
+            stream.WriteLine("VERSION 1");
+
+            //Format instrument names like so:
+            //Instrument1|Instrument2|Instrument3|etc.
+            String instrumentNames = String.Join("|", songToSave.Instruments.Select(instr => instr.name));
+            stream.WriteLine($"{songToSave.BeatCount} total beats|{instrumentNames}");
+
+            for (int i = 0; i < songToSave.BeatCount; i++)
+            {
+                Instrument.Note[] notes = songToSave.NotesAtBeat(i);
+                stream.WriteLine($"Beat {i}|{notes.Length}");
+                foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
+                {
+                    stream.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
+                }
+            }
+            stream.WriteLine(songToSave.Tempo);
+        }
+
+        private static String GetSongString(Song song)
+        {
+            byte[] compressedData;
+            using (MemoryStream compressStream = new MemoryStream())
+            {
+                using (DeflateStream compressor = new DeflateStream(compressStream, CompressionMode.Compress))
+                {
+                    using (StreamWriter writer = new StreamWriter(compressor))
+                    {
+                        WriteSongToStream(song, writer);
+                    }
+                    compressedData = compressStream.ToArray();
+                }
+            }
+            return Convert.ToBase64String(compressedData);
+        }
+
+        public static Song GetSongFromSongString(String urlString)
+        {
+            byte[] compressedData = Convert.FromBase64String(urlString);
+
+            using (MemoryStream decompressStream = new MemoryStream(compressedData))
+            {
+                using (DeflateStream decompressor = new DeflateStream(decompressStream, CompressionMode.Decompress))
+                {
+                    return LoadSongFromStream(decompressor);
+                }
+            }
+        }
+
+        public static String GetShareableSongURL(Song song)
+        {
+            return $"https://rolandmunsil.github.io/Sharequencer?s={GetSongString(song)}";
         }
     }
 }

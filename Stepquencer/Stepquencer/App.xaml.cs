@@ -15,10 +15,12 @@ namespace Stepquencer
         public static int screenWidth;
         public static bool isTablet;    // Based on TABLET_THRESHOLD
 
-        public App ()
+        public App(String songStringFromUrl = null)
         {
+            //Uncomment to test out url loading code. This is the startup song
+            //songStringFromUrl = "C3MNCvb091Mw5OUyNFMoyS9JzFFISk0sKa4JzkkscEosLvbJL69xSszJSUwJzkssSq1xBorXeGR6JJbwcjkBVSoY1AA1I6mwModKGIIkwCrhQkYgIZAJcBFjTEUmmEKmNUbIQlgsM6sxxq0CxUZzolVa4PKZJaYLDQ0wvGaIJQAMjbCIGRP0naEJ0Y42NCVGqZGJAS8XAA==";
             isTablet = screenWidth > TABLET_THRESHOLD;
-            mainpage = new MainPage();
+            mainpage = new MainPage(songStringFromUrl);
             MainPage = new NavigationPage(mainpage) 
             {
                 BarBackgroundColor = Color.Black,

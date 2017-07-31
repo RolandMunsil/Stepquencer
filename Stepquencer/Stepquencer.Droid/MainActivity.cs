@@ -14,6 +14,12 @@ using System.Threading;
 namespace Stepquencer.Droid
 {
     [Activity (Label = "Stepquencer", Icon = "@drawable/NewIcon4", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Landscape)]
+    [IntentFilter(new[] {
+        Android.Content.Intent.ActionView }, 
+        Categories = new[] {
+            Android.Content.Intent.CategoryDefault,
+            Android.Content.Intent.CategoryBrowsable },
+        DataScheme = "stepquencer")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
         protected override void OnCreate(Bundle bundle)
@@ -22,8 +28,17 @@ namespace Stepquencer.Droid
 
             base.OnCreate(bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
-               
-            LoadApplication(new Stepquencer.App());
+
+            String data = Intent?.Data?.EncodedAuthority;
+            if (data != null)
+            {
+                String songStr = data.Substring(data.IndexOf("=") + 1);
+                LoadApplication(new Stepquencer.App(songStr));
+            }
+            else
+            {
+                LoadApplication(new Stepquencer.App());
+            }
         }
     }
 }
