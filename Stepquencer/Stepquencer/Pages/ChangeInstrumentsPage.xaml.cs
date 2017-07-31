@@ -223,7 +223,8 @@ namespace Stepquencer
         /// </summary>
         void OnCancelClicked(Object sender, EventArgs e)
         {
-            ReturnToMainPage();
+            ReturnToMoreOptionsPage();
+            //ReturnToMainPage();
         }
 
 
@@ -251,9 +252,9 @@ namespace Stepquencer
 
                 // Set up the main page for user's return and go back
                 Device.BeginInvokeOnMainThread(delegate
-               {
+                {
                    mainpage.ReplaceInstruments(instruments);
-               });
+                });
 
                 ReturnToMainPage();
             }
@@ -276,7 +277,18 @@ namespace Stepquencer
                     }
                 }
             });
+            SingleNotePlayer.StopPlayingNote();
             await Navigation.PopToRootAsync();
+        }
+
+
+        /// <summary>
+        /// Returns to MoreOptions page.
+        /// </summary>
+        async void ReturnToMoreOptionsPage()
+        {
+            SingleNotePlayer.StopPlayingNote();
+            await Navigation.PopAsync();
         }
 
     }
