@@ -174,8 +174,6 @@ namespace Stepquencer
                     if (s < playingNotes[n].note.data.Length)
                         sampleSum += playingNotes[n].note.data[s];
                 }
-                //Divide sample sum by 4 to reduce audio clipping.
-                sampleSum /= 4;
 
                 //Clamp to the range of a short
                 short asShort;

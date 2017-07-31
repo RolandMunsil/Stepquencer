@@ -137,6 +137,9 @@ namespace Stepquencer
             {
                 int srcPos = (i * 2) + 44;
                 dataAsShorts[i] = (short)(rawInstrumentData[srcPos] | (rawInstrumentData[srcPos + 1] << 8));
+
+                //Divide samples by 4 to reduce clipping
+                dataAsShorts[i] /= 4;
             }
 
             Instrument instrument = new Instrument(dataAsShorts, instrName);
