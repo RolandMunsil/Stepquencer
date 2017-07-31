@@ -119,8 +119,6 @@ namespace Stepquencer
                     Grid.SetRowSpan(box, 1);                // Default the box to span one row
                     Grid.SetColumnSpan(box, 1);             // Default the box to span one column               
                 }
-
-                box.IsVisible = false;
             }
 
             //Sort colors so the same set of colors is always displayed the same
@@ -128,58 +126,68 @@ namespace Stepquencer
 
             if (colors.Count == 0)		// If the box is reverting to grey
             {
-                topLeft.IsVisible = true;
-
                 Grid.SetRowSpan(topLeft, 2);
                 Grid.SetColumnSpan(topLeft, 2);     // Make one box take up the whole space
+
+                SetVisibility(true, false, false, false);
             }
             else if (colors.Count == 1)		// If box will have one color
             {
-                topLeft.IsVisible = true;
-
                 topLeft.BackgroundColor = colors[0];
 
                 Grid.SetRowSpan(topLeft, 2);
                 Grid.SetColumnSpan(topLeft, 2);     // Make one button take up the whole space
+
+                SetVisibility(true, false, false, false);
             }
             else if (colors.Count == 2)	// If box will have two colors
             {
-                topLeft.IsVisible = true;
-                topRight.IsVisible = true;
-
                 topLeft.BackgroundColor = colors[0];
                 topRight.BackgroundColor = colors[1];
 
                 Grid.SetRowSpan(topLeft, 2);		// Make topLeft take up half of grid
                 Grid.SetRowSpan(topRight, 2);		// Make topRight take up half of grid
+
+                SetVisibility(true, true, false, false);
             }
             else if (colors.Count == 3)	// If box will have three colors
             {
-                topLeft.IsVisible = true;
-                topRight.IsVisible = true;
-                bottomRight.IsVisible = true;	//Make topright and bottomright visible, make bottom left invisible
-
                 topLeft.BackgroundColor = colors[0];
                 topRight.BackgroundColor = colors[1];
                 bottomRight.BackgroundColor = colors[2];
 
                 Grid.SetRowSpan(topLeft, 2);	// Make topLeft up take up half the grid; other two split the remaining space
+
+                SetVisibility(true, true, true, false);
             }
             else                    // If box will have four colors
             {
-                topRight.IsVisible = true;
-                topLeft.IsVisible = true;
-                bottomRight.IsVisible = true;		// Make all boxes visible
-                bottomLeft.IsVisible = true;
-
                 // Assign the correct colors
                 topLeft.BackgroundColor = colors[0];
                 topRight.BackgroundColor = colors[1];
                 bottomLeft.BackgroundColor = colors[2];
                 bottomRight.BackgroundColor = colors[3];
 
+                // Make all boxes visible
+                SetVisibility(true, true, true, true);
+
                 // No resizing needed
             }
+        }
+
+        /// <summary>
+        /// Set the visibility of all boxes in the Minigrid
+        /// </summary>
+        /// <param name="topLeft">If set to <c>true</c> top left.</param>
+        /// <param name="topRight">If set to <c>true</c> top right.</param>
+        /// <param name="bottomLeft">If set to <c>true</c> bottom left.</param>
+        /// <param name="bottomRight">If set to <c>true</c> bottom right.</param>
+        private void SetVisibility(bool topLeft, bool topRight, bool bottomRight, bool bottomLeft)
+        {
+            this.topLeft.IsVisible = topLeft;
+            this.topRight.IsVisible = topRight;
+            this.bottomRight.IsVisible = bottomRight;
+            this.bottomLeft.IsVisible = bottomLeft;
         }
     }
 }
