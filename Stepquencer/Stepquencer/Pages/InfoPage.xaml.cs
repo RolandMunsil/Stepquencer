@@ -24,9 +24,9 @@ namespace Stepquencer
                 while (stream.Peek() != -1)
                 {
                     String line = stream.ReadLine();
-                    if (line == "")
+                    if (!line.Contains('|'))
                     {
-                        musicCreditsLayout.Children.Add(new Label());
+                        musicCreditsLayout.Children.Add(new Label() { Text = line });
                     }
                     else
                     {

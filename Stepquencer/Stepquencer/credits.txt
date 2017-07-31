@@ -6,6 +6,12 @@
   • Conga by Iconnice|http://www.flaticon.com/authors/iconnice
 Organ icon from Icons8.com|https://icons8.com/
 
-
 All sounds except clap are from the soundfont "SGM - V2.01" by David Shan|http://www.geocities.jp/shansoundfont/
 Clap sound is "Clap-Clean Reverb" by Freesound user young_daddy|http://freesound.org/people/young_daddy/
+
+Share Plugin for Xamarin and Windows by Jakob Gürtl and James Montemagno licenced under the MIT license:
+The MIT License (MIT)
+Copyright (c) 2015 Jakob Gürtl & James Montemagno/Refractored LLC
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
