@@ -29,7 +29,7 @@ namespace Stepquencer
         protected override void OnStart ()
         {
             // Handle when app starts
-            if (mainpage.firstTime) { mainpage.displayInstructions(); }
+            if (mainpage.firstTime) { mainpage.DisplayInstructions(); }
         }
 
         protected override void OnSleep ()

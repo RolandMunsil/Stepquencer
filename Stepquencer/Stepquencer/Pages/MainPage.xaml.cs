@@ -638,7 +638,7 @@ namespace Stepquencer
         /// <summary>
         /// Displays a popup with instructions for a first-time user
         /// </summary>
-        public async void displayInstructions()
+        public async void DisplayInstructions()
         {
             await DisplayAlert("Welcome to Stepquencer!", "Tap on a square to place a sound, and hit play to hear your masterpiece.", "Get Started");
         }
