@@ -29,7 +29,7 @@ namespace Stepquencer.Droid
             base.OnCreate(bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            String data = Intent?.Data?.EncodedAuthority;
+            String data = Intent?.Data?.EncodedSchemeSpecificPart;
             if (data != null)
             {
                 String songStr = data.Substring(data.IndexOf("=") + 1);
