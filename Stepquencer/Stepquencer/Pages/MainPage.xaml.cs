@@ -510,7 +510,7 @@ namespace Stepquencer
 
                 if (!player.IsPlaying)
                 {
-                    SongPlayer.PlayNote(selectedInstrument.AtPitch(miniGrid.semitoneShift));   // Play note so long as not already playing a song
+                    SingleNotePlayer.PlayNote(selectedInstrument.AtPitch(miniGrid.semitoneShift));   // Play note so long as not already playing a song
                 }
             }
             else
@@ -551,6 +551,10 @@ namespace Stepquencer
             stepgrid.Children.Add(highlights[1], 0, highlight2StartRow);
             Grid.SetRowSpan(highlights[1], NumRows - highlight2StartRow);
             player.BeginPlaying(song);
+            //We call this after BeginPlaying because we know no more notes will try to play.
+            //If we did it before, the user could theoretically start a note playing in between StopPlayingNote and BeginPlaying and it
+            //wouldn't be stopped
+            SingleNotePlayer.StopPlayingNote();
             playStopButton.Image = stopImageName;
         }
 
@@ -597,7 +601,7 @@ namespace Stepquencer
 
             if (!player.IsPlaying)  // So long as the music isn't currently playing, the sidebar buttons play their sound when clicked
             {
-                SongPlayer.PlayNote(button.Instrument.AtPitch(0));
+                SingleNotePlayer.PlayNote(button.Instrument.AtPitch(0));
             }
             if (button != selectedInstrButton)
             {

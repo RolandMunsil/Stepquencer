@@ -186,7 +186,7 @@ namespace Stepquencer
         public void OnSlotClicked(Object sender, EventArgs e)
         {
             InstrumentButton slotClicked = (InstrumentButton)sender;
-            SongPlayer.PlayNote(slotClicked.Instrument.AtPitch(0));
+            SingleNotePlayer.PlayNote(slotClicked.Instrument.AtPitch(0));
 
             if (slotClicked.Selected == false)
             {
@@ -206,7 +206,7 @@ namespace Stepquencer
         public void OnInstrumentClicked(Object sender, EventArgs e)
         {
             InstrumentButton clickedButton = (InstrumentButton)sender;
-            SongPlayer.PlayNote(clickedButton.Instrument.AtPitch(0));
+            SingleNotePlayer.PlayNote(clickedButton.Instrument.AtPitch(0));
 
             if (!selectedInstruments.Contains(clickedButton.Instrument))
             {

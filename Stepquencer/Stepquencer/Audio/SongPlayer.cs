@@ -35,7 +35,7 @@ namespace Stepquencer
         object startStopSyncObject = new object();
 
         //Audio playback rate in Hz
-        const int PLAYBACK_RATE = 44100;
+        public const int PLAYBACK_RATE = 44100;
 
         //An event triggered at the start of every beat
         public delegate void OnBeatDelegate(int beatNum, bool firstBeat);
@@ -259,61 +259,7 @@ namespace Stepquencer
             nextBeat = (nextBeat + 1) % song.BeatCount;
         }
 
-        /// <summary>
-        /// Plays a single note. Separate from the rest of the song playing code
-        /// </summary>
-        public static void PlayNote(Instrument.Note note)
-        {
-#if __ANDROID__
-            AudioTrack track = new AudioTrack(
-                // Stream type
-                Android.Media.Stream.Music,
-                // Frequency
-                44100,
-                // Mono or stereo
-                ChannelOut.Mono,
-                // Audio encoding
-                Android.Media.Encoding.Pcm16bit,
-                // Length of the audio clip in bytes
-                (note.data.Length * 2),
-                // Mode. Stream or static.
-                AudioTrackMode.Static);
-
-            track.Write(note.data, 0, note.data.Length);
-
-            //Release the track after it's done playing
-            track.SetPositionNotificationPeriod(track.BufferSizeInFrames);
-            track.PeriodicNotification += (sender, args) =>
-            {
-                track.Release();
-                track.Dispose();
-            };
-
-            track.Play();
-#endif
-#if __IOS__
-            OutputAudioQueue queue = new OutputAudioQueue(AudioStreamBasicDescription.CreateLinearPCM(PLAYBACK_RATE, 1, 16, false));
-            unsafe
-            {
-                AudioQueueBuffer* buffer;
-                queue.AllocateBuffer(note.data.Length * 2, out buffer);
-
-                fixed (short* beatData = note.data)
-                {
-                    buffer->CopyToAudioData((IntPtr)beatData, note.data.Length * 2);
-                }
-
-                queue.EnqueueBuffer((IntPtr)buffer, note.data.Length * 2, null);
-            }
-
-            //Dispose of the queue once it's done playing
-            queue.BufferCompleted += (sender, args) =>
-            {
-                queue.Dispose();
-            };
-            queue.Start();
-#endif
-        }
+        
 
         /// <summary>
         /// Start the platform-specific audio object and give it some initial data (beat0 and beat1)
@@ -325,7 +271,7 @@ namespace Stepquencer
                 // Stream type
                 Android.Media.Stream.Music,
                 // Frequency
-                44100,
+                PLAYBACK_RATE,
                 // Mono or stereo
                 ChannelOut.Mono,
                 // Audio encoding

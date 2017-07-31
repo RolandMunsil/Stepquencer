@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Audio\SingleNotePlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FileUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomScrollViewRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\ChangeInstrumentsPage.xaml.cs">
@@ -76,7 +77,6 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Pages\" />
     <Folder Include="$(MSBuildThisFileDirectory)UIElements\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Audio\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Instruments\Atmosphere.wav" />
