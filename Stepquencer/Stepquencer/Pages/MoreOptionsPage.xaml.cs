@@ -58,7 +58,7 @@ namespace Stepquencer
             {
                 Text = "Tempo: ",
                 TextColor = Color.White,
-                FontSize = fontSize + 4,
+                FontSize = fontSize + 2,
                 HorizontalTextAlignment = TextAlignment.Center,     //*
                 VerticalTextAlignment = TextAlignment.Center,       //* Spacing/Alignment options
                 HorizontalOptions = LayoutOptions.EndAndExpand      //* 
