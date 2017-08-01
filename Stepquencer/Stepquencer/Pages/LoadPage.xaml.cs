@@ -19,6 +19,7 @@ namespace Stepquencer
         public LoadPage(MainPage mainpage) 
         {
             this.mainpage = mainpage;
+            this.Title = "Songs";
             this.BackgroundColor = Color.FromHex("#2C2C2C");
 
             // Initialize scrollview
@@ -103,15 +104,15 @@ namespace Stepquencer
         void OnSongTap(LoadUIElement uiElement)
         {
             //Uncomment this code to make the song share when the user taps
-            //if (!CrossShare.IsSupported)
-            //    throw new Exception();
+            if (!CrossShare.IsSupported)
+                throw new Exception();
 
-            //CrossShare.Current.Share(new ShareMessage
-            //{
-            //    Title = "Check out my song!",
-            //    Text = "I made a sweet song in Stepquencer!",
-            //    Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
-            //});
+            CrossShare.Current.Share(new ShareMessage
+            {
+                Title = "Check out my song!",
+                Text = "I made a sweet song in Stepquencer!",
+                Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
+            });
             mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
 
             //Does not let users undo clear after loading a song

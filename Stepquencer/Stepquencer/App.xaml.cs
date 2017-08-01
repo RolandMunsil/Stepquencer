@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,11 +47,12 @@ namespace Stepquencer
             // Handle when your app resumes
             if(songStringToImport != null)
             {
-                Device.BeginInvokeOnMainThread(delegate
-                {
-                    mainpage.SetSong(FileUtilities.GetSongFromSongString(songStringToImport));
-                });
-                songStringToImport = null;
+				Song s = FileUtilities.GetSongFromSongString(songStringToImport);
+				Device.BeginInvokeOnMainThread(delegate
+				{
+					mainpage.SetSong(s);
+				});
+				songStringToImport = null;
             }
         }
     }
