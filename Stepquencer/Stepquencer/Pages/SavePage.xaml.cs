@@ -12,6 +12,7 @@ namespace Stepquencer
         private MainPage mainpage;                  // The MainPage this screen came from
         private Entry songTitleEntry;               // Input Box for name of user's song
         private Button saveButton, cancelButton;    // Buttons to let user save or go back
+        private Song UrlLoadedSong;                 // Song that is to be loaded in after curent one is saved, if user loads by URL
 
         private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
         public SavePage(MainPage mainpage)
@@ -100,6 +101,11 @@ namespace Stepquencer
             Content = scroller;
         }
 
+        public SavePage(MainPage mainpage, Song songToBeLoaded) : this(mainpage)
+        {
+            UrlLoadedSong = songToBeLoaded;
+        }
+
 
         /// <summary>
         /// Event Handler for both cancel button and save button
@@ -111,9 +117,17 @@ namespace Stepquencer
             Button buttonPressed = (Button)sender;
 
             if (buttonPressed.Equals(cancelButton))
-            {                                         // If the cancel button was pushed, send user
-                await Navigation.PopToRootAsync();    // back to MoreOptionsPage.
-            }
+            {
+                if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+				{ 
+                    mainpage.SetSong(UrlLoadedSong);
+                    UrlLoadedSong = null;
+                }     
+
+
+				await Navigation.PopToRootAsync();     // Send user back to mainpage.
+
+			}
             else
             {
                 char[] invalidChars = Path.GetInvalidFileNameChars();
@@ -136,6 +150,16 @@ namespace Stepquencer
                         //Add new song
                         FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
 
+						//Set main grid song if necessary
+						if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+						{
+							mainpage.SetSong(UrlLoadedSong);
+							UrlLoadedSong = null;
+						}
+
+						//Make sure main page knows current state is saved
+						mainpage.loadedSongChanged = false;
+
                         //Go back to main grid
                         await Navigation.PopToRootAsync();
 
@@ -143,11 +167,20 @@ namespace Stepquencer
                 }
                 else
                 {
-                    FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
+                    FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);   // Save song
+
+					if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+					{
+						mainpage.SetSong(UrlLoadedSong);
+						UrlLoadedSong = null;
+					}         
+
+					mainpage.loadedSongChanged = false;                                 // Make sure mainpage knows current state is saved
                     await Navigation.PopToRootAsync();
                 }
             }
         }
+
 
         /// <summary>
         /// Ensures that the cancel button is grayed out if no song name has been entered

@@ -58,6 +58,7 @@ namespace Stepquencer
         string stopImageName;                               // Name of stop button image file (depends on whether or not device is tablet)
 
 		public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
+        public bool loadedSongChanged = false;   // Indicates whether the user has changed a song since they loaded a new one 
 
         public MainPage(String songStringFromUrl = null)
         {
@@ -459,6 +460,7 @@ namespace Stepquencer
         public void SetSong(Song newSong)
         {
             this.song = newSong;
+            loadedSongChanged = false;
 
             UpdateStepGridToMatchSong();
 
@@ -529,6 +531,7 @@ namespace Stepquencer
 
             //Undo clear stops woking when user adds stuff to grid so they don't accidentally undo clear
             clearedSong = null;
+            loadedSongChanged = true;  // If song is empty, no need to worry about changes, otherwise 
         }
 
 
@@ -683,6 +686,23 @@ namespace Stepquencer
                 scroller.ScrollToAsync(e.ScaleOrigin.X, e.ScaleOrigin.Y, false);
             }
         }
+
+		// <summary>
+		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
+		/// </summary>
+		public async void LoadWarning(Song songToBeLoaded)
+		{
+			var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
+
+            if (answer == false) // Save first
+			{
+				await Navigation.PushAsync(new SavePage(this, songToBeLoaded));
+			}
+			else
+			{
+				SetSong(songToBeLoaded);
+			}
+		}
 
         /// <summary>
         /// Returns a version of the given value restricted between low and high

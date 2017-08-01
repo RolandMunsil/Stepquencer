@@ -1,8 +1,4 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -50,7 +46,14 @@ namespace Stepquencer
 				Song s = FileUtilities.GetSongFromSongString(songStringToImport);
 				Device.BeginInvokeOnMainThread(delegate
 				{
-					mainpage.SetSong(s);
+                    if (!mainpage.loadedSongChanged)
+                    {
+                        mainpage.LoadWarning(s);
+                    }
+                    else
+                    {
+                        mainpage.SetSong(s);
+                    }
 				});
 				songStringToImport = null;
             }

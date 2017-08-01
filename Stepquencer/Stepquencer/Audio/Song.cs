@@ -35,6 +35,15 @@ namespace Stepquencer
             }
         }
 
+        /// <summary>
+        /// Returns true if song is empty
+        /// </summary>
+        /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+        public bool IsEmpty
+        {
+            get { return beats.Length == 0; }
+        }
+
         public Song(int numBeats, Instrument[] instruments, int tempo)
         {
             //Initialize the array of hashsets

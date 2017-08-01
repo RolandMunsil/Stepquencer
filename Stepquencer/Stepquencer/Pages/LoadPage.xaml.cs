@@ -104,6 +104,7 @@ namespace Stepquencer
         void OnSongTap(LoadUIElement uiElement)
         {
             //Uncomment this code to make the song share when the user taps
+            /*
             if (!CrossShare.IsSupported)
                 throw new Exception();
 
@@ -113,11 +114,21 @@ namespace Stepquencer
                 Text = "I made a sweet song in Stepquencer!",
                 Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
             });
-            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
+            */
 
-            //Does not let users undo clear after loading a song
-            mainpage.clearedSong = null;
-            ReturnToMainPage();
+            if (mainpage.loadedSongChanged)
+            {
+                mainpage.clearedSong = null;
+                LoadWarning(FileUtilities.LoadSongFromFile(uiElement.filePath));
+            }
+            else
+            {
+                mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
+
+                //Does not let users undo clear after loading a song
+                mainpage.clearedSong = null;
+                ReturnToMainPage();
+            }
         }
 
 
@@ -130,5 +141,23 @@ namespace Stepquencer
         {
             File.Delete(FileUtilities.PathToSongFile(songName));
         }
+
+		/// <summary>
+		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
+		/// </summary>
+        public async void LoadWarning(Song songToBeLoaded)
+		{
+			var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
+
+            if (answer == false) // Save first
+			{
+                await Navigation.PushAsync(new SavePage(mainpage, songToBeLoaded));
+			}
+			else
+			{
+                mainpage.SetSong(songToBeLoaded);
+                await Navigation.PopToRootAsync();
+			}
+		}
     }
 }
