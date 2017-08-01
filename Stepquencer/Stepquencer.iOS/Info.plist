@@ -39,5 +39,20 @@
 	<string>com.bpfm-.Stepquencer</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>stepquencer.scheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>stepquencer</string>
+			</array>
+			<key>CFBundleURLTypes</key>
+			<string>Viewer</string>
+			<key>CFBundleURLIconFile</key>
+			<string>Assets.xcassets/AppIcon.appiconset/NewIcon58x58</string>
+		</dict>
+	</array>
 </dict>
 </plist>

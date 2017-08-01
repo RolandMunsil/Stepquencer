@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,5 +31,10 @@ namespace Stepquencer.iOS
 
 			return base.FinishedLaunching (app, options);
 		}
+
+		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            
+        }
 	}
 }
