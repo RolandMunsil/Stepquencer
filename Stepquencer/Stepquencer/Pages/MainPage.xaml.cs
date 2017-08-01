@@ -690,19 +690,19 @@ namespace Stepquencer
 		// <summary>
 		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
 		/// </summary>
-		public async void LoadWarning(Song songToBeLoaded)
+        public async void LoadWarning(Song songToBeLoaded)
 		{
-			var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
+            var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
 
             if (answer == false) // Save first
-			{
-				await Navigation.PushAsync(new SavePage(this, songToBeLoaded));
-			}
-			else
-			{
-				SetSong(songToBeLoaded);
-			}
-		}
+            {
+                await Navigation.PushAsync(new SavePage(this, songToBeLoaded));
+            }
+            else
+            {
+                SetSong(songToBeLoaded);
+            }
+        }
 
         /// <summary>
         /// Returns a version of the given value restricted between low and high
