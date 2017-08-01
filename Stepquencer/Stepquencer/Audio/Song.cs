@@ -41,7 +41,7 @@ namespace Stepquencer
         /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
         public bool IsEmpty
         {
-            get { return beats.Length == 0; }
+            get { return beats.All(b=>b.Count == 0); }
         }
 
         public Song(int numBeats, Instrument[] instruments, int tempo)
