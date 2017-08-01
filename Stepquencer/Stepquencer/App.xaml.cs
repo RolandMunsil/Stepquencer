@@ -15,6 +15,8 @@ namespace Stepquencer
         public static int screenWidth;
         public static bool isTablet;    // Based on TABLET_THRESHOLD
 
+        public String songStringToImport;
+
         public App(String songStringFromUrl = null)
         {
             //Uncomment to test out url loading code. This is the startup song
@@ -43,6 +45,14 @@ namespace Stepquencer
         protected override void OnResume ()
         {
             // Handle when your app resumes
+            if(songStringToImport != null)
+            {
+                Device.BeginInvokeOnMainThread(delegate
+                {
+                    mainpage.SetSong(FileUtilities.GetSongFromSongString(songStringToImport));
+                });
+                songStringToImport = null;
+            }
         }
     }
 }

@@ -13,28 +13,32 @@ namespace Stepquencer.iOS
 	[Register("AppDelegate")]
 	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
 	{
-		//
-		// This method is invoked when the application has loaded and is ready to run. In this 
-		// method you should instantiate the window, load the UI into it and then make the window
-		// visible.
-		//
-		// You have 17 seconds to return from this method, or iOS will terminate your application.
-		//
-		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-		{
+        App stepquencerApp;
+        //
+        // This method is invoked when the application has loaded and is ready to run. In this 
+        // method you should instantiate the window, load the UI into it and then make the window
+        // visible.
+        //
+        // You have 17 seconds to return from this method, or iOS will terminate your application.
+        //
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
             App.screenWidth = (int)UIScreen.MainScreen.Bounds.Width;    // Get width of screen
 
-			global::Xamarin.Forms.Forms.Init ();
-			LoadApplication (new Stepquencer.App ());
+            global::Xamarin.Forms.Forms.Init();
+
+            stepquencerApp = new App();
+            LoadApplication(stepquencerApp);
 
             UIApplication.SharedApplication.StatusBarHidden = true;     // Initialize status bar to be hidden
 
-			return base.FinishedLaunching (app, options);
-		}
-
-		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
-        {
-            
+            return base.FinishedLaunching(app, options);
         }
-	}
+
+        public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            stepquencerApp.songStringToImport = url.Query.Substring(url.Query.IndexOf('=') + 1);
+            return true;
+        }
+    }
 }
