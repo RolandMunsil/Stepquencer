@@ -234,8 +234,6 @@ namespace Stepquencer
         /// </summary>
         private void OnShareClicked()
         {
-            //TODO: make temp file?
-            /*
 			if (!CrossShare.IsSupported)
 				throw new Exception();
 
@@ -243,9 +241,9 @@ namespace Stepquencer
 			{
 				Title = "Check out my song!",
 				Text = "I made a sweet song in Stepquencer!",
-				Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
+                Url = FileUtilities.GetShareableSongURL(mainpage.song)
 			});
-			*/
+			
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Stepquencer
     {
         private MainPage mainpage;                                          // The MainPage this screen came from
         private Entry songTitleEntry;                                       // Input Box for name of user's song
-        private Button saveButton, cancelButton, overwriteCurrentButton;    // Buttons to let user save a new song, overwrite their current one, or go back
+        private Button saveAsButton, cancelButton, overwriteCurrentButton;    // Buttons to let user save a new song, overwrite their current one, or go back
         private Song UrlLoadedSong;                                         // Song that is to be loaded in after curent one is saved, if user loads by URL
 
         private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
@@ -61,7 +61,7 @@ namespace Stepquencer
 
 
             // Initialize save and cancel buttons
-            saveButton = new Button
+            saveAsButton = new Button
             {
                 Text = "SAVE",
                 TextColor = Color.Gray,
@@ -81,30 +81,34 @@ namespace Stepquencer
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            if (mainpage.lastLoadedSongName != "" && mainpage.loadedSongChanged)
+            if (mainpage.lastLoadedSongName != "")      // If the user has loaded a song recently, make a button that lets them save over it
             {
                 overwriteCurrentButton = new Button
                 {
-                    Text = "SAVE TO '" + mainpage.lastLoadedSongName + "'",
-                    TextColor = Color.White,
+                    Text = "SAVE",
                     FontSize = fontSize,
                     BackgroundColor = Color.Black,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-
+                overwriteCurrentButton.TextColor = mainpage.loadedSongChanged ? Color.White : Color.Gray;
                 overwriteCurrentButton.Clicked += OnOverwriteButtonClicked;
+                saveAsButton.Text = "SAVE AS";
             }
 
             // Initialize event handlers for buttons
-            saveButton.Clicked += OnSaveButtonClicked;
+            saveAsButton.Clicked += OnSaveButtonClicked;
             cancelButton.Clicked += OnCancelButtonClicked;
 
 
             // Add buttons to buttonLayout
             buttonLayout.Children.Add(cancelButton);
-            if (mainpage.lastLoadedSongName != "" && mainpage.loadedSongChanged) { buttonLayout.Children.Add(overwriteCurrentButton);}
-            buttonLayout.Children.Add(saveButton);
+            buttonLayout.Children.Add(saveAsButton);
+            if (mainpage.lastLoadedSongName != "") 
+            { 
+                buttonLayout.Children.Add(overwriteCurrentButton); 
+
+            }
 
 
             // Add label, entry, buttonLayout to masterLayout
@@ -234,11 +238,11 @@ namespace Stepquencer
         {
             if (songTitleEntry.Text.Equals(""))
             {
-                saveButton.TextColor = Color.Gray;
+                saveAsButton.TextColor = Color.Gray;
             }
             else
             {
-                saveButton.TextColor = Color.White;
+                saveAsButton.TextColor = Color.White;
             }
         }
     }

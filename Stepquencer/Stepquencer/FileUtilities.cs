@@ -153,6 +153,22 @@ namespace Stepquencer
             }
         }
 
+
+		/// <summary>
+		/// Given the name of a song, deletes its corresponding file
+		/// </summary>
+		/// <param name="songName">Song name.</param>
+		public static void DeleteSongFile(String songName)
+		{
+			File.Delete(PathToSongFile(songName));
+		}
+
+
+        /// <summary>
+        /// Writes the song to stream.
+        /// </summary>
+        /// <param name="songToSave">Song to save.</param>
+        /// <param name="stream">Stream.</param>
         public static void WriteSongToStream(Song songToSave, StreamWriter stream)
         {
             stream.WriteLine("VERSION 1");
@@ -174,6 +190,12 @@ namespace Stepquencer
             stream.WriteLine(songToSave.Tempo);
         }
 
+
+        /// <summary>
+        /// Gets the song string.
+        /// </summary>
+        /// <returns>The song string.</returns>
+        /// <param name="song">Song.</param>
         private static String GetSongString(Song song)
         {
             byte[] compressedData;
@@ -191,6 +213,12 @@ namespace Stepquencer
             return Convert.ToBase64String(compressedData);
         }
 
+
+        /// <summary>
+        /// Gets the song from song string.
+        /// </summary>
+        /// <returns>The song from song string.</returns>
+        /// <param name="urlString">URL string.</param>
         public static Song GetSongFromSongString(String urlString)
         {
             byte[] compressedData = Convert.FromBase64String(urlString);
@@ -204,6 +232,12 @@ namespace Stepquencer
             }
         }
 
+
+        /// <summary>
+        /// Given a Song, returns a url string that represents an easily shareable version of that song
+        /// </summary>
+        /// <returns>The shareable song URL.</returns>
+        /// <param name="song">Song.</param>
         public static String GetShareableSongURL(Song song)
         {
             return $"https://rolandmunsil.github.io/Sharequencer?s={GetSongString(song)}";

@@ -73,8 +73,7 @@ namespace Stepquencer
                     songUI.Tap += OnSongTap;
                     songUI.DeleteClicked += delegate(LoadUIElement elem)          
                     {
-                        File.Delete(elem.filePath);                     // Delete song file
-                        masterLayout.Children.Remove(elem);             // Refresh the page
+                        AskBeforeDeletion(elem);   // Delete song file, refresh page
                     };
                     songUI.ShareClicked += delegate (LoadUIElement elem) 
                     {
@@ -107,19 +106,6 @@ namespace Stepquencer
         /// <param name="uiElement">Song user interface.</param>
         void OnSongTap(LoadUIElement uiElement)
         {
-            //Uncomment this code to make the song share when the user taps
-            /*
-            if (!CrossShare.IsSupported)
-                throw new Exception();
-
-            CrossShare.Current.Share(new ShareMessage
-            {
-                Title = "Check out my song!",
-                Text = "I made a sweet song in Stepquencer!",
-                Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
-            });
-            */
-
             if (mainpage.loadedSongChanged)
             {
                 mainpage.clearedSong = null;
@@ -135,16 +121,6 @@ namespace Stepquencer
             }
         }
 
-
-
-        /// <summary>
-        /// Given the name of a song, deletes its corresponding file
-        /// </summary>
-        /// <param name="songName">Song name.</param>
-        private static void DeleteSongFile(String songName)
-        {
-            File.Delete(FileUtilities.PathToSongFile(songName));
-        }
 
 		/// <summary>
 		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
@@ -164,6 +140,19 @@ namespace Stepquencer
                 mainpage.loadedSongChanged = false;
                 await Navigation.PopToRootAsync();
             }
+        }
+
+
+        async void AskBeforeDeletion(LoadUIElement elem)
+        {
+            string songName = FileUtilities.SongNameFromFilePath(elem.filePath);
+            var answer = await DisplayAlert("Are you sure you want to delete?", "If you click yes, '" + songName + "' will be lost forever.", "Yes", "No");
+
+            if (answer)
+            {
+                FileUtilities.DeleteSongFile(songName);     // Delete the file
+                masterLayout.Children.Remove(elem);         // Refresh the page
+			}
         }
 
         /// <summary>
