@@ -12,7 +12,8 @@ namespace Stepquencer
         public readonly String filePath;                // Path to the song file this UI element references
 
         public event Action<LoadUIElement> DeleteClicked;   // Allows other classes to decide what happens
-        public event Action<LoadUIElement> Tap;             // when either this is tapped or delete button is tapped
+        public event Action<LoadUIElement> ShareClicked;    //
+        public event Action<LoadUIElement> Tap;             // when this is tapped, share is tapped, or delete is tapped
 
         public LoadUIElement(String filePath) : base()
         {
@@ -46,13 +47,22 @@ namespace Stepquencer
                 Margin = 7
             };
 
+            Button shareButton = new Button
+            {
+                Text = "SHARE",
+                TextColor = Color.Blue,
+                Margin = 7
+            };
+
             this.Children.Add(songLabel);       //
             this.Children.Add(deleteButton);    // Add visual elements to this object 
+            this.Children.Add(shareButton);     //
 
 
-            // Ensure that gestures on the delete button and rest of object are handled by public events
+            // Ensure that gestures on the delete button, share button and rest of object are handled by public events
 
             deleteButton.Clicked += (s, e) => { DeleteClicked.Invoke(this); };
+            shareButton.Clicked += (s, e) => { ShareClicked.Invoke(this); };
 
 
             TapGestureRecognizer tgr = new TapGestureRecognizer()

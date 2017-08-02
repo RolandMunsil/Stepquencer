@@ -76,6 +76,10 @@ namespace Stepquencer
                         File.Delete(elem.filePath);                     // Delete song file
                         masterLayout.Children.Remove(elem);             // Refresh the page
                     };
+                    songUI.ShareClicked += delegate (LoadUIElement elem) 
+                    {
+                        ShareSongFile(elem.filePath);                   // Prompt user to share this song
+                    };
 
                     masterLayout.Children.Add(songUI);                  // Add UI element to the masterLayout
                 }
@@ -158,6 +162,23 @@ namespace Stepquencer
                 mainpage.SetSong(songToBeLoaded);
                 await Navigation.PopToRootAsync();
             }
+        }
+
+        /// <summary>
+        /// Called when share button on a song is tapped, prompts user to share
+        /// </summary>
+        /// <param name="songName">Song name.</param>
+        private void ShareSongFile(String songFilePath)
+        {
+			if (!CrossShare.IsSupported)
+				throw new Exception();
+
+			CrossShare.Current.Share(new ShareMessage
+			{
+				Title = "Check out my song!",
+				Text = "I made a sweet song in Stepquencer!",
+                Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(songFilePath))
+			});
         }
     }
 }
