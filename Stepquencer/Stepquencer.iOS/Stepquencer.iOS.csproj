@@ -156,6 +156,8 @@
     <BundleResource Include="Resources\play_Tab.png" />
     <BundleResource Include="Resources\settings_Tab.png" />
     <BundleResource Include="Resources\stop_Tab.png" />
+    <BundleResource Include="Resources\sharebutton.png" />
+    <BundleResource Include="Resources\infoicon.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Plugin.Share, Version=7.0.1.0, Culture=neutral, processorArchitecture=MSIL">

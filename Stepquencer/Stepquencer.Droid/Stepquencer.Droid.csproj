@@ -159,6 +159,7 @@
     <AndroidResource Include="Resources\Drawable\infobutton.png" />
     <AndroidResource Include="Resources\Drawable\KickDrum.png" />
     <AndroidResource Include="Resources\drawable\icon1024.png" />
+    <AndroidResource Include="Resources\Drawable\infoicon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />

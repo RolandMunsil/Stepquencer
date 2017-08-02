@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Plugin.Share;
+using Plugin.Share.Abstractions;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -27,7 +29,8 @@ namespace Stepquencer
             NavigationPage.SetHasNavigationBar(this, true);     // Make sure navigation bar (with back button) shows up
             this.Title = "More Options";                        // Set title of page
             this.BackgroundColor = Color.FromHex("#2C2C2C");    // Set the background color of the page
-            ToolbarItems.Add(new ToolbarItem("About", "infobutton.png", OnAboutClicked));    // Add button to info page on navigation bar
+            ToolbarItems.Add(new ToolbarItem("Share", "sharebutton.png", OnShareClicked));  // Share button
+            ToolbarItems.Add(new ToolbarItem("About", "infoicon.png", OnAboutClicked));    // Info page button
 
             DependencyService.Get<IStatusBar>().HideStatusBar();    // Make sure status bar is hidden
             int fontSize = App.isTablet ? 40 : 20;                  // Sets default font size based on whether device is tablet or phone
@@ -208,15 +211,41 @@ namespace Stepquencer
             }
         }
 
+        /// <summary>
+        /// Sends user to ChangeInstrumentsPage
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
         async void OnChangeInstrumentsClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ChangeInstrumentsPage(this.mainpage));
         }
 
-
+        /// <summary>
+        /// Send user to info page when info button is tapped
+        /// </summary>
         async void OnAboutClicked()
         {
             await Navigation.PushAsync(new InfoPage());
+        }
+
+        /// <summary>
+        /// Prompts user to share song
+        /// </summary>
+        private void OnShareClicked()
+        {
+            //TODO: make temp file?
+            /*
+			if (!CrossShare.IsSupported)
+				throw new Exception();
+
+			CrossShare.Current.Share(new ShareMessage
+			{
+				Title = "Check out my song!",
+				Text = "I made a sweet song in Stepquencer!",
+				Url = FileUtilities.GetShareableSongURL(FileUtilities.LoadSongFromFile(uiElement.filePath))
+			});
+			*/
         }
     }
 }
