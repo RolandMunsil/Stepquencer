@@ -123,12 +123,12 @@ namespace Stepquencer
             if (mainpage.loadedSongChanged)
             {
                 mainpage.clearedSong = null;
-                LoadWarning(FileUtilities.LoadSongFromFile(uiElement.filePath));
+                LoadWarning(uiElement.filePath);
             }
             else
             {
                 mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
-
+                mainpage.lastLoadedSongName = FileUtilities.SongNameFromFilePath(uiElement.filePath);
                 //Does not let users undo clear after loading a song
                 mainpage.clearedSong = null;
                 ReturnToMainPage();
@@ -149,17 +149,19 @@ namespace Stepquencer
 		/// <summary>
 		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
 		/// </summary>
-        public async void LoadWarning(Song songToBeLoaded)
+        public async void LoadWarning(string songFilePath)
         {
             var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
 
             if (answer == false) // Save first
             {
-                await Navigation.PushAsync(new SavePage(mainpage, songToBeLoaded));
+                await Navigation.PushAsync(new SavePage(mainpage, FileUtilities.LoadSongFromFile(songFilePath)));
             }
             else
             {
-                mainpage.SetSong(songToBeLoaded);
+                mainpage.SetSong(FileUtilities.LoadSongFromFile(songFilePath));
+                mainpage.lastLoadedSongName = FileUtilities.SongNameFromFilePath(songFilePath);
+                mainpage.loadedSongChanged = false;
                 await Navigation.PopToRootAsync();
             }
         }

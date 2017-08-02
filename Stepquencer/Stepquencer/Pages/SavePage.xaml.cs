@@ -9,10 +9,10 @@ namespace Stepquencer
 {
     public partial class SavePage : ContentPage
     {
-        private MainPage mainpage;                  // The MainPage this screen came from
-        private Entry songTitleEntry;               // Input Box for name of user's song
-        private Button saveButton, cancelButton;    // Buttons to let user save or go back
-        private Song UrlLoadedSong;                 // Song that is to be loaded in after curent one is saved, if user loads by URL
+        private MainPage mainpage;                                          // The MainPage this screen came from
+        private Entry songTitleEntry;                                       // Input Box for name of user's song
+        private Button saveButton, cancelButton, overwriteCurrentButton;    // Buttons to let user save a new song, overwrite their current one, or go back
+        private Song UrlLoadedSong;                                         // Song that is to be loaded in after curent one is saved, if user loads by URL
 
         private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
         public SavePage(MainPage mainpage)
@@ -81,14 +81,29 @@ namespace Stepquencer
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
+            if (mainpage.lastLoadedSongName != "" && mainpage.loadedSongChanged)
+            {
+                overwriteCurrentButton = new Button
+                {
+                    Text = "SAVE TO '" + mainpage.lastLoadedSongName + "'",
+                    TextColor = Color.White,
+                    FontSize = fontSize,
+                    BackgroundColor = Color.Black,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand
+                };
+
+                overwriteCurrentButton.Clicked += OnOverwriteButtonClicked;
+            }
 
             // Initialize event handlers for buttons
-            saveButton.Clicked += OnButtonClicked;
-            cancelButton.Clicked += OnButtonClicked;
+            saveButton.Clicked += OnSaveButtonClicked;
+            cancelButton.Clicked += OnCancelButtonClicked;
 
 
             // Add buttons to buttonLayout
             buttonLayout.Children.Add(cancelButton);
+            if (mainpage.lastLoadedSongName != "" && mainpage.loadedSongChanged) { buttonLayout.Children.Add(overwriteCurrentButton);}
             buttonLayout.Children.Add(saveButton);
 
 
@@ -108,78 +123,108 @@ namespace Stepquencer
 
 
         /// <summary>
-        /// Event Handler for both cancel button and save button
+        /// Event handler for save button
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="e">E.</param>
-        async void OnButtonClicked(Object sender, EventArgs e)
+        async void OnSaveButtonClicked(Object sender, EventArgs e)
         {
-            Button buttonPressed = (Button)sender;
-
-            if (buttonPressed.Equals(cancelButton))
-            {
-                if (UrlLoadedSong != null)  // Load in Url song before going back to main page
-				{ 
-                    mainpage.SetSong(UrlLoadedSong);
-                    UrlLoadedSong = null;
-                }     
-
-
-				await Navigation.PopToRootAsync();     // Send user back to mainpage.
-
+			char[] invalidChars = Path.GetInvalidFileNameChars();
+			if (songTitleEntry.Text.Equals("") || songTitleEntry.Text.IndexOfAny(invalidChars) >= 0)        // Invalid song name
+			{
+				await DisplayAlert("Invalid filename!",
+					$"Filename cannot be empty or contain any of the following characters: {String.Join("", invalidChars)}",
+					 "OK");
 			}
-            else
-            {
-                char[] invalidChars = Path.GetInvalidFileNameChars();
-                if (songTitleEntry.Text.Equals("") || songTitleEntry.Text.IndexOfAny(invalidChars) >= 0)
-                {
-                    await DisplayAlert("Invalid filename!",
-                        $"Filename cannot be empty or contain any of the following characters: {String.Join("", invalidChars)}",
-                         "OK");
-                }
-                else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))
-                {
-                    //DisplayAlert returns boolean value
-                    var answer = await DisplayAlert("Overwrite Warning", "A song with this name already exists. Do you want to overwrite it?", "Overwrite", "Cancel");
-                    //If user presses "OK"
-                    if (answer.Equals(true))
-                    {
-                        //Delete old song first
-                        File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
+			else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))    // Trying to save to a song that already exists
+			{
+				//DisplayAlert returns boolean value
+				var answer = await DisplayAlert("Overwrite Warning", "A song with this name already exists. Do you want to overwrite it?", "Overwrite", "Cancel");
+				//If user presses "OK"
+				if (answer.Equals(true))
+				{
+					//Delete old song first
+					File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
 
-                        //Add new song
-                        FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
+					//Add new song
+					FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
 
-						//Set main grid song if necessary
-						if (UrlLoadedSong != null)  // Load in Url song before going back to main page
-						{
-							mainpage.SetSong(UrlLoadedSong);
-							UrlLoadedSong = null;
-						}
-
-						//Make sure main page knows current state is saved
-						mainpage.loadedSongChanged = false;
-
-                        //Go back to main grid
-                        await Navigation.PopToRootAsync();
-
-                    }
-                }
-                else
-                {
-                    FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);   // Save song
-
+					//Set main grid song if necessary
 					if (UrlLoadedSong != null)  // Load in Url song before going back to main page
 					{
 						mainpage.SetSong(UrlLoadedSong);
 						UrlLoadedSong = null;
-					}         
+					}
 
-					mainpage.loadedSongChanged = false;                                 // Make sure mainpage knows current state is saved
-                    await Navigation.PopToRootAsync();
-                }
-            }
+					//Make sure main page knows current state is saved
+					mainpage.loadedSongChanged = false;
+                    mainpage.lastLoadedSongName = songTitleEntry.Text;
+
+					//Go back to main grid
+					await Navigation.PopToRootAsync();
+
+				}
+			}
+			else                // Saving successfully to a new file
+			{
+				FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);   // Save song
+
+				if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+				{
+					mainpage.SetSong(UrlLoadedSong);
+					UrlLoadedSong = null;
+				}
+
+				mainpage.loadedSongChanged = false;                                 // Make sure mainpage knows current state is saved
+                mainpage.lastLoadedSongName = songTitleEntry.Text;
+				await Navigation.PopToRootAsync();
+			}
         }
+
+        /// <summary>
+        /// Event handler for overwrite button
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        async void OnOverwriteButtonClicked(Object sender, EventArgs e)
+        {
+			//Delete old song first
+            File.Delete(FileUtilities.PathToSongFile(mainpage.lastLoadedSongName));
+
+			//Add new song
+            FileUtilities.SaveSongToFile(mainpage.song, mainpage.lastLoadedSongName);
+
+			//Set main grid song if necessary
+			if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+			{
+				mainpage.SetSong(UrlLoadedSong);
+				UrlLoadedSong = null;
+			}
+
+			//Make sure main page knows current state is saved
+			mainpage.loadedSongChanged = false;
+
+			//Go back to main grid
+			await Navigation.PopToRootAsync();
+
+		}
+
+        /// <summary>
+        /// Event handler for cancel button
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        async void OnCancelButtonClicked(Object sender, EventArgs e)
+        {
+			if (UrlLoadedSong != null)  // Load in Url song before going back to main page
+			{
+				mainpage.SetSong(UrlLoadedSong);
+				UrlLoadedSong = null;
+			}
+
+
+			await Navigation.PopToRootAsync();     // Send user back to mainpage.
+		}
 
 
         /// <summary>

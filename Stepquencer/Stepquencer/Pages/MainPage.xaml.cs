@@ -59,6 +59,7 @@ namespace Stepquencer
 
 		public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
         public bool loadedSongChanged = false;   // Indicates whether the user has changed a song since they loaded a new one 
+        public string lastLoadedSongName = "";
 
         public MainPage(String songStringFromUrl = null)
         {
@@ -443,6 +444,8 @@ namespace Stepquencer
                 miniGrid.SetColors(new List<Color>());
             }
             clearedSong = song;
+            loadedSongChanged = false;
+            lastLoadedSongName = "";
             song = new Song(NumColumns, song.Instruments, song.Tempo);
         }
 
