@@ -84,6 +84,7 @@ namespace Stepquencer
             {
                 Directory.CreateDirectory(FileUtilities.PathToSongDirectory);
                 this.song = startSong;
+                lastLoadedSongName = "Initial beat";
                 UpdateStepGridToMatchSong();
                 FileUtilities.SaveSongToFile(startSong, "Initial beat");
                 firstTime = true;
