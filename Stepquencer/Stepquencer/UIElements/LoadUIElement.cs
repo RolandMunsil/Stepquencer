@@ -37,9 +37,15 @@ namespace Stepquencer
                 InputTransparent = true                             // Ensures the user can't tap on label instead of main body of this object
             };
 
+            // Make a button that prompts user to share this song
+			Button shareButton = new Button
+			{
+				Text = "SHARE",
+				TextColor = Color.Blue,
+				Margin = 7
+			};
 
-            // Make a button that lets you delete this object's song
-
+            // Make a button that lets user delete this object's song
             Button deleteButton = new Button
             {
                 Text = "DELETE",
@@ -47,16 +53,9 @@ namespace Stepquencer
                 Margin = 7
             };
 
-            Button shareButton = new Button
-            {
-                Text = "SHARE",
-                TextColor = Color.Blue,
-                Margin = 7
-            };
-
             this.Children.Add(songLabel);       //
-            this.Children.Add(deleteButton);    // Add visual elements to this object 
-            this.Children.Add(shareButton);     //
+            this.Children.Add(shareButton);     // Add visual elements to this object 
+			this.Children.Add(deleteButton);    //
 
 
             // Ensure that gestures on the delete button, share button and rest of object are handled by public events
