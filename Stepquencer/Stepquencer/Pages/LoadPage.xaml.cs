@@ -162,7 +162,8 @@ namespace Stepquencer
         private void ShareSongFile(String songFilePath)
         {
 			if (!CrossShare.IsSupported)
-				throw new Exception();
+                //TODO: Pop up a message instead
+                throw new Exception();
 
 			CrossShare.Current.Share(new ShareMessage
 			{

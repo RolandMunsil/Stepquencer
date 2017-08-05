@@ -59,7 +59,7 @@ namespace Stepquencer
 
 		public readonly bool firstTime;                 // Indicates whether this is the first time user is opening app
         public bool loadedSongChanged = false;   // Indicates whether the user has changed a song since they loaded a new one 
-        public string lastLoadedSongName = "";
+        public string lastLoadedSongName = null;
 
         public MainPage(String songStringFromUrl = null)
         {
@@ -446,7 +446,7 @@ namespace Stepquencer
             }
             clearedSong = song;
             loadedSongChanged = false;
-            lastLoadedSongName = "";
+            lastLoadedSongName = null;
             song = new Song(NumColumns, song.Instruments, song.Tempo);
         }
 
