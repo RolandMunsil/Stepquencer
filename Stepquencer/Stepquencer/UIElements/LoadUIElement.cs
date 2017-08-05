@@ -26,15 +26,17 @@ namespace Stepquencer
 
             // Make a new label initialized with the song name
 
-            Label songLabel = new Label             
+            Label songLabel = new Label
             {
                 Text = FileUtilities.SongNameFromFilePath(filePath),// Make sure it displays the name of song
                 FontSize = 20,                                      //*
                 BackgroundColor = Color.Black,                      //*
                 TextColor = Color.White,                            //* Stylistic choices
-                HorizontalOptions = LayoutOptions.CenterAndExpand,  //*
+                HorizontalTextAlignment = TextAlignment.Start,      //*  
+                HorizontalOptions = LayoutOptions.StartAndExpand,   //*
                 VerticalOptions = LayoutOptions.CenterAndExpand,    //*
-                InputTransparent = true                             // Ensures the user can't tap on label instead of main body of this object
+                InputTransparent = true,                            // Ensures the user can't tap on label instead of main body of this object
+                Margin = 17
             };
 
 
@@ -43,6 +45,8 @@ namespace Stepquencer
 			{
 				Text = "DELETE",
 				TextColor = Color.Red,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.End,
 				Margin = 7
 			};
 
@@ -51,12 +55,14 @@ namespace Stepquencer
 			{
 				Text = "SHARE",
 				TextColor = Color.Blue,
-				Margin = 7
+				VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.End,
+				Margin = 22
 			};
 
-			this.Children.Add(shareButton);     // 
-			this.Children.Add(songLabel);       // Add visual elements to this object 
-            this.Children.Add(deleteButton);    //
+			this.Children.Add(songLabel);       // 
+            this.Children.Add(shareButton);     // Add visual elements to this object 
+			this.Children.Add(deleteButton);    //
 
 
 			// Ensure that gestures on the delete button, share button and rest of object are handled by public events
