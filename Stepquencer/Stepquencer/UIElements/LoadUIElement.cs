@@ -1,6 +1,5 @@
 ﻿using System;
 using Xamarin.Forms;
-using System.IO;
 namespace Stepquencer
 {
 
