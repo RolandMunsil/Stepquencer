@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using Plugin.Share;
 using Plugin.Share.Abstractions;
 using Xamarin.Forms;

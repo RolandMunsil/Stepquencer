@@ -1,9 +1,7 @@
 using Plugin.Share;
 using Plugin.Share.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Xamarin.Forms;
 
 namespace Stepquencer
