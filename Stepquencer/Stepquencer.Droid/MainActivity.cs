@@ -32,7 +32,7 @@ namespace Stepquencer.Droid
             String data = Intent?.Data?.EncodedSchemeSpecificPart;
             if (data != null)
             {
-                String songStr = data.Substring(data.IndexOf("=") + 1);
+                String songStr = Uri.UnescapeDataString(data.Substring(data.IndexOf("=") + 1));
                 LoadApplication(new Stepquencer.App(songStr));
             }
             else

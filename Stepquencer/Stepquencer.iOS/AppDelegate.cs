@@ -33,7 +33,7 @@ namespace Stepquencer.iOS
 
         public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
         {
-            stepquencerApp.songStringToImport = url.Query.Substring(url.Query.IndexOf('=') + 1);
+            stepquencerApp.songStringToImport = Uri.UnescapeDataString(url.Query.Substring(url.Query.IndexOf('=') + 1));
             return true;
         }
     }
