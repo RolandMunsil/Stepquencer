@@ -7,8 +7,7 @@ using System.Reflection;
 namespace Stepquencer
 {
     static class FileUtilities
-    {
-        
+    {       
         /// <summary>
         /// Used to get embedded resources
         /// </summary>
@@ -20,7 +19,6 @@ namespace Stepquencer
         private const String resourcePrefix = "Stepquencer.Droid.";
 #endif
 
-
         /// <summary>
         /// Loads a resource that has been embedded in the cross-platform Stepquencer project
         /// </summary>
@@ -28,8 +26,6 @@ namespace Stepquencer
         {
             return assembly.GetManifestResourceStream(resourcePrefix + resourceName);
         }
-
-
 
         /// <summary>
         /// The path to the directory where the user's songs are stored
@@ -42,8 +38,6 @@ namespace Stepquencer
             }
         }
 
-
-
         /// <summary>
         /// Given the name of a song, returns the full path to the song
         /// </summary>
@@ -52,10 +46,8 @@ namespace Stepquencer
             return Path.Combine(PathToSongDirectory, $"{songName}.txt");
         }
 
-
-
         /// <summary>
-        /// Given a file path, returns the name of the actual song
+        /// Given a file path, returns just the name of the song
         /// </summary>
         public static String SongNameFromFilePath(String path)
         {
@@ -64,12 +56,10 @@ namespace Stepquencer
             return path.Substring(start, end - start);
         }
 
-
-
         /// <summary>
         /// Loads a song from the local filesystem
         /// </summary>
-        /// <param name="path">The full path to the song</param>
+        /// <param name="path">The path to the song</param>
         public static Song LoadSongFromFile(String path)
         {
             using (StreamReader file = File.OpenText(path))
@@ -78,10 +68,8 @@ namespace Stepquencer
             }
         }
 
-
-
         /// <summary>
-        /// Loads a song from a stream
+        /// Generates a Song object from a stream containing a text representation of a song
         /// </summary>
         public static Song LoadSongFromStream(Stream stream)
         {
@@ -136,64 +124,54 @@ namespace Stepquencer
             return loadedSong;
         }
 
-
-
         /// <summary>
         /// Saves a song to the user's local filesystem
         /// </summary>
-        public static void SaveSongToFile(Song songToSave, String songName)
+        public static void SaveSongToFile(Song song, String songName)
         {
             String filePath = PathToSongFile(songName);
 
             using (StreamWriter file = File.CreateText(filePath))
             {
-                WriteSongToStream(songToSave, file);
+                WriteSongToStream(song, file);
             }
         }
 
-
-		/// <summary>
-		/// Given the name of a song, deletes its corresponding file
-		/// </summary>
-		/// <param name="songName">Song name.</param>
-		public static void DeleteSongFile(String songName)
+        /// <summary>
+        /// Delete the song file with the name <paramref name="songName"/>
+        /// </summary>
+        public static void DeleteSongFile(String songName)
 		{
 			File.Delete(PathToSongFile(songName));
 		}
 
-
         /// <summary>
-        /// Writes the song to stream.
+        /// Writes a text representation of <paramref name="song"/> and writes it to <paramref name="stream"/>
         /// </summary>
-        /// <param name="songToSave">Song to save.</param>
-        /// <param name="stream">Stream.</param>
-        public static void WriteSongToStream(Song songToSave, StreamWriter stream)
+        public static void WriteSongToStream(Song song, StreamWriter stream)
         {
             stream.WriteLine("VERSION 1");
 
             //Format instrument names like so:
             //Instrument1|Instrument2|Instrument3|etc.
-            String instrumentNames = String.Join("|", songToSave.Instruments.Select(instr => instr.name));
-            stream.WriteLine($"{songToSave.BeatCount} total beats|{instrumentNames}");
+            String instrumentNames = String.Join("|", song.Instruments.Select(instr => instr.name));
+            stream.WriteLine($"{song.BeatCount} total beats|{instrumentNames}");
 
-            for (int i = 0; i < songToSave.BeatCount; i++)
+            for (int i = 0; i < song.BeatCount; i++)
             {
-                Instrument.Note[] notes = songToSave.NotesAtBeat(i);
+                Instrument.Note[] notes = song.NotesAtBeat(i);
                 stream.WriteLine($"Beat {i}|{notes.Length}");
-                foreach (Instrument.Note note in songToSave.NotesAtBeat(i))
+                foreach (Instrument.Note note in song.NotesAtBeat(i))
                 {
                     stream.WriteLine($"{note.instrument.name}:{note.semitoneShift}");
                 }
             }
-            stream.WriteLine(songToSave.Tempo);
+            stream.WriteLine(song.Tempo);
         }
 
-
         /// <summary>
-        /// Gets the song string.
+        /// Gets a string representing the given Song that can be used in a sharing URL
         /// </summary>
-        /// <returns>The song string.</returns>
-        /// <param name="song">Song.</param>
         private static String GetSongString(Song song)
         {
             byte[] compressedData;
@@ -211,15 +189,12 @@ namespace Stepquencer
             return Convert.ToBase64String(compressedData);
         }
 
-
         /// <summary>
-        /// Gets the song from song string.
+        /// Creates a Song object from a song string
         /// </summary>
-        /// <returns>The song from song string.</returns>
-        /// <param name="urlString">URL string.</param>
-        public static Song GetSongFromSongString(String urlString)
+        public static Song GetSongFromSongString(String songString)
         {
-            byte[] compressedData = Convert.FromBase64String(urlString);
+            byte[] compressedData = Convert.FromBase64String(songString);
 
             using (MemoryStream decompressStream = new MemoryStream(compressedData))
             {
@@ -230,12 +205,9 @@ namespace Stepquencer
             }
         }
 
-
         /// <summary>
         /// Given a Song, returns a url string that represents an easily shareable version of that song
         /// </summary>
-        /// <returns>The shareable song URL.</returns>
-        /// <param name="song">Song.</param>
         public static String GetShareableSongURL(Song song)
         {
             return $"https://rolandmunsil.github.io/Sharequencer?s={GetSongString(song)}";
