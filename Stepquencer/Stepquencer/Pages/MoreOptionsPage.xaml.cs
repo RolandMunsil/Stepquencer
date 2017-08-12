@@ -54,7 +54,6 @@ namespace Stepquencer
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) }); // Column for BPM label should take up 1/6 of horizontal space
             tempoGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) }); // Column for slider should take up 2/3 of horizontal space
 
-            //fontSize = 21;
             // Initialize tempo label
             Label tempoLabel = new Label
             {
@@ -112,7 +111,7 @@ namespace Stepquencer
             Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                       // Takes user to SavePage
             Button saveAsButton = new Button { Text = "SAVE AS", Style = buttonStyle };
             Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
-            Button clearAllButton = new Button { Text = "NEW SONG", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
+            Button newSongButton = new Button { Text = "NEW SONG", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
             undoClearButton = new Button { Text = "RELOAD UNSAVED SONG", Style = buttonStyle };                            // Undos a recent clear
             Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
             {
@@ -135,7 +134,7 @@ namespace Stepquencer
             buttonGrid.Children.Add(saveButton, 0, 0);
             buttonGrid.Children.Add(saveAsButton, 1, 0);
             buttonGrid.Children.Add(loadButton, 0, 1);
-            buttonGrid.Children.Add(clearAllButton, 2, 0);
+            buttonGrid.Children.Add(newSongButton, 2, 0);
             buttonGrid.Children.Add(undoClearButton, 2, 1);
             buttonGrid.Children.Add(changeInstrumentsButton, 3, 0);
 
@@ -153,9 +152,8 @@ namespace Stepquencer
             // Add event listeners
 
             tempoSlider.ValueChanged += OnSliderChanged;                     // Event listener for slider
-            //saveButton.Clicked += OnSaveButtonClicked;                       // Event listener for save button
             loadButton.Clicked += OnLoadButtonClicked;                       // Event listener for load button
-            clearAllButton.Clicked += OnClearAllClicked;                     // Event listener for clear all button
+            newSongButton.Clicked += OnClearAllClicked;                     // Event listener for clear all button
             undoClearButton.Clicked += OnUndoClearClicked;                   // Event listener for undo clear button
             changeInstrumentsButton.Clicked += OnChangeInstrumentsClicked;   // Event listener for change instruments button
 
@@ -234,7 +232,7 @@ namespace Stepquencer
             {
                 mainpage.clearedSong = null;
             }
-            
+            ReturnToMainPage();
         }
 
         /// <summary>
@@ -254,8 +252,6 @@ namespace Stepquencer
         /// <summary>
         /// Sends user to ChangeInstrumentsPage
         /// </summary>
-        /// <param name="sender">Sender.</param>
-        /// <param name="e">E.</param>
         async void OnChangeInstrumentsClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ChangeInstrumentsPage(this.mainpage));
@@ -285,6 +281,14 @@ namespace Stepquencer
                 Url = FileUtilities.GetShareableSongURL(mainpage.song)
 			});
 			
+        }
+
+        /// <summary>
+        /// Returns to main page.
+        /// </summary>
+        private async void ReturnToMainPage()
+        {
+            await Navigation.PopToRootAsync();
         }
     }
 }
