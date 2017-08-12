@@ -695,13 +695,13 @@ namespace Stepquencer
 		/// </summary>
         public async void LoadWarning(Song songToBeLoaded)
 		{
-            var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
-
-            if (answer == false) // Save first
+            bool load = true;
+            if (loadedSongChanged)
             {
-                await Navigation.PushAsync(new SavePage(this, songToBeLoaded));
+                load = await DisplayAlert("Overwrite Warning", "You will lose your current song if you haven't saved first. Are you sure you want to load?", "Load without saving", "Don't load");
             }
-            else
+
+            if (load)
             {
                 SetSong(songToBeLoaded);
             }

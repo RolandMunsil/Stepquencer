@@ -102,49 +102,30 @@ namespace Stepquencer
         /// Event handler for a SongUIElement being tapped
         /// </summary>
         /// <param name="uiElement">Song user interface.</param>
-        void OnSongTap(LoadUIElement uiElement)
+        async void OnSongTap(LoadUIElement uiElement)
         {
             if (mainpage.loadedSongChanged)
-            {
-                mainpage.clearedSong = null;
-                LoadWarning(uiElement.filePath);
+            {               
+                bool load = await DisplayAlert("Load Warning", "You will lose unsaved data if you load this song. Load anyway?", "Load without saving", "Cancel");
+
+                if (!load) // Save first
+                {
+                    return;
+                }
             }
-            else
-            {
-                mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
-                mainpage.lastLoadedSongName = FileUtilities.SongNameFromFilePath(uiElement.filePath);
-                //Does not let users undo clear after loading a song
-                mainpage.clearedSong = null;
-                ReturnToMainPage();
-            }
+
+            mainpage.clearedSong = null;
+            mainpage.SetSong(FileUtilities.LoadSongFromFile(uiElement.filePath));
+            mainpage.lastLoadedSongName = FileUtilities.SongNameFromFilePath(uiElement.filePath);
+            //Does not let users undo clear after loading a song
+            mainpage.clearedSong = null;
+            ReturnToMainPage();
         }
-
-
-		/// <summary>
-		/// Displays a popup if user tries to load song from outside source, to prevent them from overwriting an unsaved song
-		/// </summary>
-        public async void LoadWarning(string songFilePath)
-        {
-            var answer = await DisplayAlert("Overwrite Warning", "You could lose your current song if you haven't saved first. Would you like to save now?", "Load without saving", "Save first");
-
-            if (answer == false) // Save first
-            {
-                await Navigation.PushAsync(new SavePage(mainpage, FileUtilities.LoadSongFromFile(songFilePath)));
-            }
-            else
-            {
-                mainpage.SetSong(FileUtilities.LoadSongFromFile(songFilePath));
-                mainpage.lastLoadedSongName = FileUtilities.SongNameFromFilePath(songFilePath);
-                mainpage.loadedSongChanged = false;
-                await Navigation.PopToRootAsync();
-            }
-        }
-
 
         async void AskBeforeDeletion(LoadUIElement elem)
         {
             string songName = FileUtilities.SongNameFromFilePath(elem.filePath);
-            var answer = await DisplayAlert("Are you sure you want to delete?", "If you click yes, '" + songName + "' will be lost forever.", "Yes", "No");
+            bool answer = await DisplayAlert("Are you sure you want to delete?", "If you click yes, '" + songName + "' will be lost forever.", "Yes", "No");
 
             if (answer)
             {

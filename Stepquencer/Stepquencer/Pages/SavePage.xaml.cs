@@ -9,7 +9,6 @@ namespace Stepquencer
         private MainPage mainpage;                                          // The MainPage this screen came from
         private Entry songTitleEntry;                                       // Input Box for name of user's song
         private Button saveButton, cancelButton;    // Buttons to let user save a new song, overwrite their current one, or go back
-        private Song UrlLoadedSong;                                         // Song that is to be loaded in after curent one is saved, if user loads by URL
 
         private int fontSize = App.isTablet ? 25 : 15;                  // Sets default font size based on whether device is tablet or phone
         public SavePage(MainPage mainpage)
@@ -89,12 +88,6 @@ namespace Stepquencer
             Content = scroller;
         }
 
-        public SavePage(MainPage mainpage, Song songToBeLoaded) : this(mainpage)
-        {
-            UrlLoadedSong = songToBeLoaded;
-        }
-
-
         /// <summary>
         /// Event handler for save button
         /// </summary>
@@ -114,6 +107,7 @@ namespace Stepquencer
 				await DisplayAlert("Invalid filename!",
 					$"Filename cannot contain any of the following characters: {String.Join("", invalidChars)}",
 					 "OK");
+                return;
 			}
 			else if (File.Exists(FileUtilities.PathToSongFile(songTitleEntry.Text)))    // Trying to save to a song that already exists
 			{
@@ -124,40 +118,22 @@ namespace Stepquencer
 				{
 					//Delete old song first
 					File.Delete(FileUtilities.PathToSongFile(songTitleEntry.Text));
-
-					//Add new song
-					FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
-
-					//Set main grid song if necessary
-					if (UrlLoadedSong != null)  // Load in Url song before going back to main page
-					{
-						mainpage.SetSong(UrlLoadedSong);
-						UrlLoadedSong = null;
-					}
-
-					//Make sure main page knows current state is saved
-					mainpage.loadedSongChanged = false;
-                    mainpage.lastLoadedSongName = songTitleEntry.Text;
-
-					//Go back to main grid
-					await Navigation.PopToRootAsync();
-
 				}
+                else
+                {
+                    return;
+                }
 			}
-			else                // Saving successfully to a new file
-			{
-				FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);   // Save song
 
-				if (UrlLoadedSong != null)  // Load in Url song before going back to main page
-				{
-					mainpage.SetSong(UrlLoadedSong);
-					UrlLoadedSong = null;
-				}
+            //Add new song
+            FileUtilities.SaveSongToFile(mainpage.song, songTitleEntry.Text);
 
-				mainpage.loadedSongChanged = false;                                 // Make sure mainpage knows current state is saved
-                mainpage.lastLoadedSongName = songTitleEntry.Text;
-				await Navigation.PopToRootAsync();
-			}
+            //Make sure main page knows current state is saved
+            mainpage.loadedSongChanged = false;
+            mainpage.lastLoadedSongName = songTitleEntry.Text;
+
+            //Go back to main grid
+            await Navigation.PopToRootAsync();
         }
 
         /// <summary>
@@ -167,12 +143,6 @@ namespace Stepquencer
         /// <param name="e">E.</param>
         async void OnCancelButtonClicked(Object sender, EventArgs e)
         {
-			if (UrlLoadedSong != null)  // Load in Url song before going back to main page
-			{
-				mainpage.SetSong(UrlLoadedSong);
-				UrlLoadedSong = null;
-			}
-
 			await Navigation.PopToRootAsync();     // Send user back to mainpage.
 		}
 

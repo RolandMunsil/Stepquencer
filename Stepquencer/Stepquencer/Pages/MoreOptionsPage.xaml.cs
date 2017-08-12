@@ -112,8 +112,8 @@ namespace Stepquencer
             Button saveButton = new Button { Text = "SAVE", Style = buttonStyle };                                       // Takes user to SavePage
             Button saveAsButton = new Button { Text = "SAVE AS", Style = buttonStyle };
             Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
-            Button clearAllButton = new Button { Text = "CLEAR ALL", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
-            undoClearButton = new Button { Text = "UNDO CLEAR", Style = buttonStyle };                            // Undos a recent clear
+            Button clearAllButton = new Button { Text = "NEW SONG", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
+            undoClearButton = new Button { Text = "RELOAD UNSAVED SONG", Style = buttonStyle };                            // Undos a recent clear
             Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
             {
                 Style = buttonStyle,
@@ -223,8 +223,18 @@ namespace Stepquencer
         /// </summary>
         private void OnClearAllClicked(object sender, EventArgs e)
         {
-            undoClearButton.TextColor = Color.White;
+            bool allowReloading = false;
+            if (mainpage.loadedSongChanged)
+            {
+                undoClearButton.TextColor = Color.White;
+                allowReloading = true;
+            }
             mainpage.ClearStepGridAndSong();
+            if(!allowReloading)
+            {
+                mainpage.clearedSong = null;
+            }
+            
         }
 
         /// <summary>
