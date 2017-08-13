@@ -186,7 +186,8 @@ namespace Stepquencer
                     compressedData = compressStream.ToArray();
                 }
             }
-            return Convert.ToBase64String(compressedData);
+            //Equals signs are not URL-safe, so replace them with tildes instead
+            return Convert.ToBase64String(compressedData).Replace('=', '~');
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace Stepquencer
         /// </summary>
         public static Song GetSongFromSongString(String songString)
         {
-            byte[] compressedData = Convert.FromBase64String(songString);
+            byte[] compressedData = Convert.FromBase64String(songString.Replace('~', '='));
 
             using (MemoryStream decompressStream = new MemoryStream(compressedData))
             {
