@@ -34,7 +34,19 @@ namespace Stepquencer.iOS
 
         public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
         {
-            stepquencerApp.songStringToImport = Uri.UnescapeDataString(url.AbsoluteString.Substring(url.AbsoluteString.IndexOf('=') + 1));
+            string songStringToImport = Uri.UnescapeDataString(url.AbsoluteString.Substring(url.AbsoluteString.IndexOf('=') + 1));
+            Song s = FileUtilities.GetSongFromSongString(songStringToImport);
+
+            if (!stepquencerApp.mainpage.loadedSongChanged)     // TODO: we'll probably need to change this logic seeing as we're doing on overhaul on the save system
+            {
+                stepquencerApp.mainpage.LoadWarning(s);
+            }
+            else
+            {
+                stepquencerApp.mainpage.SetSong(s);
+            }
+
+            stepquencerApp.mainpage.SetSong(s);
             return true;
         }
     }

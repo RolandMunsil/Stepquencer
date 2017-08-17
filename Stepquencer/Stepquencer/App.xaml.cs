@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -7,7 +7,7 @@ namespace Stepquencer
     {
         public static readonly int TABLET_THRESHOLD = 1000;  // If the width of the screen is higher than this number, we can assume the device is a tablet
 
-        private MainPage mainpage;
+        public MainPage mainpage;
         public static int screenWidth;
         public static bool isTablet;    // Based on TABLET_THRESHOLD
 
@@ -39,22 +39,28 @@ namespace Stepquencer
         protected override void OnResume ()
         {
             // Handle when your app resumes
-            if(songStringToImport != null)
-            {
-				Song s = FileUtilities.GetSongFromSongString(songStringToImport);
-				Device.BeginInvokeOnMainThread(delegate
-				{
-                    if (!mainpage.loadedSongChanged)
-                    {
-                        mainpage.LoadWarning(s);
-                    }
-                    else
-                    {
-                        mainpage.SetSong(s);
-                    }
-				});
-				songStringToImport = null;
-            }
+
+            // TODO: Is the following still necessary for android? If not we can just delete it.
+
+    //        if(songStringToImport != null)
+    //        {
+               
+
+				//Song s = FileUtilities.GetSongFromSongString(songStringToImport);
+				//Device.BeginInvokeOnMainThread(delegate
+				//{
+    //                if (!mainpage.loadedSongChanged)
+    //                {
+    //                    mainpage.LoadWarning(s);
+    //                }
+    //                else
+    //                {
+    //                    mainpage.SetSong(s);
+    //                }
+				//});
+				//songStringToImport = null;
+            //}
+
         }
     }
 }
