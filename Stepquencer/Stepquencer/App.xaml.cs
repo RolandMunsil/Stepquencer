@@ -5,7 +5,7 @@ namespace Stepquencer
 {
     public partial class App : Application
     {
-        public static readonly int TABLET_THRESHOLD = 1000;  // If the width of the screen is higher than this number, we can assume the device is a tablet
+        public static readonly int TABLET_THRESHOLD = 1090;  // If the width of the screen is higher than this number, we can assume the device is a tablet
 
         public MainPage mainpage;
         public static int screenWidth;
