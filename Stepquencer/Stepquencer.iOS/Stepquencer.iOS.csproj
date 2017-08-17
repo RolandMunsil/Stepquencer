@@ -214,6 +214,7 @@
     <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage 2048x1536.png" />
     <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage640x960.png" />
     <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage 2208x1242.png" />
+    <ImageAsset Include="Assets.xcassets\Best launch image.launchimage\LaunchImage 1024x768.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets.xcassets\Best launch image.launchimage\" />
