@@ -35,7 +35,8 @@ namespace Stepquencer
                 HorizontalOptions = LayoutOptions.StartAndExpand,   //*
                 VerticalOptions = LayoutOptions.CenterAndExpand,    //*
                 InputTransparent = true,                            // Ensures the user can't tap on label instead of main body of this object
-                Margin = 17
+                Margin = new Thickness(17.0, 0.0)
+
             };
 
 
