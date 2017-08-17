@@ -19,7 +19,6 @@ namespace Stepquencer
         private Label bpmLabel;                             // Label to show the current BPM
         private Slider tempoSlider;                         // Slider that user can interact with to change BPM
         private MainPage mainpage;                          // The MainPage this screen came from
-        private Button undoClearButton;
 
         public MoreOptionsPage(MainPage passedpage)
         {
@@ -101,8 +100,8 @@ namespace Stepquencer
             };
 
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
-            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            //buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.5, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             buttonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
@@ -112,7 +111,6 @@ namespace Stepquencer
             Button saveAsButton = new Button { Text = "SAVE AS", Style = buttonStyle };
             Button loadButton = new Button { Text = "LOAD", Style = buttonStyle };                                       // Takes user to LoadPage
             Button newSongButton = new Button { Text = "NEW SONG", Style = buttonStyle, BackgroundColor = Color.Red }; // Clears notes and resets UI on main screen
-            undoClearButton = new Button { Text = "RELOAD UNSAVED SONG", Style = buttonStyle };                            // Undos a recent clear
             Button changeInstrumentsButton = new Button                                                                  // Takes user to ChangeInstrumentsPage
             {
                 Style = buttonStyle,
@@ -126,21 +124,13 @@ namespace Stepquencer
             changeInstrumentsButton.Text = "SWAP INSTRUMENTS";
 #endif
 
-            if (mainpage.clearedSong == null)
-            {
-                undoClearButton.TextColor = Color.Gray;
-            }
-
             buttonGrid.Children.Add(saveButton, 0, 0);
-            buttonGrid.Children.Add(saveAsButton, 1, 0);
-            buttonGrid.Children.Add(loadButton, 0, 1);
-            buttonGrid.Children.Add(newSongButton, 2, 0);
-            buttonGrid.Children.Add(undoClearButton, 2, 1);
-            buttonGrid.Children.Add(changeInstrumentsButton, 3, 0);
+            buttonGrid.Children.Add(saveAsButton, 0, 1);
+            buttonGrid.Children.Add(newSongButton, 1, 0);
+            buttonGrid.Children.Add(loadButton, 1, 1);
+            buttonGrid.Children.Add(changeInstrumentsButton, 2, 0);
 
             Grid.SetRowSpan(changeInstrumentsButton, 2);
-            Grid.SetColumnSpan(loadButton, 2);
-
 
             // Add grids to masterLayout
 
@@ -154,7 +144,6 @@ namespace Stepquencer
             tempoSlider.ValueChanged += OnSliderChanged;                     // Event listener for slider
             loadButton.Clicked += OnLoadButtonClicked;                       // Event listener for load button
             newSongButton.Clicked += OnClearAllClicked;                     // Event listener for clear all button
-            undoClearButton.Clicked += OnUndoClearClicked;                   // Event listener for undo clear button
             changeInstrumentsButton.Clicked += OnChangeInstrumentsClicked;   // Event listener for change instruments button
 
             saveAsButton.Clicked += GoToSavePage;
@@ -224,7 +213,6 @@ namespace Stepquencer
             bool allowReloading = false;
             if (mainpage.loadedSongChanged)
             {
-                undoClearButton.TextColor = Color.White;
                 allowReloading = true;
             }
             mainpage.ClearStepGridAndSong();
@@ -233,20 +221,6 @@ namespace Stepquencer
                 mainpage.clearedSong = null;
             }
             ReturnToMainPage();
-        }
-
-        /// <summary>
-        /// Event listener for undo clear button
-        /// </summary>
-        private void OnUndoClearClicked(object sender, EventArgs e)
-        {
-            if (mainpage.clearedSong != null)
-            {
-                mainpage.UndoClear();
-                bpmLabel.Text = "";     // Makes for smoother transition
-                tempoSlider.Value = mainpage.song.Tempo;
-                undoClearButton.TextColor = Color.Gray;
-            }
         }
 
         /// <summary>
