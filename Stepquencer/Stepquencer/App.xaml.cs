@@ -1,4 +1,10 @@
-﻿﻿﻿using System;
+﻿/* STEPQUENCER
+ * Build: 1.1.0 BETA
+ * 
+ * Made By Gabriel Brown, Roland Munsil, Paige Pfeiffer and Mani Diaz
+ */ 
+
+﻿﻿using System;
 using Xamarin.Forms;
 
 namespace Stepquencer
@@ -49,7 +55,7 @@ namespace Stepquencer
 				//Song s = FileUtilities.GetSongFromSongString(songStringToImport);
 				//Device.BeginInvokeOnMainThread(delegate
 				//{
-    //                if (!mainpage.loadedSongChanged)
+    //                if (mainpage.loadedSongChanged)
     //                {
     //                    mainpage.LoadWarning(s);
     //                }

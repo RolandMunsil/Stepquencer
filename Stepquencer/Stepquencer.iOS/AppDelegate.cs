@@ -37,7 +37,7 @@ namespace Stepquencer.iOS
             string songStringToImport = Uri.UnescapeDataString(url.AbsoluteString.Substring(url.AbsoluteString.IndexOf('=') + 1));
             Song s = FileUtilities.GetSongFromSongString(songStringToImport);
 
-            if (!stepquencerApp.mainpage.loadedSongChanged)     // TODO: we'll probably need to change this logic seeing as we're doing on overhaul on the save system
+            if (stepquencerApp.mainpage.loadedSongChanged)
             {
                 stepquencerApp.mainpage.LoadWarning(s);
             }
@@ -46,7 +46,6 @@ namespace Stepquencer.iOS
                 stepquencerApp.mainpage.SetSong(s);
             }
 
-            stepquencerApp.mainpage.SetSong(s);
             return true;
         }
     }
