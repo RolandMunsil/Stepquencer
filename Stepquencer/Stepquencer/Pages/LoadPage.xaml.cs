@@ -43,7 +43,10 @@ namespace Stepquencer
         public void LoadSongUIElements()
         {
             // Get all the remaining files
-            String[] songNames = Directory.GetFiles(FileUtilities.PathToSongDirectory); 
+            String[] songNames = Directory.GetFiles(FileUtilities.PathToSongDirectory);
+
+            //Sort song names alphabetically, ignoring case.
+            Array.Sort(songNames, StringComparer.CurrentCultureIgnoreCase);
 
             if (songNames.Length == 0)                                  // If there are no saved songs
             {
