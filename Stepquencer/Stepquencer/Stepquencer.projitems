@@ -41,6 +41,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UIElements\LinkLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IStatusBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Repairs.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)App.xaml">

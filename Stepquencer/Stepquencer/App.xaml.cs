@@ -21,6 +21,8 @@ namespace Stepquencer
 
         public App(String songStringFromUrl = null)
         {
+            Repairs.ChangeToVersionOne();       // Temporary fix, will make sure that all save files are switched to the correct version number
+
             isTablet = screenWidth > TABLET_THRESHOLD;
             mainpage = new MainPage(songStringFromUrl);
             MainPage = new NavigationPage(mainpage) 
