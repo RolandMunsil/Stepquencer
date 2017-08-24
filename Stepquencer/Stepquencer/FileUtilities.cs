@@ -76,7 +76,8 @@ namespace Stepquencer
             //Use StreamReader because the songs are in text foma
             StreamReader file = new StreamReader(stream);
 
-            if(file.ReadLine() != "VERSION 1")
+            String versionString = file.ReadLine();
+            if (versionString != "VERSION 1" && versionString != "VERSION 1.0.2")
             {
                 throw new FileLoadException("Save file is in an invalid format");
             }
