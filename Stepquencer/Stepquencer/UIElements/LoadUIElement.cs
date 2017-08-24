@@ -47,7 +47,7 @@ namespace Stepquencer
 				TextColor = Color.Red,
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.End,
-				//Margin = 7
+				Margin = 7
 			};
 
 			// Make a button that prompts user to share this song
