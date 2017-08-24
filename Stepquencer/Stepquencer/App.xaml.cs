@@ -1,5 +1,5 @@
 ﻿/* STEPQUENCER
- * Build: 1.1.0
+ * Build: 1.1.1
  * 
  * Made By Gabriel Brown, Roland Munsil, Paige Pfeiffer and Mani Diaz
  */ 
